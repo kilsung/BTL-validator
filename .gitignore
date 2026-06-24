@@ -1,0 +1,19 @@
+# 빌드 출력물
+*.log
+
+# BTL 검증 툴 — 런타임 생성 파일 (커밋 제외)
+tools/logs/
+tools/BTL_Aircon_Report_*.xlsx
+tools/BTL_CDU__Report_*.xlsx
+.vscode/
+
+# 엑셀 관제점 파일은 커밋 포함 (명시적 허용)
+!*.xls
+!*.xlsx
+!tools/uploads/*.xls
+!tools/uploads/*.xlsx
+
+
+# Python 캐시
+__pycache__/
+*.pyc

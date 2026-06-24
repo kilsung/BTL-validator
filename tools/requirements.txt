@@ -1,0 +1,5 @@
+# BACnet BTL 검증 자동화 툴 의존성
+flask>=2.3.0
+xlrd==1.2.0         # .xls 파일 읽기 (2.x는 xls 미지원 — 반드시 1.2.0)
+openpyxl>=3.1.0     # Excel 리포트 생성 (.xlsx)
+BAC0>=22.9.21       # BACnet 통신 (없으면 Demo 모드로 동작)
