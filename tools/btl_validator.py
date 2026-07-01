@@ -1018,11 +1018,35 @@ def _write_test_bv(point: dict, addr: str, obj_long: str):
 
 def _write_test_ao(point: dict, addr: str, obj_long: str):
     """AO: 현재값과 다른값 1회 쓰기. Pair AI가 있으면 pair 확인.
+    엑셀 minValue/maxValue가 있으면 write 값을 범위 내로 보정.
     반환: (write_result, write_detail)
     """
+
+
     inst      = point['instance']
     pair_inst = point.get('pair_instance')
     pair_long = OBJ_TYPE_MAP.get('AI', '') if pair_inst else ''
+
+    # Excel에서 파싱된 min/max 읽기 (하위호환 키 포함)
+    def _to_float_or_none(v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            s = v.strip()
+            if s in ('', '-', 'None', 'none', 'nan', 'NaN'):
+                return None
+            v = s
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    ao_min = _to_float_or_none(
+        point.get('minValue', point.get('minvalue', point.get('av_min', point.get('AV_MIN'))))
+    )
+    ao_max = _to_float_or_none(
+        point.get('maxValue', point.get('maxvalue', point.get('av_max', point.get('AV_MAX'))))
+    )
 
     cur_val, cur_err = bacnet_read(addr, obj_long, inst, 'presentValue')
     try:
@@ -1030,6 +1054,11 @@ def _write_test_ao(point: dict, addr: str, obj_long: str):
     except Exception:
         cur_float = 0.0
     write_val = round(cur_float + 1.0, 1) if cur_float != 0.0 else 1.0
+
+    if ao_max is not None and write_val > ao_max:
+        write_val = ao_min
+    if ao_min is not None and write_val < ao_min:
+        write_val = ao_min
 
     ok, w_err = bacnet_write(addr, obj_long, inst, write_val)
     if not ok:

@@ -408,9 +408,9 @@ def parse_sheet(wb, sheet_name: str,
         if not cni_list:
             cni_list = ['']  # SKIP 처리용 빈 값 유지
 
-        # ── AV min/max 파싱 ──────────────────────────────────────────────
+        # ── AV/AO min/max 파싱 ───────────────────────────────────────────
         av_min, av_max = None, None
-        if obj_type == 'AV' and not expio_mode:
+        if obj_type in {'AV', 'AO'} and not expio_mode:
             av_min, av_max = _parse_av_range(str(raw[10]).strip())
             if av_min is None:
                 av_min, av_max = _parse_av_range(str(raw[8]).strip())
