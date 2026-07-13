@@ -73,10 +73,10 @@ def _get_data_dir() -> Path:
 # ── 상수 정의 ─────────────────────────────────────────────────────────────
 # PyInstaller(frozen): exe 에 맞밖 폴더 / Linux 실행: tools/../ (기존 위치)
 if getattr(sys, 'frozen', False):
-    DEFAULT_EXCEL = str(_get_data_dir() / 'acs5_Instance_number_bacnet_20250324_acpi_260506.xls')
+    DEFAULT_EXCEL = str(_get_data_dir() / 'acs5_Instance_number_bacnet_20250324_acpi_260711.xls')
 else:
     DEFAULT_EXCEL = str(Path(__file__).parent.parent /
-        'acs5_Instance_number_bacnet_20250324_acpi_260506.xls')
+        'acs5_Instance_number_bacnet_20250324_acpi_260711.xls')
 
 UPLOAD_DIR = _get_data_dir() / 'uploads'
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -1548,8 +1548,8 @@ _COV_FIXED_PAIRS = [
 #    ('AV', 13, 'AI', 19, 'AV:13(Setting)→AI:19(Status) COV'),
 #    ('BO',  1, 'BI',  2, 'BO:1(Setting)→BI:2(Status) COV'),
 #    ('BV',  6, 'BV',  6, 'BV:6(FilterSignReset) COV'),
-#    ('AO',  40051, 'AO',  40051, 'AO:40051(Fill Press) COV'),
-    ('AO',  40071, 'AO',  40071, 'AO:40071(Ctrl. Type) COV'),
+#    ('AO',  50051, 'AO',  50051, 'AO:50051(Fill Press Cmd) COV'),
+    ('AO',  50071, 'AO',  50071, 'AO:50071(Ctrl. Type Cmd) COV'),
 ]
 
 
