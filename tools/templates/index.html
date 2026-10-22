@@ -2403,6 +2403,16 @@ let g = {
   filterType: 'ALL',
   searchQ: '',
   eventSource: null,
+  sseRecoveryTimer: null,
+  sseSyncTimer: null,
+  sseSyncInFlight: false,
+  sseWarningShown: false,
+  testRunActive: false,
+  testServerStarted: false,
+  testCompletionHandled: false,
+  lastProcessedRunIndex: 0,
+  expectedTotal: 0,
+  testStartedAt: 0,
   testEventQueue: [],
   testEventQueueHead: 0,
   testEventFrame: null,
@@ -2772,6 +2782,7 @@ async function openTestEventStream() {
   if (g.eventSource) g.eventSource.close();
   const source = new EventSource('/api/events');
   g.eventSource = source;
+  let opened = false;
   source.onmessage = (e) => {
     const ev = JSON.parse(e.data);
     if (ev.type === 'heartbeat') return;
@@ -2779,7 +2790,6 @@ async function openTestEventStream() {
   };
 
   await new Promise((resolve, reject) => {
-    let opened = false;
     const timeout = setTimeout(() => {
       source.close();
       if (g.eventSource === source) g.eventSource = null;
@@ -2787,8 +2797,24 @@ async function openTestEventStream() {
     }, 10000);
 
     source.onopen = () => {
+      const reconnected = opened;
       opened = true;
       clearTimeout(timeout);
+      if (g.sseRecoveryTimer !== null) {
+        clearTimeout(g.sseRecoveryTimer);
+        g.sseRecoveryTimer = null;
+      }
+      if (g.sseSyncTimer !== null) {
+        clearInterval(g.sseSyncTimer);
+        g.sseSyncTimer = null;
+      }
+      if (reconnected && g.sseWarningShown) {
+        appendLog('info', '실시간 결과 연결이 복구되었습니다.');
+        g.sseWarningShown = false;
+      }
+      if (reconnected && g.testRunActive && g.testServerStarted) {
+        syncTestResultsFromServer();
+      }
       resolve();
     };
     source.onerror = () => {
@@ -2799,19 +2825,86 @@ async function openTestEventStream() {
         reject(new Error('SSE 연결 실패'));
         return;
       }
-      appendLog('fail', '⚠ SSE 연결 오류 — 결과 동기화 시도 중...');
-      source.close();
-      if (g.eventSource === source) g.eventSource = null;
-      resetRunButtons();
-      setTimeout(() => sweepStuckRows(), 1500);
+      if (g.testRunActive && g.sseRecoveryTimer === null) {
+        g.sseRecoveryTimer = setTimeout(() => {
+          g.sseRecoveryTimer = null;
+          startTestResultSync();
+        }, 5000);
+      }
     };
   });
 }
 
 function closeTestEventStream() {
+  if (g.sseRecoveryTimer !== null) {
+    clearTimeout(g.sseRecoveryTimer);
+    g.sseRecoveryTimer = null;
+  }
+  stopTestResultSync();
   if (g.eventSource) {
     g.eventSource.close();
     g.eventSource = null;
+  }
+}
+
+function startTestResultSync() {
+  if (!g.testRunActive || g.sseSyncTimer !== null) return;
+  if (!g.sseWarningShown) {
+    appendLog('info', '실시간 결과 연결이 일시적으로 끊겨 서버 결과를 확인 중입니다.');
+    g.sseWarningShown = true;
+  }
+  syncTestResultsFromServer();
+  g.sseSyncTimer = setInterval(syncTestResultsFromServer, 2000);
+}
+
+function stopTestResultSync() {
+  if (g.sseSyncTimer !== null) {
+    clearInterval(g.sseSyncTimer);
+    g.sseSyncTimer = null;
+  }
+  g.sseSyncInFlight = false;
+}
+
+async function syncTestResultsFromServer() {
+  if (!g.testRunActive || !g.testServerStarted || g.sseSyncInFlight) return;
+  g.sseSyncInFlight = true;
+  try {
+    const [resultsResponse, statusResponse] = await Promise.all([
+      fetch('/api/results'),
+      fetch('/api/status'),
+    ]);
+    const resultsData = await resultsResponse.json();
+    const status = await statusResponse.json();
+    const results = Array.isArray(resultsData.results) ? resultsData.results : [];
+
+    results.forEach((result, index) => {
+      const runIndex = Number(result.run_index || index + 1);
+      if (runIndex <= g.lastProcessedRunIndex) return;
+      handleProgressEvent({
+        current: runIndex,
+        total: g.expectedTotal || results.length,
+        result,
+      });
+    });
+
+      const startGraceElapsed = Date.now() - g.testStartedAt >= 2000;
+      const resultCountMatches = status.results_count === results.length;
+      if (startGraceElapsed && resultCountMatches
+          && !status.running && !status.all_running && g.testRunActive) {
+      const pass = results.filter(result => result.overall === 'PASS').length;
+      const fail = results.filter(result => result.overall === 'FAIL').length;
+      const skip = results.filter(result => result.overall === 'SKIP').length;
+      await handleCompleteEvent({
+        total: results.length,
+        pass,
+        fail,
+        skip,
+      });
+    }
+  } catch (error) {
+    console.warn('[SSE fallback sync]', error);
+  } finally {
+    g.sseSyncInFlight = false;
   }
 }
 
@@ -2904,6 +2997,12 @@ async function runDeviceAll(deviceKey) {
     parseInt(document.getElementById('repeatCount').value, 10) || 1));
   g.testEventQueue = [];
   g.testEventQueueHead = 0;
+  g.testRunActive = true;
+  g.testServerStarted = false;
+  g.testCompletionHandled = false;
+  g.lastProcessedRunIndex = 0;
+  g.expectedTotal = devPoints.length * repeatCount;
+  g.sseWarningShown = false;
   setProgress(0, devPoints.length * repeatCount, '검증 준비');
   setProgressRunning(true);
   g.results = [];
@@ -2931,12 +3030,17 @@ async function runDeviceAll(deviceKey) {
 
     if (!res.success) {
       appendLog('fail', '❌ All 검증 시작 실패: ' + res.error);
+      g.testRunActive = false;
       closeTestEventStream();
       resetRunButtons();
       return;
     }
+    g.testStartedAt = Date.now();
+    g.testServerStarted = true;
     if (res.log_file) updateLogFileBadge(res.log_file);
   } catch (e) {
+    g.testRunActive = false;
+    g.testServerStarted = false;
     closeTestEventStream();
     appendLog('fail', 'All 검증 요청 오류: ' + e.message);
     resetRunButtons();
@@ -3479,6 +3583,12 @@ async function startTests() {
     parseInt(document.getElementById('repeatCount').value, 10) || 1));
   g.testEventQueue = [];
   g.testEventQueueHead = 0;
+  g.testRunActive = true;
+  g.testServerStarted = false;
+  g.testCompletionHandled = false;
+  g.lastProcessedRunIndex = 0;
+  g.expectedTotal = g.points.length * repeatCount;
+  g.sseWarningShown = false;
   setProgress(0, g.points.length * repeatCount, '검증 준비');
   setProgressRunning(true);
   appendLog('info', `▶ 검증 시작: ${g.points.length}개 관제점, ${repeatCount}회 반복`);
@@ -3502,6 +3612,7 @@ async function startTests() {
 
     if (!res.success) {
       appendLog('fail', '❌ 시작 실패: ' + res.error);
+      g.testRunActive = false;
       closeTestEventStream();
       setProgressRunning(false);
       document.getElementById('btnRun').disabled = false;
@@ -3509,8 +3620,12 @@ async function startTests() {
       return;
     }
 
+    g.testStartedAt = Date.now();
+    g.testServerStarted = true;
     if (res.log_file) updateLogFileBadge(res.log_file);
   } catch (e) {
+    g.testRunActive = false;
+    g.testServerStarted = false;
     closeTestEventStream();
     appendLog('fail', '검증 시작 오류: ' + e.message);
     resetRunButtons();
@@ -3519,10 +3634,12 @@ async function startTests() {
 
 async function stopTests() {
   await fetch('/api/stop-tests', { method: 'POST' });
+  g.testRunActive = false;
+  g.testServerStarted = false;
+  closeTestEventStream();
   setProgressRunning(false);
   appendLog('info', '⏹ 중지 요청됨');
   resetRunButtons();
-  if (g.eventSource) { g.eventSource.close(); g.eventSource = null; }
   // 중지 후 진행중 행 정리: 서버 결과로 stuck 행 갱신
   setTimeout(() => sweepStuckRows(), 1500);
 }
@@ -3559,6 +3676,9 @@ function handleStartEvent(ev) {
 
 function handleProgressEvent(ev) {
   const r = ev.result;
+  const runIndex = Number(r.run_index || ev.current || 0);
+  if (runIndex && runIndex <= g.lastProcessedRunIndex) return;
+  if (runIndex) g.lastProcessedRunIndex = runIndex;
   g.results.push(r);
   setProgress(ev.current, ev.total,
     `검증 중: ${ev.current} / ${ev.total}`);
@@ -3599,12 +3719,16 @@ function handleProgressEvent(ev) {
 }
 
 async function handleCompleteEvent(ev) {
+  if (g.testCompletionHandled) return;
+  g.testCompletionHandled = true;
+  g.testRunActive = false;
+  g.testServerStarted = false;
+  closeTestEventStream();
   setProgressRunning(false);
   setProgress(ev.total, ev.total);
   appendLog('pass',
     `✅ 검증 완료: PASS=${ev.pass}, FAIL=${ev['fail']}, SKIP=${ev.skip}`);
   resetRunButtons();
-  if (g.eventSource) { g.eventSource.close(); g.eventSource = null; }
 
   // SSE 이벤트 누락 보완: 서버에서 전체 결과를 동기화하여 g.results 완성
   try {
