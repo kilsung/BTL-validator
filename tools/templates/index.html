@@ -1147,18 +1147,19 @@
               <!-- 사전 조건 안내 -->
               <div class="mb-3 p-2" style="background:#0d2518;border:1px solid #2ecc71;border-radius:6px;font-size:0.78rem">
                 <div style="color:#2ecc71;font-weight:600;margin-bottom:4px">
-                  <i class="bi bi-check2-circle me-1"></i>DUT 사전 설정 (1회)
+                  <i class="bi bi-check2-circle me-1"></i>DUT 사전 설정 (1회) 후 재시작
                 </div>
                 <div style="color:#c9d1d9;line-height:1.6">
-                  <code style="font-size:0.72rem">bacstac_rt.conf</code> 에서:<br>
-                  &nbsp;• <code>Foreign_Device = 1</code><br>
-                  &nbsp;• <code>Fd_Bbmd_Ip = &lt;이 검증 PC의 IP&gt;</code><br>
-                  &nbsp;• <code>Fd_Bbmd_Udp = 0x0000BAC1</code> <span style="color:#95a5a6">(47809)</span>
+                  환경설정 &gt; 통신 &gt; BACnet<br>
+                  &nbsp;• <strong>Foreign Device</strong><br>
+                  &nbsp;&nbsp;– 등록: 설정<br>
+                  &nbsp;&nbsp;– IP: &lt;이 검증 PC의 IP&gt;<br>
+                  &nbsp;&nbsp;– Port: 47808 (BAC0)<br>
+                  &nbsp;• 저장
                 </div>
                 <div class="mt-2" style="color:#58a6ff;font-size:0.72rem">
                   <i class="bi bi-layers me-1"></i>
-                  DUT 포트 <strong>47808</strong>(일반 BACnet) ·
-                  <strong>47809</strong>(FD 등록) 동시 운영 — 검증 중에도 BACnet 정상 동작
+                  설정 저장 후 DUT를 재시작하세요.
                 </div>
               </div>
 
@@ -1167,8 +1168,8 @@
                 <div class="col-6">
                   <label class="form-label mb-0" style="font-size:0.78rem">수신 포트 <span style="color:#58a6ff">(BBMD)</span></label>
                   <input type="number" class="form-control form-control-sm" id="fdListenPort"
-                    value="47809" min="1" max="65535"
-                    title="FD 전용 포트 (47809). 일반 BACnet 47808과 동시 운영 가능">
+                    value="47808" min="1" max="65535"
+                    title="BACnet 표준 수신 포트 (47808)">
                 </div>
                 <div class="col-6">
                   <label class="form-label mb-0" style="font-size:0.78rem">대기 시간 (초)</label>
@@ -1200,7 +1201,7 @@
                 <i class="bi bi-exclamation-triangle me-1"></i>
                 <strong>재검증 주의:</strong> FD 등록 성공 후 DUT는 TTL(3600초) 만료 전까지 재등록하지 않습니다.<br>
                 재검증이 필요하면 DUT 서비스를 재시작하세요:<br>
-                <code style="font-size:0.72rem;color:#ffd">systemctl restart com.acp.bacnet.service-appinstalld.service</code>
+                <code style="font-size:0.72rem;color:#ffd">systemctl restart main_cdu</code>
               </div>
               <div id="fdProgressMsg" class="mt-2" style="font-size:0.8rem;min-height:20px;color:var(--text-muted)"></div>
             </div>
@@ -4489,7 +4490,7 @@ document.querySelector('[data-bs-target="#tab5"]').addEventListener('shown.bs.ta
 
 /** FD 전체 검증 실행 */
 async function fdRunTests() {
-  const listenPort  = parseInt(document.getElementById('fdListenPort').value)  || 47809;
+  const listenPort  = parseInt(document.getElementById('fdListenPort').value)  || 47808;
   const waitTimeout = parseInt(document.getElementById('fdWaitTimeout').value) || 60;
   const runWhois    = document.getElementById('fdRunWhois').checked;
 
