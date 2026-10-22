@@ -195,7 +195,7 @@
       font-size: 0.75rem;
       font-weight: 700;
       border-radius: 10px;
-      transition: width 0.3s ease;
+      transition: none;
     }
 
     /* ── 요약 스탯 카드 ── */
@@ -718,7 +718,7 @@
                   <i class="bi bi-arrow-up-circle text-success me-1"></i>
                   WriteProperty 검증 <span class="badge bg-warning text-dark" style="font-size:0.65rem">Commandable 전용</span>
                   <div class="text-muted fw-normal" style="font-size:0.75rem">
-                    BO/MO: 값 쓰기 후 읽기 비교
+                    AO/BV: 값 쓰기 후 읽기 비교
                   </div>
                 </label>
               </div>
@@ -731,6 +731,12 @@
                     ASHRAE 135 필수 항목 존재 여부
                   </div>
                 </label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label mb-1" for="repeatCount" style="font-size:0.82rem">전체 검증 반복 횟수</label>
+                <input type="number" class="form-control form-control-sm" id="repeatCount"
+                  min="1" max="100" step="1" value="1">
+                <div class="form-text" style="font-size:0.72rem">1~100회</div>
               </div>
               <hr>
               <div class="d-grid gap-2">
@@ -806,7 +812,7 @@
               <table class="table tbl-compact mb-0">
                 <thead>
                   <tr>
-                    <th style="width:50px">#</th>
+                    <th style="width:80px">회차/#</th>
                     <th>인스턴스</th>
                     <th>장치</th>
                     <th>타입</th>
@@ -2396,6 +2402,13 @@ let g = {
   filterType: 'ALL',
   searchQ: '',
   eventSource: null,
+  testEventQueue: [],
+  testEventQueueHead: 0,
+  testEventFrame: null,
+  pendingLogs: [],
+  logFlushTimer: null,
+  logScrollTimer: null,
+  liveScrollTimer: null,
   uploadedFilepath: '',     // 업로드된 파일 서버 경로
   autoLoadAttempted: false, // 자동 로드 시도 여부 (페이지당 1회)
 };
@@ -2754,6 +2767,88 @@ function _getSelectedDevices() {
   return result;
 }
 
+async function openTestEventStream() {
+  if (g.eventSource) g.eventSource.close();
+  const source = new EventSource('/api/events');
+  g.eventSource = source;
+  source.onmessage = (e) => {
+    const ev = JSON.parse(e.data);
+    if (ev.type === 'heartbeat') return;
+    queueTestEvent(ev);
+  };
+
+  await new Promise((resolve, reject) => {
+    let opened = false;
+    const timeout = setTimeout(() => {
+      source.close();
+      if (g.eventSource === source) g.eventSource = null;
+      reject(new Error('SSE 연결 시간 초과'));
+    }, 10000);
+
+    source.onopen = () => {
+      opened = true;
+      clearTimeout(timeout);
+      resolve();
+    };
+    source.onerror = () => {
+      if (!opened) {
+        clearTimeout(timeout);
+        source.close();
+        if (g.eventSource === source) g.eventSource = null;
+        reject(new Error('SSE 연결 실패'));
+        return;
+      }
+      appendLog('fail', '⚠ SSE 연결 오류 — 결과 동기화 시도 중...');
+      source.close();
+      if (g.eventSource === source) g.eventSource = null;
+      resetRunButtons();
+      setTimeout(() => sweepStuckRows(), 1500);
+    };
+  });
+}
+
+function closeTestEventStream() {
+  if (g.eventSource) {
+    g.eventSource.close();
+    g.eventSource = null;
+  }
+}
+
+function queueTestEvent(ev) {
+  g.testEventQueue.push(ev);
+  if (g.testEventFrame === null) {
+    g.testEventFrame = requestAnimationFrame(drainTestEvents);
+  }
+}
+
+function drainTestEvents() {
+  const deadline = performance.now() + 8;
+  while (g.testEventQueueHead < g.testEventQueue.length && performance.now() < deadline) {
+    const ev = g.testEventQueue[g.testEventQueueHead++];
+    if (ev.type === 'start') handleStartEvent(ev);
+    else if (ev.type === 'progress') handleProgressEvent(ev);
+    else if (ev.type === 'complete') handleCompleteEvent(ev);
+  }
+
+  if (g.testEventQueueHead >= g.testEventQueue.length) {
+    g.testEventQueue = [];
+    g.testEventQueueHead = 0;
+    g.testEventFrame = null;
+  } else {
+    g.testEventFrame = requestAnimationFrame(drainTestEvents);
+  }
+}
+
+function scheduleLiveScroll() {
+  if (g.liveScrollTimer !== null) return;
+  g.liveScrollTimer = setTimeout(() => {
+    const body = document.getElementById('liveBody');
+    const wrap = body?.closest('.table-responsive');
+    if (wrap) wrap.scrollTop = wrap.scrollHeight;
+    g.liveScrollTimer = null;
+  }, 150);
+}
+
 // ═══════════════════════════════════════════════════════
 //  All 버튼: 선택 장치 전체 동시 검증 (기존 startTests와 완전 분리)
 //  이 섹션만 제거하면 기존 동작으로 즉시 복귀 가능
@@ -2804,22 +2899,29 @@ async function runDeviceAll(deviceKey) {
   document.getElementById('liveBody').innerHTML = '';
   document.getElementById('logBox').innerHTML  = '';
   document.getElementById('liveCounter').textContent = '0개 완료';
-  setProgress(0, devPoints.length);
+  const repeatCount = Math.max(1, Math.min(100,
+    parseInt(document.getElementById('repeatCount').value, 10) || 1));
+  g.testEventQueue = [];
+  g.testEventQueueHead = 0;
+  setProgress(0, devPoints.length * repeatCount, '검증 준비');
+  setProgressRunning(true);
   g.results = [];
 
   document.getElementById('btnRun').disabled  = true;
   document.getElementById('btnStop').disabled = false;
-  appendLog('info', `▶ [All] ${deviceKey}  b2=${b2From}~${b2To}  (${unitCnt}대 동시 검증 시작)`);
+  appendLog('info', `▶ [All] ${deviceKey}  b2=${b2From}~${b2To}  (${unitCnt}대, ${repeatCount}회 반복)`);
 
   const opts = {
     devices:     [{ device_type: deviceKey, b2_from: b2From, b2_to: b2To }],
     test_read:   document.getElementById('chkRead').checked,
     test_write:  document.getElementById('chkWrite').checked,
     test_props:  document.getElementById('chkProps').checked,
+    repeat_count: repeatCount,
     max_workers: maxW,
   };
 
   try {
+    await openTestEventStream();
     const res = await (await fetch('/api/run-tests-all', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2828,28 +2930,13 @@ async function runDeviceAll(deviceKey) {
 
     if (!res.success) {
       appendLog('fail', '❌ All 검증 시작 실패: ' + res.error);
+      closeTestEventStream();
       resetRunButtons();
       return;
     }
     if (res.log_file) updateLogFileBadge(res.log_file);
-
-    // SSE 구독 — 기존 handleProgressEvent / handleCompleteEvent 재사용
-    if (g.eventSource) g.eventSource.close();
-    g.eventSource = new EventSource('/api/events');
-    g.eventSource.onmessage = (e) => {
-      const ev = JSON.parse(e.data);
-      if (ev.type === 'heartbeat') return;
-      if (ev.type === 'progress') handleProgressEvent(ev);
-      else if (ev.type === 'complete') handleCompleteEvent(ev);
-    };
-    g.eventSource.onerror = () => {
-      appendLog('fail', '⚠ SSE 연결 오류 — 결과 동기화 시도 중...');
-      g.eventSource.close();
-      g.eventSource = null;
-      resetRunButtons();
-      setTimeout(() => sweepStuckRows(), 1500);
-    };
   } catch (e) {
+    closeTestEventStream();
     appendLog('fail', 'All 검증 요청 오류: ' + e.message);
     resetRunButtons();
   }
@@ -3318,9 +3405,9 @@ async function runCovTest() {
     } else if (ev.type === 'cov_result') {
       upsertLiveCovRow(ev.result, false);
     } else if (ev.type === 'progress') {
-      handleProgressEvent(ev);
+      queueTestEvent(ev);
     } else if (ev.type === 'complete') {
-      handleCompleteEvent(ev);
+      queueTestEvent(ev);
     }
   };
   g.eventSource.onerror = () => {
@@ -3387,8 +3474,13 @@ async function startTests() {
   document.getElementById('logBox').innerHTML = '';
   document.getElementById('liveCounter').textContent = '0개 완료';
   g.results = [];
-  setProgress(0, g.points.length);
-  appendLog('info', `▶ 검증 시작: ${g.points.length}개 관제점`);
+  const repeatCount = Math.max(1, Math.min(100,
+    parseInt(document.getElementById('repeatCount').value, 10) || 1));
+  g.testEventQueue = [];
+  g.testEventQueueHead = 0;
+  setProgress(0, g.points.length * repeatCount, '검증 준비');
+  setProgressRunning(true);
+  appendLog('info', `▶ 검증 시작: ${g.points.length}개 관제점, ${repeatCount}회 반복`);
 
   document.getElementById('btnRun').disabled = true;
   document.getElementById('btnStop').disabled = false;
@@ -3398,48 +3490,35 @@ async function startTests() {
     test_read:  document.getElementById('chkRead').checked,
     test_write: document.getElementById('chkWrite').checked,
     test_props: document.getElementById('chkProps').checked,
+    repeat_count: repeatCount,
   };
-  const res = await (await fetch('/api/run-tests', {
-    method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(opts)
-  })).json();
+  try {
+    await openTestEventStream();
+    const res = await (await fetch('/api/run-tests', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(opts)
+    })).json();
 
-  if (!res.success) {
-    appendLog('fail', '❌ 시작 실패: ' + res.error);
-    document.getElementById('btnRun').disabled = false;
-    document.getElementById('btnStop').disabled = true;
-    return;
-  }
-
-  if (res.log_file) updateLogFileBadge(res.log_file);
-
-  // SSE 구독
-  if (g.eventSource) g.eventSource.close();
-  g.eventSource = new EventSource('/api/events');
-
-  g.eventSource.onmessage = (e) => {
-    const ev = JSON.parse(e.data);
-    if (ev.type === 'heartbeat') return;
-    if (ev.type === 'start') {
-      handleStartEvent(ev);
-    } else if (ev.type === 'progress') {
-      handleProgressEvent(ev);
-    } else if (ev.type === 'complete') {
-      handleCompleteEvent(ev);
+    if (!res.success) {
+      appendLog('fail', '❌ 시작 실패: ' + res.error);
+      closeTestEventStream();
+      setProgressRunning(false);
+      document.getElementById('btnRun').disabled = false;
+      document.getElementById('btnStop').disabled = true;
+      return;
     }
-  };
-  g.eventSource.onerror = () => {
-    appendLog('fail', '⚠ SSE 연결 오류 — 결과 동기화 시도 중...');
-    g.eventSource.close();
-    g.eventSource = null;
+
+    if (res.log_file) updateLogFileBadge(res.log_file);
+  } catch (e) {
+    closeTestEventStream();
+    appendLog('fail', '검증 시작 오류: ' + e.message);
     resetRunButtons();
-    // 끄옆 후 회복: 서버에서 결과 가져와 stuck 행 갱신
-    setTimeout(() => sweepStuckRows(), 1500);
-  };
+  }
 }
 
 async function stopTests() {
   await fetch('/api/stop-tests', { method: 'POST' });
+  setProgressRunning(false);
   appendLog('info', '⏹ 중지 요청됨');
   resetRunButtons();
   if (g.eventSource) { g.eventSource.close(); g.eventSource = null; }
@@ -3449,16 +3528,14 @@ async function stopTests() {
 
 function handleStartEvent(ev) {
   const p = ev.point;
-  setProgress(ev.current - 1, ev.total);
-  document.getElementById('progressText').textContent =
-    `[${ev.current}/${ev.total}] ${p.object_type}:${p.instance} ${p.name} 검증 중...`;
+  setProgress(ev.current - 1, ev.total,
+    `[${ev.current}/${ev.total}] ${p.object_type}:${p.instance} ${p.name} 검증 중...`);
 
   const body = document.getElementById('liveBody');
   const emEl = document.getElementById('liveEmpty');
   if (emEl) emEl.remove();
 
-  // 진행중 행 삽입 (id로 나중에 갱신)
-  const rowId = `live-row-${p.instance}`;
+  const rowId = `live-row-${ev.current}`;
   let tr = document.getElementById(rowId);
   if (!tr) {
     tr = document.createElement('tr');
@@ -3467,7 +3544,7 @@ function handleStartEvent(ev) {
   }
   tr.className = 'row-running';
   tr.innerHTML = `
-    <td>${p.idx}</td>
+    <td>${p.repeat_number || 1}회 · ${p.idx}</td>
     <td><code>${p.instance}</code></td>
     <td>${devBadge(p.device_type || '', p.device_b2)}</td>
     <td><span class="type-badge type-${p.object_type}">${p.object_type}</span></td>
@@ -3476,27 +3553,26 @@ function handleStartEvent(ev) {
     <td colspan="5"><span class="spinner-border spinner-border-sm text-primary me-1" style="width:.75rem;height:.75rem"></span>
       <span class="text-primary fw-semibold" style="font-size:0.8rem">진행 중...</span></td>
   `;
-  body.closest('.table-responsive').scrollTop = body.scrollHeight;
+  scheduleLiveScroll();
 }
 
 function handleProgressEvent(ev) {
   const r = ev.result;
   g.results.push(r);
-  setProgress(ev.current, ev.total);
+  setProgress(ev.current, ev.total,
+    `검증 중: ${ev.current} / ${ev.total}`);
 
-  const overallCls = {PASS:'log-pass', FAIL:'log-fail', SKIP:'log-skip'}[r.overall] || 'log-info';
   appendLog(r.overall.toLowerCase(),
     `[${ev.current.toString().padStart(3)}/${ev.total}] ` +
-    `${r.object_type}:${r.instance} ${r.name} → ${r.overall}` +
+    `[${r.repeat_number || 1}회차] ${r.object_type}:${r.instance} ${r.name} → ${r.overall}` +
     (r.error ? ` (${r.error})` : '') +
     (r.missing_props.length ? ` 누락: ${r.missing_props.join(',')}` : ''));
 
-  // 실시간 결과 행 갱신 (start 이벤트가 삽입한 "진행중" 행을 결과로 교체)
   const body = document.getElementById('liveBody');
   const emEl = document.getElementById('liveEmpty');
   if (emEl) emEl.remove();
 
-  const rowId = `live-row-${r.instance}`;
+  const rowId = `live-row-${ev.current}`;
   let tr = document.getElementById(rowId);
   if (!tr) {
     tr = document.createElement('tr');
@@ -3505,7 +3581,7 @@ function handleProgressEvent(ev) {
   }
   tr.className = {'PASS':'row-pass','FAIL':'row-fail','SKIP':'row-skip'}[r.overall] || '';
   tr.innerHTML = `
-    <td>${r.idx}</td>
+    <td>${r.repeat_number || 1}회 · ${r.idx}</td>
     <td><code>${r.instance}</code></td>
     <td>${devBadge(r.device_type || '', r.device_b2)}</td>
     <td><span class="type-badge type-${r.object_type}">${r.object_type}</span></td>
@@ -3517,12 +3593,13 @@ function handleProgressEvent(ev) {
     <td style="max-width:160px"><small class="text-info" style="font-size:0.7rem;white-space:pre-wrap">${esc(r.condition||'')}</small></td>
     <td>${badge(r.overall)}</td>
   `;
-  body.closest('.table-responsive').scrollTop = body.scrollHeight;
-
+  scheduleLiveScroll();
   document.getElementById('liveCounter').textContent = `${ev.current}개 완료`;
 }
 
 async function handleCompleteEvent(ev) {
+  setProgressRunning(false);
+  setProgress(ev.total, ev.total);
   appendLog('pass',
     `✅ 검증 완료: PASS=${ev.pass}, FAIL=${ev['fail']}, SKIP=${ev.skip}`);
   resetRunButtons();
@@ -3536,10 +3613,8 @@ async function handleCompleteEvent(ev) {
     }
   } catch (e) { /* 동기화 실패 시 기존 g.results 사용 */ }
 
-  // 누락 된 진행중 행 강제 완료
   sweepStuckRows();
   updateReportTab(ev);
-  // 검증 완료 후 결과/리포트 탭으로 자동 전환
   const tab4btn = document.querySelector('[data-bs-target="#tab4"]');
   if (tab4btn) bootstrap.Tab.getOrCreateInstance(tab4btn).show();
 }
@@ -3555,15 +3630,18 @@ function sweepStuckRows() {
     .then(r => r.json())
     .then(data => {
       const rMap = {};
-      (data.results || []).forEach(r => { rMap[r.instance] = r; });
+      (data.results || []).forEach(r => {
+        if (r.run_index) rMap[r.run_index] = r;
+        else rMap[r.instance] = r;
+      });
 
       stuckRows.forEach(tr => {
-        const inst = parseInt(tr.id.replace('live-row-', ''));
-        const r = rMap[inst];
+        const runIndex = parseInt(tr.id.replace('live-row-', ''));
+        const r = rMap[runIndex];
         if (!r) return;  // 아직 결과 없으면 유지
         tr.className = {'PASS':'row-pass','FAIL':'row-fail','SKIP':'row-skip'}[r.overall] || '';
         tr.innerHTML = `
-          <td>${r.idx}</td>
+          <td>${r.repeat_number || 1}회 · ${r.idx}</td>
           <td><code>${r.instance}</code></td>
           <td>${devBadge(r.device_type || '', r.device_b2)}</td>
           <td><span class="type-badge type-${r.object_type}">${r.object_type}</span></td>
@@ -3584,6 +3662,7 @@ function sweepStuckRows() {
 }
 
 function resetRunButtons() {
+  setProgressRunning(false);
   document.getElementById('btnRun').disabled = false;
   document.getElementById('btnStop').disabled = true;
 }
@@ -4037,28 +4116,55 @@ function updateLogFileBadge(filename) {
   dlBtn.classList.remove('d-none');
 }
 
-function setProgress(cur, total) {
-  const pct = total ? Math.round(cur / total * 100) : 0;
+function renderProgress(cur, total) {
+  const pct = total ? Math.max(0, Math.min(100, Math.round(cur / total * 100))) : 0;
+  const pctText = `${pct}%`;
   const bar = document.getElementById('progressBar');
   const txtEl = document.getElementById('progressText');
   const pctEl = document.getElementById('progressPct');
   bar.style.width = pct + '%';
-  bar.textContent = pct + '%';
+  bar.textContent = pctText;
   txtEl.textContent = cur === total && total > 0
     ? `✅ 완료 (${total}/${total})`
-    : (cur > 0 ? `검증 중: ${cur} / ${total}` : '대기 중');
-  pctEl.textContent = pct + '%';
+    : (g.progressStatus || (cur > 0
+      ? `검증 중: ${Math.floor(cur)} / ${total}`
+      : '대기 중'));
+  pctEl.textContent = pctText;
+}
+
+function setProgress(cur, total, status) {
+  if (status !== undefined) g.progressStatus = status;
+  renderProgress(cur, total);
+}
+
+function setProgressRunning(running) {
+  const bar = document.getElementById('progressBar');
+  bar.classList.toggle('progress-bar-striped', running);
+  bar.classList.toggle('progress-bar-animated', running);
 }
 
 function appendLog(type, msg) {
-  const box = document.getElementById('logBox');
   const clsMap = {pass:'log-pass',fail:'log-fail',skip:'log-skip',info:'log-info',warning:'log-skip'};
   const ts = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const div = document.createElement('div');
   div.className = clsMap[type] || 'log-info';
   div.textContent = `[${ts}] ${msg}`;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+  g.pendingLogs.push(div);
+  if (g.logFlushTimer !== null) return;
+  g.logFlushTimer = setTimeout(() => {
+    const box = document.getElementById('logBox');
+    const fragment = document.createDocumentFragment();
+    g.pendingLogs.forEach(line => fragment.appendChild(line));
+    g.pendingLogs = [];
+    box.appendChild(fragment);
+    g.logFlushTimer = null;
+    if (g.logScrollTimer === null) {
+      g.logScrollTimer = setTimeout(() => {
+        box.scrollTop = box.scrollHeight;
+        g.logScrollTimer = null;
+      }, 150);
+    }
+  }, 100);
 }
 
 function clearLog() {

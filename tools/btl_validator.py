@@ -2711,9 +2711,19 @@ def run_tests_thread(points: list, settings: dict):
         else:
             log.warning('[UnitDetect] description 읽기 실패 — 필터 비교 불가, 모든 포인트 검증')
 
-    total = len(points)
+    repeat_count = max(1, min(100, int(settings.get('repeat_count', 1))))
+    run_points = points * repeat_count
+    total = len(run_points)
+    if repeat_count > 1:
+        log.info('[검증] 전체 관제점 검증을 %d회 반복합니다 (총 %d건)',
+                 repeat_count, total)
 
-    for i, point in enumerate(points):
+    def _record_result(result, current):
+        result['run_index'] = current
+        result['repeat_number'] = (current - 1) // max(len(points), 1) + 1
+        state['results'].append(result)
+
+    for i, point in enumerate(run_points):
         if not state['running']:
             break
 
@@ -2737,7 +2747,7 @@ def run_tests_thread(points: list, settings: dict):
                 'value_match':    '',
             }
             log.info('[Skip] inst=%s %s → 포인트 없음', point['instance'], point['name'])
-            state['results'].append(skip_result)
+            _record_result(skip_result, i + 1)
             _broadcast({'type': 'progress', 'current': i + 1, 'total': total,
                         'percent': int((i + 1) / total * 100), 'result': skip_result})
             continue
@@ -2768,7 +2778,7 @@ def run_tests_thread(points: list, settings: dict):
                 }
                 log.info('[Skip] inst=%s %s → %s slave(slot=%d)',
                          point['instance'], point['name'], sub, raw_slot)
-                state['results'].append(_slave_skip)
+                _record_result(_slave_skip, i + 1)
                 _broadcast({'type': 'progress', 'current': i + 1, 'total': total,
                             'percent': int((i + 1) / total * 100),
                             'result': _slave_skip})
@@ -2794,7 +2804,7 @@ def run_tests_thread(points: list, settings: dict):
                 'value_match':    '',
             }
             log.info('[Skip] inst=%s %s → 항상SKIP (재부팅위험)', point['instance'], point['name'])
-            state['results'].append(_asskip)
+            _record_result(_asskip, i + 1)
             _broadcast({
                 'type': 'progress',
                 'current': i + 1,
@@ -2827,7 +2837,7 @@ def run_tests_thread(points: list, settings: dict):
                     'value_match':    '',
                 }
                 log.info('[Skip] inst=%s %s → control_method=%s', point['instance'], point['name'], ctrl_skip)
-                state['results'].append(skip_result)
+                _record_result(skip_result, i + 1)
                 _broadcast({'type': 'progress', 'current': i + 1, 'total': total,
                             'percent': int((i + 1) / total * 100), 'result': skip_result})
                 continue
@@ -2855,7 +2865,7 @@ def run_tests_thread(points: list, settings: dict):
                     'value_match':    '',
                 }
                 log.info('[Skip] inst=%s %s → 장치설정 제외 (%s ∉ %s)', point['instance'], point['name'], unit_name or '(이름미지정)', dev_filter)
-                state['results'].append(skip_result)
+                _record_result(skip_result, i + 1)
                 _broadcast({
                     'type': 'progress',
                     'current': i + 1,
@@ -2875,6 +2885,7 @@ def run_tests_thread(points: list, settings: dict):
                 'instance':    point['instance'],
                 'name':        point['name'],
                 'object_type': point['object_type'],
+                'repeat_number': i // max(len(points), 1) + 1,
                 'condition':   point.get('condition', ''),
             },
         })
@@ -2883,7 +2894,7 @@ def run_tests_thread(points: list, settings: dict):
         point = _apply_ctrl_ranges(point, addr)
 
         result = _test_one_point(point, settings, addr)
-        state['results'].append(result)
+        _record_result(result, i + 1)
 
         _broadcast({
             'type': 'progress',
@@ -2957,7 +2968,8 @@ def _run_b2_worker(dev_type: str, b2: int, points: list, settings: dict,
     if dev_type == 'Vent':
         points = _normalize_vent_points(points, addr, 'All/Vent')
 
-    for point in points:
+    repeat_count = max(1, min(100, int(settings.get('repeat_count', 1))))
+    for point_offset, point in enumerate(points * repeat_count):
         # All 검증 중지 요청 확인
         if not state.get('all_running'):
             break
@@ -3003,11 +3015,13 @@ def _run_b2_worker(dev_type: str, b2: int, points: list, settings: dict,
 
         # ── 공유 카운터 갱신 & 브로드캐스트 ─────────────────────────────
         with lock:
-            state['results'].append(result)
             progress_ref['completed'] += 1
             done  = progress_ref['completed']
             total = progress_ref['total']
             pct   = int(done / total * 100) if total > 0 else 0
+            result['run_index'] = done
+            result['repeat_number'] = point_offset // max(len(points), 1) + 1
+            state['results'].append(result)
 
         _broadcast({
             'type':    'progress',
@@ -3066,7 +3080,11 @@ def run_tests_all_thread(devices_config: list, settings: dict,
         log.warning('[All] 검증할 관제점 없음 — devices_config=%s', devices_config)
         return
 
-    total_points = sum(len(pts) for _, _, pts in tasks)
+    repeat_count = max(1, min(100, int(settings.get('repeat_count', 1))))
+    total_points = sum(len(pts) * repeat_count for _, _, pts in tasks)
+    if repeat_count > 1:
+        log.info('[All] 전체 관제점 검증을 %d회 반복합니다 (총 %d건)',
+                 repeat_count, total_points)
     progress_ref = {'completed': 0, 'total': total_points}
     lock         = threading.Lock()
 
@@ -3867,19 +3885,21 @@ def api_run_tests():
         return jsonify({'success': False, 'error': '관제점 목록을 먼저 불러오세요'}), 400
 
     data = request.json or {}
+    try:
+        repeat_count = max(1, min(100, int(data.get('repeat_count', 1))))
+    except (TypeError, ValueError):
+        repeat_count = 1
     settings = {
         'test_read':  data.get('test_read', True),
         'test_write': data.get('test_write', True),
         'test_props': data.get('test_props', True),
+        'repeat_count': repeat_count,
     }
 
     # 검증 시작 시 새 로그 파일 생성
     log_filename = _start_log_file('btl_full')
     log.info(f'전체 검증 시작 — 장치: {state["device_ip"]} (Device {state["device_id"]})')
     log.info(f'관제점 수: {len(state["points"])}, 로그 파일: logs/{log_filename}')
-
-    # SSE 큐 초기화 (신규 연결이 이전 이벤트를 받지 않도록)
-    state['sse_queues'] = []
 
     state['results'] = []
     state['log_file'] = log_filename
@@ -3920,10 +3940,15 @@ def api_run_tests_all():
         return jsonify({'success': False, 'error': '장치를 선택하세요'}), 400
 
     max_workers = max(1, min(16, int(data.get('max_workers', 4))))
+    try:
+        repeat_count = max(1, min(100, int(data.get('repeat_count', 1))))
+    except (TypeError, ValueError):
+        repeat_count = 1
     settings = {
         'test_read':  data.get('test_read',  True),
         'test_write': data.get('test_write', True),
         'test_props': data.get('test_props', True),
+        'repeat_count': repeat_count,
     }
 
     total_units = sum(
@@ -3937,7 +3962,6 @@ def api_run_tests_all():
               for d in devices_conf],
              total_units, max_workers)
 
-    state['sse_queues'] = []
     state['results']    = []
     state['log_file']   = log_filename
 
@@ -4029,6 +4053,7 @@ def api_events():
     state['sse_queues'].append(my_q)
     def generate():
         try:
+            yield ': connected\n\n'
             while True:
                 try:
                     event = my_q.get(timeout=20)
