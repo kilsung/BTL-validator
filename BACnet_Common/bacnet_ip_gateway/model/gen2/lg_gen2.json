@@ -1,0 +1,563 @@
+{
+  "modbus_unit_id": 1,
+  "objects": [
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "Chiller remote RUN command (Pulse, auto-clear by MICOM). Requires AO Remote_Mode_Sel=3.",
+      "modbus_block": "COIL",
+      "name": "Chiller_Run",
+      "offset_address": "1"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "Chiller remote STOP command (Pulse, auto-clear by MICOM).",
+      "modbus_block": "COIL",
+      "name": "Chiller_Stop",
+      "offset_address": "2"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "Chiller remote alarm RESET command (Pulse).",
+      "modbus_block": "COIL",
+      "name": "Chiller_Reset",
+      "offset_address": "4"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "A Compressor manual RUN command. Requires AO Comp_Mode_Sel=0(Manual).",
+      "modbus_block": "COIL",
+      "name": "A_Comp_Run",
+      "offset_address": "41"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "A Compressor manual STOP command.",
+      "modbus_block": "COIL",
+      "name": "A_Comp_Stop",
+      "offset_address": "42"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "B Compressor manual RUN command. Requires AO Comp_Mode_Sel=0(Manual).",
+      "modbus_block": "COIL",
+      "name": "B_Comp_Run",
+      "offset_address": "65"
+    },
+    {
+      "bacnet_type": "BINARY_VALUE",
+      "description": "B Compressor manual STOP command.",
+      "modbus_block": "COIL",
+      "name": "B_Comp_Stop",
+      "offset_address": "66"
+    },
+    {
+      "description": "Chiller overall run status (1=Run, 0=Stop).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "Chiller_Run_Status",
+      "offset_address": "0"
+    },
+    {
+      "description": "Chilled water flow status (1=Flow, 0=No Flow).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "Chilled_Water_Flow",
+      "offset_address": "4"
+    },
+    {
+      "description": "Buzzer status (1=On, 0=Off).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "Buzzer_Status",
+      "offset_address": "6"
+    },
+    {
+      "description": "Aggregate abnormal/fault status (1=Abnormal, 0=Normal).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "Abnormal_Status",
+      "offset_address": "8"
+    },
+    {
+      "description": "A Compressor run status (1=Run, 0=Stop).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "A_Comp_Run_Status",
+      "offset_address": "20"
+    },
+    {
+      "description": "B Compressor run status (1=Run, 0=Stop).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "B_Comp_Run_Status",
+      "offset_address": "70"
+    },
+    {
+      "description": "Remote mode indicator (1=Remote, 0=Local).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "Remote_Mode_Status",
+      "offset_address": "181"
+    },
+    {
+      "description": "A Compressor fault lamp status (1=Fault, 0=Normal).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "A_Comp_Fault",
+      "offset_address": "184"
+    },
+    {
+      "description": "B Compressor fault lamp status (1=Fault, 0=Normal).",
+      "modbus_block": "DISCRETE_INPUT",
+      "name": "B_Comp_Fault",
+      "offset_address": "195"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Chilled water outlet temperature setpoint (Scale: x0.1 degC, Range: 3.0~50.0).",
+      "modbus_block": "HOLDING_REGISTER",
+      "name": "Chilled_Water_SetTemp",
+      "offset_address": "2",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "Chiller total run-time accumulator 1 (unit: Hours, scale: x1.0).",
+      "modbus_block": "HOLDING_REGISTER",
+      "name": "Chiller_RunTime_1",
+      "offset_address": "81",
+      "scale": 1.0,
+      "units": "hours"
+    },
+    {
+      "data_type": "INT16",
+      "description": "Chiller total run-time accumulator 2 (unit: Hours, scale: x1.0).",
+      "modbus_block": "HOLDING_REGISTER",
+      "name": "Chiller_RunTime_2",
+      "offset_address": "82",
+      "scale": 1.0,
+      "units": "hours"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Normal/status message code (0~200). 1=PowerOff, 7=Run, 8=Stop, 19=SoftLoading...",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Normal_Message_Code",
+      "offset_address": "80",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Warning alarm message code (201~400). 222/262=Curr Limit, 238/278=Inv Warning...",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Warning_Message_Code",
+      "offset_address": "81",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Fault/trip message code (401~700). 401=EvapWTempLow, 402=PumpInterlock...",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Fault_Message_Code",
+      "offset_address": "82",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Warning clear/recovery message code. Injected when a warning clears. (Hidden register: msg_code_warning_close)",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Warning_Clear_Code",
+      "offset_address": "83",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Top-priority fault level code when multiple faults occur. (Hidden register: msg_code_fault_level)",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Fault_Level_Code",
+      "offset_address": "84",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Auxiliary caution/status code updated together with normal message. (Hidden register: msg_code_caution)",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Caution_Message_Code",
+      "offset_address": "86",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "Detailed parameter value that triggered a warning (e.g. model code). (Hidden register: msg_code_warning_value)",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Warning_Detail_Value",
+      "offset_address": "105",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Compressor individual fault message code (401~700).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Comp_Fault_Code",
+      "offset_address": "140",
+      "scale": 1.0
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Evaporator temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Evap_Temp",
+      "offset_address": "143",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Condenser temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Cond_Temp",
+      "offset_address": "144",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A DGR (Guide Vane) opening rate (Scale: x1.0 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_DGR_Opening",
+      "offset_address": "149",
+      "scale": 1.0,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A ECO valve opening rate (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_ECO_Valve_Opening",
+      "offset_address": "156",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A CON valve opening rate (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_CON_Valve_Opening",
+      "offset_address": "157",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Compressor motor current (Scale: x0.1 A, Range: 0~1999.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Current",
+      "offset_address": "158",
+      "scale": 0.1,
+      "units": "amperes"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Compressor individual fault message code (401~700).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Comp_Fault_Code",
+      "offset_address": "200",
+      "scale": 1.0
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B DGR (Guide Vane) opening rate (Scale: x1.0 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_DGR_Opening",
+      "offset_address": "209",
+      "scale": 1.0,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B ECO valve opening rate (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_ECO_Valve_Opening",
+      "offset_address": "216",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B CON valve opening rate (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_CON_Valve_Opening",
+      "offset_address": "217",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Compressor motor current (Scale: x0.1 A, Range: 0~1999.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Current",
+      "offset_address": "218",
+      "scale": 0.1,
+      "units": "amperes"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Inverter command frequency (Scale: x0.1 Hz, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Inv_Cmd_Freq",
+      "offset_address": "302",
+      "scale": 0.1,
+      "units": "hertz"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Inverter output current (Scale: x0.1 A, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Inv_Output_Current",
+      "offset_address": "307",
+      "scale": 0.1,
+      "units": "amperes"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Inverter output frequency (Scale: x0.1 Hz, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Inv_Output_Freq",
+      "offset_address": "308",
+      "scale": 0.1,
+      "units": "hertz"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Inverter DC Link voltage (Scale: x1.0 V, Range: 0~65535).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Inv_DCLink_Voltage",
+      "offset_address": "309",
+      "scale": 1.0,
+      "units": "volts"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Inverter heatsink temperature (Scale: x0.1 degC, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Inv_Heatsink_Temp",
+      "offset_address": "310",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Inverter command frequency (Scale: x0.1 Hz, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Inv_Cmd_Freq",
+      "offset_address": "327",
+      "scale": 0.1,
+      "units": "hertz"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Inverter output current (Scale: x0.1 A, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Inv_Output_Current",
+      "offset_address": "332",
+      "scale": 0.1,
+      "units": "amperes"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Inverter output frequency (Scale: x0.1 Hz, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Inv_Output_Freq",
+      "offset_address": "333",
+      "scale": 0.1,
+      "units": "hertz"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Inverter DC Link voltage (Scale: x1.0 V, Range: 0~65535).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Inv_DCLink_Voltage",
+      "offset_address": "334",
+      "scale": 1.0,
+      "units": "volts"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Inverter heatsink temperature (Scale: x0.1 degC, Range: 0.0~6553.5).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Inv_Heatsink_Temp",
+      "offset_address": "335",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "Chilled water inlet temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Chilled_Water_InletTemp",
+      "offset_address": "600",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "Chilled water outlet temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "Chilled_Water_OutletTemp",
+      "offset_address": "601",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Compressor discharge temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Comp_DischargeTemp",
+      "offset_address": "604",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Motor winding temperature R-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Motor_WindingTemp_R",
+      "offset_address": "607",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Motor winding temperature S-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Motor_WindingTemp_S",
+      "offset_address": "608",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "A Motor winding temperature T-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Motor_WindingTemp_T",
+      "offset_address": "609",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "B Compressor discharge temperature (Scale: x0.1 degC, Range: -40.0~160.0).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Comp_DischargeTemp",
+      "offset_address": "610",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "B Motor winding temperature R-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Motor_WindingTemp_R",
+      "offset_address": "613",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "B Motor winding temperature S-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Motor_WindingTemp_S",
+      "offset_address": "614",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "INT16",
+      "description": "B Motor winding temperature T-phase (Scale: x0.1 degC). Option spec.",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Motor_WindingTemp_T",
+      "offset_address": "615",
+      "scale": 0.1,
+      "units": "degrees-Celsius"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Evaporator pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Evap_Pressure",
+      "offset_address": "641",
+      "scale": 0.01
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Condenser pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_Cond_Pressure",
+      "offset_address": "642",
+      "scale": 0.01
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A ECO level (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_ECO_Level",
+      "offset_address": "643",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A CON level (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_CON_Level",
+      "offset_address": "644",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Evaporator pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Evap_Pressure",
+      "offset_address": "647",
+      "scale": 0.01
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Condenser pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_Cond_Pressure",
+      "offset_address": "648",
+      "scale": 0.01
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B ECO level (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_ECO_Level",
+      "offset_address": "649",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B CON level (Scale: x0.1 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_CON_Level",
+      "offset_address": "650",
+      "scale": 0.1,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "A Hot-gas bypass valve opening rate (Scale: x1.0 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "A_HotGas_Valve",
+      "offset_address": "681",
+      "scale": 1.0,
+      "units": "percent"
+    },
+    {
+      "data_type": "UINT16",
+      "description": "B Hot-gas bypass valve opening rate (Scale: x1.0 %, Range: 0~100).",
+      "modbus_block": "INPUT_REGISTER",
+      "name": "B_HotGas_Valve",
+      "offset_address": "687",
+      "scale": 1.0,
+      "units": "percent"
+    }
+  ]
+}

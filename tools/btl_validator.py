@@ -26,6 +26,7 @@ from flask import Flask, render_template, jsonify, request, Response, send_file
 from parsers import DEVICE_REGISTRY
 from bbmd_check import run_bbmd_tests, generate_bbmd_report
 from fd_check import run_fd_tests, generate_fd_report
+import tc_runner
 
 # ── 선택적 의존성 ─────────────────────────────────────────────────────────
 try:
@@ -3232,9 +3233,35 @@ def generate_report() -> tuple:
 # ═══════════════════════════════════════════════════════
 #  Flask 라우트
 # ═══════════════════════════════════════════════════════
+_CONFIG_PATH = _TOOLS_DIR / 'btl_config.json'
+_DEFAULT_FEATURES = {
+    'fd_tab': False,   # FD/BBMD 검증 탭 (/api/fd-*, /api/bbmd-*)
+}
+
+
+def _load_features() -> dict:
+    """btl_config.json 의 features (파일 없음/오류 시 기본값). 요청마다 읽어 재시작 없이 반영"""
+    features = dict(_DEFAULT_FEATURES)
+    try:
+        cfg = json.loads(_CONFIG_PATH.read_text(encoding='utf-8'))
+        features.update({k: bool(v) for k, v in cfg.get('features', {}).items()})
+    except FileNotFoundError:
+        pass
+    except (OSError, ValueError) as e:
+        log.warning('btl_config.json 읽기 실패 → 기본값 사용: %s', e)
+    return features
+
+
+@app.before_request
+def _guard_disabled_features():
+    if request.path.startswith(('/api/fd-', '/api/bbmd-')) and not _load_features()['fd_tab']:
+        return jsonify({'success': False,
+                        'error': 'FD 검증 기능이 비활성화되어 있습니다 (btl_config.json: features.fd_tab)'}), 403
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', features=_load_features())
 
 
 @app.route('/api/logs')
@@ -3589,7 +3616,37 @@ def api_connect():
                         'expio_subtypes': sorted(state['expio_subtypes'])})
     except Exception as e:
         state['connected'] = False
-        return jsonify({'success': False, 'error': str(e)}), 500
+        error = str(e)
+        owner = _udp_port_owner(state.get('bacnet_port', 47808))
+        if owner:
+            error = (f'UDP {state.get("bacnet_port", 47808)} 포트를 다른 프로그램이 사용 중입니다: {owner} '
+                     f'— 해당 프로그램(Yabe 등 BACnet 탐색기)을 종료 후 다시 연결하세요. (원본 오류: {error})')
+        return jsonify({'success': False, 'error': error}), 500
+
+
+def _udp_port_owner(port: int) -> str:
+    """UDP 포트를 점유한 타 프로세스 'name(PID) @addr' 목록 (Windows 전용, 없으면 '')"""
+    if sys.platform != 'win32':
+        return ''
+    import subprocess
+    try:
+        out = subprocess.run(['netstat', '-ano', '-p', 'udp'], capture_output=True, text=True,
+                             timeout=5, creationflags=subprocess.CREATE_NO_WINDOW).stdout
+        owners = []
+        for line in out.splitlines():
+            parts = line.split()
+            if len(parts) >= 4 and parts[0] == 'UDP' and parts[1].endswith(f':{port}'):
+                pid = parts[-1]
+                if pid == str(os.getpid()):
+                    continue
+                task = subprocess.run(['tasklist', '/FI', f'PID eq {pid}', '/FO', 'CSV', '/NH'],
+                                      capture_output=True, text=True, timeout=5,
+                                      creationflags=subprocess.CREATE_NO_WINDOW).stdout
+                name = task.split(',')[0].strip('"') if task.startswith('"') else '?'
+                owners.append(f'{name}(PID {pid}) @{parts[1]}')
+        return ', '.join(owners)
+    except Exception:
+        return ''
 
 
 @app.route('/api/facility-info', methods=['GET'])
@@ -4142,6 +4199,26 @@ def api_download(filename):
     return send_file(str(filepath), as_attachment=True, download_name=filename)
 
 
+def _release_bac0():
+    """BAC0 disconnect → 47808 포트 해제 (소켓이 OS에서 완전히 해제될 때까지 대기)"""
+    async def _do_disconnect():
+        if state['bacnet']:
+            try:
+                await state['bacnet'].disconnect()
+            except Exception:
+                pass
+
+    try:
+        aio_run(_do_disconnect(), timeout=5)
+    except Exception:
+        pass
+    state['bacnet'] = None
+    state['connected'] = False
+    state['_last_bac0_ip_arg'] = ''
+    state['_last_bac0_port']   = -1
+    time.sleep(1.5)
+
+
 # ═══════════════════════════════════════════════════════
 #  FD (Foreign Device) 검증 API
 # ═══════════════════════════════════════════════════════
@@ -4170,28 +4247,9 @@ def api_fd_run_tests():
     run_whois    = bool(data.get('run_whois', True))
 
     # ── FD 검증 전 BAC0 disconnect → 47808 포트 해제 ──────────────────────
-    # BAC0(47808) 소켓이 완전히 해제될 때까지 대기 후 바인드.
     # listen_port == 47809인 경우에도 BAC0 혹은 이전 실행 잔류 소켓이
     # 해당 포트를 점유할 수 있으므로 disconnect를 시도한다.
-    async def _do_disconnect():
-        if state['bacnet']:
-            try:
-                await state['bacnet'].disconnect()
-            except Exception:
-                pass
-
-    try:
-        aio_run(_do_disconnect(), timeout=5)
-    except Exception:
-        pass
-    state['bacnet'] = None
-    state['connected'] = False
-    state['_last_bac0_ip_arg'] = ''
-    state['_last_bac0_port']   = -1
-
-    # BAC0 소켓이 OS에서 완전히 해제될 때까지 대기
-    import time as _time
-    _time.sleep(1.5)
+    _release_bac0()
 
     def _progress(msg):
         state['fd_progress'] = msg
@@ -4391,6 +4449,157 @@ def api_bbmd_generate_report():
         return jsonify({'success': True, 'filename': filename})
     except Exception as e:
         log.exception('[BBMD] 리포트 생성 오류')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ═══════════════════════════════════════════════════════
+#  TC 기반 검증 API (verification/run_gateway_tcs.py 연동)
+# ═══════════════════════════════════════════════════════
+_TC_SETTINGS_PATH = _TOOLS_DIR / '.tc_runner.json'
+
+
+def _tc_settings() -> dict:
+    try:
+        return json.loads(_TC_SETTINGS_PATH.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return {}
+
+
+def _tc_save_settings(**updates):
+    data = _tc_settings()
+    data.update(updates)
+    data.get('opts', {}).pop('ssh_pass', None)   # 비밀번호는 저장하지 않음
+    try:
+        _TC_SETTINGS_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+    except OSError as e:
+        log.warning('[TC] 설정 저장 실패: %s', e)
+
+
+def _tc_root():
+    return tc_runner.find_verification_root(_TOOLS_DIR, _tc_settings().get('root', ''))
+
+
+def _tc_require_root():
+    root = _tc_root()
+    if root is None:
+        raise FileNotFoundError('verification 폴더를 찾을 수 없습니다 (scripts/run_gateway_tcs.py 확인)')
+    return root
+
+
+@app.route('/api/tc-config', methods=['GET', 'POST'])
+def api_tc_config():
+    """GET: 기본값(test_config.json ← 연결/설정 탭 장치 ← 마지막 실행 옵션) / POST: verification 경로 설정"""
+    if request.method == 'POST':
+        path = (request.get_json(silent=True) or {}).get('root', '').strip()
+        if not tc_runner.is_verification_root(path):
+            return jsonify({'success': False, 'error': f'scripts/run_gateway_tcs.py 가 없습니다: {path}'}), 400
+        _tc_save_settings(root=str(Path(path).resolve()))
+    root = _tc_root()
+    opts = tc_runner.load_defaults(root) if root else {}
+    if state.get('device_ip'):
+        opts['target_ip'] = state['device_ip']
+        opts['device_id'] = state['device_id']
+    opts.update(_tc_settings().get('opts', {}))
+    return jsonify({
+        'success': True,
+        'root': str(root) if root else '',
+        'is_windows': tc_runner.IS_WINDOWS,
+        'opts': opts,
+    })
+
+
+@app.route('/api/tc-cases')
+def api_tc_cases():
+    try:
+        cases = tc_runner.list_cases(_tc_require_root(), request.args.get('suite', 'all'))
+        return jsonify({'success': True, 'cases': cases})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/tc-check', methods=['POST'])
+def api_tc_check():
+    try:
+        opts = request.get_json(silent=True) or {}
+        return jsonify({'success': True, **tc_runner.check_environment(_tc_require_root(), opts)})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/tc-run', methods=['POST'])
+def api_tc_run():
+    """
+    요청: { mode, suite, cases[], target_ip, target_port, device_id, tpi_path, pics_doc,
+            gateway_config_dir, vport_config_path, bbmd_endpoint, long, allow_live_mutation,
+            ssh_enabled, ssh_user, ssh_port, ssh_pass, soak, soak_hours, soak_interval,
+            release_bac0, auto_build, allow_build, ... }
+    """
+    opts = request.get_json(silent=True) or {}
+    try:
+        root = _tc_require_root()
+        prepare = _release_bac0 if opts.get('release_bac0', True) else None
+        info = tc_runner.runner.start(root, opts, prepare=prepare)
+        _tc_save_settings(opts={k: v for k, v in opts.items() if k != 'cases'})
+        log.info('[TC] 실행: %s', info['command'])
+        return jsonify({'success': True, **info})
+    except RuntimeError as e:
+        return jsonify({'success': False, 'error': str(e)}), 409
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+
+
+@app.route('/api/tc-stop', methods=['POST'])
+def api_tc_stop():
+    tc_runner.runner.stop()
+    return jsonify({'success': True})
+
+
+@app.route('/api/tc-status')
+def api_tc_status():
+    return jsonify(tc_runner.runner.status(int(request.args.get('since', 0))))
+
+
+@app.route('/api/tc-history')
+def api_tc_history():
+    root = _tc_root()
+    return jsonify({'success': True, 'runs': tc_runner.list_history(root) if root else []})
+
+
+@app.route('/api/tc-result/<run_id>')
+def api_tc_result(run_id):
+    try:
+        return jsonify({'success': True, **tc_runner.load_result(_tc_require_root(), run_id)})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 404
+
+
+@app.route('/api/tc-report', methods=['POST'])
+def api_tc_report():
+    run_id = (request.get_json(silent=True) or {}).get('run_id', '')
+    try:
+        result = tc_runner.load_result(_tc_require_root(), run_id)
+        filename = tc_runner.generate_excel(result, _get_data_dir())
+        return jsonify({'success': True, 'filename': filename})
+    except Exception as e:
+        log.exception('[TC] 리포트 생성 오류')
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/tc-open-folder', methods=['POST'])
+def api_tc_open_folder():
+    """결과 폴더를 탐색기로 열기 (로컬 PC 전용)"""
+    run_id = (request.get_json(silent=True) or {}).get('run_id', '')
+    try:
+        folder = tc_runner.results_root(_tc_require_root())
+        if run_id:
+            folder = Path(tc_runner.load_result(_tc_require_root(), run_id)['dir'])
+        if sys.platform == 'win32':
+            os.startfile(str(folder))
+        else:
+            import subprocess
+            subprocess.Popen(['xdg-open', str(folder)])
+        return jsonify({'success': True})
+    except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
 

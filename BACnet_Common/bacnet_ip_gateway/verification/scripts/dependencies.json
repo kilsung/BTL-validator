@@ -1,0 +1,112 @@
+{
+  "description": "Runtime dependency manifest for the BACnet/IP gateway verification runner",
+  "python": {
+    "interpreter": "python3",
+    "third_party": [],
+    "bacpypes3_optional": ["bacpypes3"],
+    "bacpypes3_interpreter": "--python-bin으로 이번 실행에 지정하며 bacpypes3 import를 사전검사한다"
+  },
+  "runner_native": [
+    "run_gateway_tcs.py",
+    "tc_framework.py",
+    "tc_cases.py",
+    "tc_environment.py",
+    "bacnet_protocol.py",
+    "config_loader.py",
+    "modbus_rtu_slave.py",
+    "gateway_server.sh",
+    "performance_policy.json",
+    "dependencies.json",
+    "bbmd_server.py"
+  ],
+  "config_layout": {
+    "managed_fixture": "temporary workspace/fixture-conf; generated minimal profile used by fixture-based TCs",
+    "managed_full": "temporary workspace/full-conf; read-only copy of --config-dir used by TC-BTL-004/006",
+    "live": "--config-dir is read directly; when omitted, project conf/ is used"
+  },
+  "compatibility_adapters": [
+    {
+      "script": "bacnet_profile_tester.py",
+      "cases": ["TC-BAC-005", "TC-BAC-006", "TC-BAC-016", "TC-BAC-017", "TC-BAC-018", "TC-BIP-003", "TC-BTL-002", "TC-BTL-005"]
+    },
+    {
+      "script": "btl_epics_verifier.py",
+      "cases": ["TC-BTL-004", "TC-BTL-006"],
+      "extra": ["bacpypes3", "model/*.tpi"]
+    }
+  ],
+  "managed_programs": [
+    {
+      "path": "../vport_release/vport",
+      "cases": "managed cases that exercise the PTY integration"
+    },
+    {
+      "path": "bacnet_ip_gateway",
+      "cases": "managed cases that start the Gateway"
+    },
+    {
+      "path": "verification/scripts/gateway_server.sh",
+      "cases": "managed cases that need the Main simulator; config selection is fixture-conf or full-conf per TC"
+    }
+  ],
+  "case_specific_programs": [
+    {
+      "path": "../vport_release/vport_test",
+      "cases": ["TC-VPORT-004", "TC-VPORT-005", "TC-VPORT-006", "TC-VPORT-007", "TC-VPORT-008", "TC-VPORT-009"]
+    },
+    {
+      "path": "verification/unit/run_tests",
+      "cases": ["TC-MAP-004", "TC-MAP-005", "TC-MAP-006"],
+      "override": "--unit-test-bin"
+    }
+  ],
+  "runtime_inputs": [
+    {
+      "option": "--gateway-bin",
+      "cases": "managed cases that start Gateway",
+      "persisted": false
+    },
+    {
+      "option": "--vport-bin",
+      "cases": "managed cases that start vport",
+      "persisted": false
+    },
+    {
+      "option": "--vport-test-bin",
+      "cases": "TC-VPORT-004..009",
+      "persisted": false
+    },
+    {
+      "option": "--config-dir",
+      "cases": "managed: read-only source copied to full-conf for TC-BTL-004/006; live: target configuration directory",
+      "persisted": false
+    },
+    {
+      "option": "--tpi",
+      "cases": "TC-BTL-004 and TC-BTL-006",
+      "persisted": false
+    },
+    {
+      "option": "--python-bin",
+      "cases": "TC-BTL-004 and TC-BTL-006; interpreter must import bacpypes3",
+      "persisted": false
+    },
+    {
+      "option": "--unit-test-bin",
+      "cases": "TC-MAP-004..006",
+      "persisted": false
+    },
+    {
+      "option": "--bbmd-endpoint",
+      "cases": "TC-BIP-002",
+      "persisted": false
+    },
+    {
+      "option": "--performance-policy",
+      "cases": "TC-PERF-001..003",
+      "persisted": false
+    }
+  ],
+  "build_only": ["make", "g++"],
+  "prohibited": ["makeIMX"]
+}

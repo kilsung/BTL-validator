@@ -1,0 +1,174 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+
+--
+-- Dummy Device PICS for BACnet-Modbus Gateway
+--
+
+Vendor Name: "Generic Vendor"
+Product Name: "Generic Product"
+Product Model Number: "Generic Model"
+Product Description: "Generic Description"
+
+BIBBs Supported:
+{
+        DS-RP-B
+        DS-WP-B
+        DS-COV-B
+        DM-DDB-B
+        DM-DOB-B
+        DM-DCC-B
+}
+
+BACnet Conformance Class Supported: 2
+
+BACnet Functional Groups Supported:
+{
+}
+
+BACnet Standard Application Services Supported:
+{
+        ReadProperty               Execute
+        WriteProperty              Execute
+        SubscribeCOV               Execute
+        ConfirmedCOVNotification   Initiate
+        UnconfirmedCOVNotification Initiate
+        DeviceCommunicationControl Execute
+        Who-Has                    Execute
+        Who-Is                     Execute
+        I-Have                     Initiate
+        I-Am                       Initiate
+}
+
+
+Standard Object-Types Supported:
+{
+        Device
+        Analog Input
+        Analog Output
+        Binary Input
+        Binary Value
+        Network Port
+}
+
+Data Link Layer Option:
+{
+        BACnet/IP
+}
+
+Character Sets Supported:
+{
+        ISO 10646 (UTF-8)
+}
+
+Special Functionality:
+{
+        Maximum APDU size in octets: 1476
+}
+
+List of Objects in test device:
+{
+  {
+         object-identifier: (device, 1000)
+         object-name: 'Generic Product'
+         object-type: device
+         system-status: operational
+         vendor-name: "Generic Vendor"
+         vendor-identifier: 432
+         model-name: "Generic Model"
+         description: "Generic Description"
+         firmware-revision: "1.0"
+         application-software-version: "1.0"
+         protocol-version: 1
+         protocol-revision: 26
+         protocol-services-supported:
+         {
+                  F, F,  -- acknowledge-alarm, confirmed-cov-notification,
+                  F, F,  -- confirmed-event-notification, get-alarm-summary,
+                  F, T,  -- get-enrollment-summary, subscribe-cov,
+                  F, F,  -- atomic-read-file, atomic-write-file,
+                  F, F,  -- add-list-element, remove-list-element,
+                  F, F,  -- create-object, delete-object,
+                  T, F,  -- read-property, read-property-conditional,
+                  F, T,  -- read-property-multiple, write-property,
+                  F, T,  -- write-property-multiple, device-communication-control,
+                  F, F,  -- confirmed-private-transfer, confirmed-text-message,
+                  F, F,  -- reinitialize-device, vt-open,
+                  F, F,  -- vt-close, vt-data,
+                  F, F,  -- authenticate, request-key,
+                  F, F,  -- i-am, i-have,
+                  F, F,  -- unconfirmed-cov-notification, unconfirmed-event-notification,
+                  F, F,  -- unconfirmed-private-transfer, unconfirmed-text-message,
+                  F, T,  -- time-synchronization, who-has,
+                  T, F,  -- who-is, read-range,
+                  F, F,  -- utc-time-synchronization, life-safety-operation,
+                  F, F,  -- subscribe-cov-property, get-event-information,
+                  F, F,  -- write-group, subscribe-cov-property-multiple,
+                  F, F,  -- confirmed-cov-notification-multiple, unconfirmed-cov-notification-multiple
+                  F, F,  -- confirmed-audit-notification, audit-log-query,
+                  F, F,  -- unconfirmed-audit-notification, who-am-i,
+                  F      -- you-are
+         }
+
+         protocol-object-types-supported:
+         {
+                  T, T, F, T, F, T,        -- AI, AO, AV, BI, BO, BV
+                  F, F,                    -- calendar, command
+                  T, F,                    -- device, event enrollment
+                  F, F, F,                 -- file, group, loop
+                  F, F, F,                 -- MI, MO, notification class
+                  F, F,                    -- program, schedule
+                  F, F, F,                 -- averaging, multi-state-value, trend-log
+                  F, F,                    -- life-safety-point, life-safety-zone
+                  F, F,                    -- accumulator, pulse-converter
+                  F, F, F,                 -- event-log, global-group, trend-log-multiple
+                  F, F, F,                 -- load-control, structured-view, access-door
+                  F,                       -- timer,
+                  F, F, F,                 -- access-credential, access-point, access-rights,
+                  F, F, F,                 -- access-user, access-zone, credential-data-input
+                  F,                       -- network-security
+                  F, F, F,                 -- bitstring-value, characterstring-value, date-pattern-value
+                  F, F, F,                 -- date-value, datetime-pattern-value, datetime-value
+                  F, F, F,                 -- integer-value, large-analog-value, octetstring-value
+                  F, F, F,                 -- positive-Integer-value, time-pattern-value, time-value
+                  F, F,                    -- notification-forwarder, alert-enrollment
+                  F, F,                    -- channel,lighting-output
+                  F, T,                    -- binary-lighting-output, network-port
+                  F, F, F,                 -- elevator-group, escalator, lift
+                  F, F, F,                 -- staging, audit-log, audit-reporter
+                  F, F                     -- color, color-temperature
+         }
+
+         object-list: AUTO
+         max-APDU-length-accepted: 1476
+         segmentation-supported: no-segmentation
+         max-segments-accepted: 1
+         apdu-timeout: 6000
+         number-of-APDU-retries: 3
+         device-address-binding: ?
+         database-revision: ?
+         device-uuid: ?
+         daylight-savings-status: F
+         active-cov-subscriptions: ?
+         local-time: AUTO
+         local-date: AUTO
+  },
+  {
+         object-identifier: (network-port, 1)
+         object-name: "NetworkPort_1"
+         object-type: network-port
+         status-flags: {F, F, F, F}
+         reliability: no-fault-detected
+         out-of-service: F
+         network-type: ipv4
+         protocol-level: bacnet-application
+         network-number: 0
+         network-number-quality: unknown
+         changes-pending: F
+         apdu-length: 1476
+         link-speed: 0.0
+         mac-address: ?
+  }
+}
+
+End of BACnet Protocol Implementation Conformance Statement

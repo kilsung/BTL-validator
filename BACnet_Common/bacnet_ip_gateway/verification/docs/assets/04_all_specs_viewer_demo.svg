@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="spec-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#131b2e" />
+    </linearGradient>
+    <filter id="shadow4" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect x="15" y="15" width="910" height="530" rx="12" fill="url(#spec-bg)" stroke="#243049" stroke-width="1.5" filter="url(#shadow4)"/>
+
+  <!-- Browser Header -->
+  <path d="M15,27 A12,12 0 0,1 27,15 L913,15 A12,12 0 0,1 925,27 L925,58 L15,58 Z" fill="#131b2e"/>
+  <circle cx="38" cy="36" r="5.5" fill="#fb7185"/>
+  <circle cx="56" cy="36" r="5.5" fill="#fbbf24"/>
+  <circle cx="74" cy="36" r="5.5" fill="#34d399"/>
+
+  <!-- URL Bar -->
+  <rect x="110" y="24" width="680" height="25" rx="6" fill="#182238" stroke="#243049" stroke-width="1"/>
+  <text x="125" y="41" fill="#38bdf8" font-family="monospace" font-size="11">📄 file:///.../verification/docs/specs/all.html</text>
+  <rect x="810" y="24" width="95" height="25" rx="6" fill="#243049"/>
+  <text x="857" y="40" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">🌙 Dark Mode</text>
+
+  <!-- Left Sidebar (SRS & TC Tree) -->
+  <rect x="15" y="58" width="280" height="487" fill="#0f172a" stroke="#243049" stroke-width="1"/>
+  <!-- Search Input -->
+  <rect x="28" y="72" width="254" height="28" rx="6" fill="#182238" stroke="#334155"/>
+  <text x="40" y="90" fill="#64748b" font-family="sans-serif" font-size="11.5">🔍 요구사항 / TC 검색...</text>
+
+  <!-- Filter Pills -->
+  <rect x="28" y="110" width="55" height="20" rx="4" fill="#38bdf8" fill-opacity="0.15"/>
+  <text x="55" y="124" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">전체 (27)</text>
+
+  <rect x="90" y="110" width="60" height="20" rx="4" fill="#34d399" fill-opacity="0.15"/>
+  <text x="120" y="124" fill="#34d399" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">검증완료</text>
+
+  <rect x="157" y="110" width="75" height="20" rx="4" fill="#fbbf24" fill-opacity="0.15"/>
+  <text x="194" y="124" fill="#fbbf24" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">RTM 매트릭스</text>
+
+  <!-- Sidebar SRS Items -->
+  <g font-family="sans-serif" font-size="11.5">
+    <rect x="24" y="142" width="262" height="52" rx="6" fill="#182238" stroke="#38bdf8" stroke-width="1"/>
+    <text x="36" y="162" fill="#38bdf8" font-weight="bold">SRS-FUN-CFG-001</text>
+    <text x="36" y="180" fill="#f8fafc">설정 로드와 기본 검증 (3 TCs)</text>
+
+    <text x="36" y="214" fill="#94a3b8" font-weight="bold">SRS-FUN-BAC-001</text>
+    <text x="36" y="230" fill="#64748b">디바이스 탐색 및 Who-Is (3 TCs)</text>
+
+    <text x="36" y="258" fill="#94a3b8" font-weight="bold">SRS-FUN-BAC-002</text>
+    <text x="36" y="274" fill="#64748b">속성 판독 ReadProperty (3 TCs)</text>
+
+    <text x="36" y="302" fill="#94a3b8" font-weight="bold">SRS-FUN-BAC-003</text>
+    <text x="36" y="318" fill="#64748b">16단계 우선순위 제어 (3 TCs)</text>
+
+    <text x="36" y="346" fill="#94a3b8" font-weight="bold">SRS-NFR-AVL-001</text>
+    <text x="36" y="362" fill="#64748b">장애 복구 및 12시간 신뢰성 (4 TCs)</text>
+
+    <text x="36" y="390" fill="#94a3b8" font-weight="bold">SRS-CON-BTL-001</text>
+    <text x="36" y="406" fill="#64748b">BTL 표준 PICS/EPICS (6 TCs)</text>
+
+    <text x="36" y="434" fill="#94a3b8" font-weight="bold">SRS-NFR-PERF-001</text>
+    <text x="36" y="450" fill="#64748b">동시성 처리 성능 벤치마크 (3 TCs)</text>
+  </g>
+
+  <!-- Right Main Document Area -->
+  <rect x="295" y="58" width="630" height="487" fill="#0b0f19"/>
+
+  <!-- Top Title & Stat Pills -->
+  <text x="320" y="88" fill="#f8fafc" font-family="sans-serif" font-size="15" font-weight="bold">Modbus RTU-to-BACnet/IP Gateway 통합 사양서</text>
+  <text x="320" y="106" fill="#94a3b8" font-family="sans-serif" font-size="11">SRS 요구사항 • HLD/LLD 설계 • 88개 Test Case 통합 마스터-디테일 뷰</text>
+
+  <!-- Stat Pills -->
+  <g font-family="sans-serif" font-size="11" text-anchor="middle">
+    <rect x="670" y="72" width="50" height="36" rx="6" fill="#182238" stroke="#243049"/>
+    <text x="695" y="88" fill="#38bdf8" font-weight="bold">27</text>
+    <text x="695" y="101" fill="#64748b" font-size="9.5">SRS</text>
+
+    <rect x="728" y="72" width="50" height="36" rx="6" fill="#182238" stroke="#243049"/>
+    <text x="753" y="88" fill="#34d399" font-weight="bold">88</text>
+    <text x="753" y="101" fill="#64748b" font-size="9.5">TC</text>
+
+    <rect x="786" y="72" width="60" height="36" rx="6" fill="#182238" stroke="#243049"/>
+    <text x="816" y="88" fill="#fbbf24" font-weight="bold">100%</text>
+    <text x="816" y="101" fill="#64748b" font-size="9.5">RTM 추적</text>
+
+    <rect x="854" y="72" width="55" height="36" rx="6" fill="#182238" stroke="#243049"/>
+    <text x="881" y="88" fill="#a855f7" font-weight="bold">18</text>
+    <text x="881" y="101" fill="#64748b" font-size="9.5">DRBFM</text>
+  </g>
+
+  <!-- Selected Requirement Card -->
+  <rect x="315" y="122" width="595" height="205" rx="8" fill="#131b2e" stroke="#243049"/>
+  <!-- Card Header -->
+  <rect x="330" y="135" width="135" height="22" rx="4" fill="#38bdf8" fill-opacity="0.15"/>
+  <text x="397" y="150" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">SRS-FUN-CFG-001</text>
+  <text x="475" y="151" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="bold">설정 로드와 기본 검증</text>
+  <rect x="785" y="135" width="110" height="22" rx="4" fill="#34d399" fill-opacity="0.15"/>
+  <text x="840" y="150" fill="#34d399" font-family="sans-serif" font-size="10.5" font-weight="bold" text-anchor="middle">VERIFIED (3/3 TC)</text>
+
+  <!-- Summary & IO in Card -->
+  <g font-family="sans-serif" font-size="11" fill="#94a3b8">
+    <text x="330" y="180" fill="#38bdf8" font-weight="bold">📌 Summary (요구사항 요약):</text>
+    <text x="330" y="198">공통 Gateway 설정(gateway.json)과 장치 프로필(profiles/*.json)을 로드하고,</text>
+    <text x="330" y="214">필수 필드 누락, 주소 범위, 인스턴스 중복, 데이터 타입을 엄격히 사전 검증한다.</text>
+
+    <text x="330" y="242" fill="#38bdf8" font-weight="bold">🔄 RTM Traceability (양방향 연계):</text>
+    <text x="330" y="260">- 설계 연계 : <tspan fill="#f8fafc">HLD 4.1 설정 아키텍처 / LLD 5.1 ConfigLoader 모듈</tspan></text>
+    <text x="330" y="278">- 소스 코드 : <tspan fill="#f8fafc">src/gateway/config_loader.cpp, config_loader.h</tspan></text>
+    <text x="330" y="296">- 시험 연계 : <tspan fill="#34d399">TC-CFG-001, TC-CFG-002, TC-CFG-003</tspan></text>
+  </g>
+
+  <!-- Test Case Cards Grid Inside all.html -->
+  <text x="320" y="350" fill="#34d399" font-family="sans-serif" font-size="12.5" font-weight="bold">🧪 연동 Test Case 실행 사양 및 판정 기준 (3건)</text>
+
+  <rect x="315" y="365" width="595" height="165" rx="8" fill="#182238" stroke="#334155"/>
+  <!-- Mini TC Card Header -->
+  <rect x="330" y="378" width="95" height="20" rx="4" fill="#06b6d4" fill-opacity="0.2"/>
+  <text x="377" y="392" fill="#06b6d4" font-family="sans-serif" font-size="10.5" font-weight="bold" text-anchor="middle">TC-CFG-001</text>
+  <text x="435" y="393" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold">유효한 최소 프로필 기동 및 Who-Is I-Am 검증</text>
+  <rect x="820" y="378" width="75" height="20" rx="4" fill="#34d399" fill-opacity="0.2"/>
+  <text x="857" y="392" fill="#34d399" font-family="sans-serif" font-size="10.5" font-weight="bold" text-anchor="middle">PASS (100%)</text>
+
+  <!-- Procedure & Assertion Snippet -->
+  <g font-family="sans-serif" font-size="10.5" fill="#94a3b8">
+    <text x="330" y="420" fill="#fbbf24">📋 사전조건 / 절차:</text>
+    <text x="435" y="420">vport + Main 시뮬레이터 + Gateway 순차 기동 후 BACnet Who-Is 질의 전송</text>
+
+    <text x="330" y="445" fill="#34d399">✅ 기대결과 및 판정:</text>
+    <text x="435" y="445">I-Am 1개 수신 확인 &amp; 4대 객체(AI 1, AO 2, BI 6, BO 7) Present_Value 정상 응답</text>
+
+    <rect x="330" y="465" width="565" height="50" rx="6" fill="#0f172a" stroke="#243049"/>
+    <text x="345" y="485" fill="#38bdf8" font-family="monospace" font-size="10">ASSERT [STEP-01]: I-Am device_id == 1200, vendor_id == 432 (LG) ... [MATCH]</text>
+    <text x="345" y="503" fill="#34d399" font-family="monospace" font-size="10">ASSERT [STEP-02]: ReadProperty(AI, 10553) -&gt; status: SUCCESS, latency: 12ms [MATCH]</text>
+  </g>
+</svg>

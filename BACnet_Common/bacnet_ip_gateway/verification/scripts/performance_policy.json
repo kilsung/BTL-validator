@@ -1,0 +1,47 @@
+{
+  "approved": true,
+  "approved_at": "2026-08-27T00:00:00Z",
+  "source_result": "standard-fixed-baseline",
+  "limits": {
+    "minimum_success_rate": 0.95,
+    "minimum_throughput_rps": 5.0,
+    "maximum_p95_latency_ms": 200.0,
+    "maximum_p99_latency_ms": 500.0
+  },
+  "note": "Standard fixed baseline policy for performance tests",
+  "scenarios": {
+    "TC-PERF-001": {
+      "approved": true,
+      "approved_at": "2026-08-27T00:00:00Z",
+      "source_result": "standard-fixed-baseline",
+      "limits": {
+        "minimum_success_rate": 0.95,
+        "minimum_throughput_rps": 10.0,
+        "maximum_p95_latency_ms": 100.0,
+        "maximum_p99_latency_ms": 250.0
+      }
+    },
+    "TC-PERF-002": {
+      "approved": true,
+      "approved_at": "2026-08-27T00:00:00Z",
+      "source_result": "standard-fixed-baseline",
+      "limits": {
+        "minimum_success_rate": 0.90,
+        "minimum_throughput_rps": 3.0,
+        "maximum_p95_latency_ms": 500.0,
+        "maximum_p99_latency_ms": 1000.0
+      }
+    },
+    "TC-PERF-003": {
+      "approved": true,
+      "approved_at": "2026-08-27T00:00:00Z",
+      "source_result": "standard-fixed-baseline",
+      "limits": {
+        "minimum_success_rate": 0.0,
+        "minimum_throughput_rps": 0.0,
+        "maximum_p95_latency_ms": 3000.0,
+        "maximum_p99_latency_ms": 5000.0
+      }
+    }
+  }
+}

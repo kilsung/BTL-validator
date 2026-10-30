@@ -255,6 +255,25 @@
     #logBox .log-skip { color: #85929E; }
     #logBox .log-info { color: #85C1E9; }
 
+    /* ── TC 검증 탭 ── */
+    #tcLogBox {
+      background: #1B2A3B; color: #A9CCE3;
+      font-family: 'Consolas', 'Monaco', monospace; font-size: 0.74rem;
+      height: 260px; overflow-y: auto; padding: 8px 12px; border-radius: 6px;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    #tcLogBox .log-pass { color: #58D68D; }
+    #tcLogBox .log-fail { color: #EC7063; }
+    #tcLogBox .log-blocked { color: #F5B041; }
+    #tcLogBox .log-skip { color: #85929E; }
+    #tcLogBox .log-info { color: #85C1E9; }
+    .tc-form label { font-size: 0.78rem; margin-bottom: 2px; color: var(--text-muted); }
+    .tc-form .form-control, .tc-form .form-select { font-size: 0.82rem; padding: 3px 8px; }
+    .tc-group-btn { font-size: 0.72rem; padding: 1px 8px; }
+    .tc-step-row td { background: #F8F9FA; font-size: 0.75rem; }
+    .badge-BLOCKED { background: #F39C12; }
+    .badge-RUNNING { background: #3498DB; }
+
     /* ── 기타 ── */
     .section-title {
       font-size: 0.8rem;
@@ -398,9 +417,16 @@
         <i class="bi bi-bar-chart-fill"></i>결과/리포트
       </button>
     </li>
+    {% if features.fd_tab %}{# btl_config.json: features.fd_tab #}
     <li class="nav-item">
       <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab5" type="button">
         <i class="bi bi-hdd-network-fill"></i>FD 검증
+      </button>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab6" type="button" id="tab6Btn">
+        <i class="bi bi-ui-checks-grid"></i>TC 검증
       </button>
     </li>
   </ul>
@@ -1021,6 +1047,7 @@
     <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
          Tab 5: FD (Foreign Device) 검증
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    {% if features.fd_tab %}
     <div class="tab-pane fade" id="tab5" role="tabpanel">
 
       <!-- ══════════════════════════════════════════════
@@ -2368,6 +2395,220 @@
       </div><!-- /BBMD row g-3 -->
       </div><!-- /bbmdHiddenSection -->
     </div><!-- /tab5 -->
+    {% endif %}
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         Tab 6: TC 검증 (verification/run_gateway_tcs.py)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div class="tab-pane fade" id="tab6" role="tabpanel">
+      <div class="row g-3">
+
+        <!-- ── 실행 설정 ── -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header card-header-primary">
+              <i class="bi bi-sliders me-2"></i>TC 실행 설정
+            </div>
+            <div class="card-body tc-form">
+              <div class="mb-2">
+                <label>verification 폴더</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="tcRoot" placeholder="...\BACnet_Common\bacnet_ip_gateway\verification">
+                  <button class="btn btn-outline-secondary" onclick="tcSetRoot()">적용</button>
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <label>테스트 모드</label>
+                <div class="btn-group btn-group-sm w-100" role="group">
+                  <input type="radio" class="btn-check" name="tcMode" id="tcModeLive" value="live" checked onchange="tcModeChanged()">
+                  <label class="btn btn-outline-primary" for="tcModeLive">Live (실장비)</label>
+                  <input type="radio" class="btn-check" name="tcMode" id="tcModeManaged" value="managed" onchange="tcModeChanged()">
+                  <label class="btn btn-outline-primary" for="tcModeManaged">Managed (시뮬레이션)</label>
+                </div>
+                <small class="text-muted d-block mt-1" id="tcModeHint" style="font-size:0.72rem"></small>
+              </div>
+
+              <div class="mb-2">
+                <label>스위트</label>
+                <select class="form-select" id="tcSuite" onchange="tcSuiteChanged()">
+                  <option value="quick">quick — 기본 기능 빠른 검증</option>
+                  <option value="full">full — 기능/성능 정밀 검증</option>
+                  <option value="audit">audit — 감사</option>
+                  <option value="all">all — 전체</option>
+                  <option value="soak">soak — 장기 신뢰성 (TC-AVL-004)</option>
+                  <option value="custom">선택 TC만 실행 (오른쪽 목록에서 체크)</option>
+                </select>
+              </div>
+
+              <!-- Live 전용 -->
+              <div id="tcLiveFields">
+                <div class="row g-2 mb-2">
+                  <div class="col-7"><label>대상 IP</label><input type="text" class="form-control" id="tcTargetIp"></div>
+                  <div class="col-5"><label>UDP 포트</label><input type="number" class="form-control" id="tcTargetPort" value="47808"></div>
+                </div>
+                <div class="form-check form-switch mb-1">
+                  <input class="form-check-input" type="checkbox" id="tcMutation">
+                  <label class="form-check-label" for="tcMutation" style="font-size:0.8rem;color:inherit">상태 변경 TC 허용 (WriteProperty/DCC/COV)</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                  <input class="form-check-input" type="checkbox" id="tcSsh" onchange="document.getElementById('tcSshFields').style.display=this.checked?'':'none'">
+                  <label class="form-check-label" for="tcSsh" style="font-size:0.8rem;color:inherit">SSH 자원 모니터링 (메모리/FD/프로세스)</label>
+                </div>
+                <div class="row g-2 mb-2" id="tcSshFields" style="display:none">
+                  <div class="col-4"><label>계정</label><input type="text" class="form-control" id="tcSshUser" value="root"></div>
+                  <div class="col-3"><label>포트</label><input type="number" class="form-control" id="tcSshPort" value="22"></div>
+                  <div class="col-5"><label>암호 (키 인증 시 비움)</label><input type="password" class="form-control" id="tcSshPass" autocomplete="off"></div>
+                </div>
+              </div>
+
+              <!-- Managed 전용 -->
+              <div id="tcManagedFields" style="display:none">
+                <div class="form-check form-switch mb-1">
+                  <input class="form-check-input" type="checkbox" id="tcAutoBuild" checked>
+                  <label class="form-check-label" for="tcAutoBuild" style="font-size:0.8rem;color:inherit">누락 바이너리 자동 빌드 (make)</label>
+                </div>
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" id="tcAllowBuild">
+                  <label class="form-check-label" for="tcAllowBuild" style="font-size:0.8rem;color:inherit">TC-ENV-001 host 빌드 검증 허용 (--allow-build)</label>
+                </div>
+              </div>
+
+              <div class="row g-2 mb-2">
+                <div class="col-6"><label>Device ID</label><input type="number" class="form-control" id="tcDeviceId" value="1200"></div>
+                <div class="col-6"><label>Main 응답지연 (ms)</label><input type="number" class="form-control" id="tcRespMs" value="200"></div>
+              </div>
+
+              <div id="tcSoakFields" class="row g-2 mb-2" style="display:none">
+                <div class="col-6"><label>Soak 시간 (h)</label><input type="number" step="0.5" class="form-control" id="tcSoakHours" value="12"></div>
+                <div class="col-6"><label>질의 주기 (s)</label><input type="number" step="1" class="form-control" id="tcSoakInterval" value="15"></div>
+              </div>
+
+              <details class="mb-2">
+                <summary style="font-size:0.8rem;cursor:pointer">설정/명세서 경로 · BBMD <small class="text-muted">(test_config.json 기본값)</small></summary>
+                <div class="mt-2">
+                  <label>TPI (EPICS)</label><input type="text" class="form-control mb-1" id="tcTpi">
+                  <label>PICS 체크리스트</label><input type="text" class="form-control mb-1" id="tcPics">
+                  <label>Gateway 설정 디렉터리</label><input type="text" class="form-control mb-1" id="tcGwConf">
+                  <label>vport 설정 경로</label><input type="text" class="form-control mb-1" id="tcVportConf">
+                  <label>외부 BBMD (host:port, 비우면 내장 BBMD 자동 구동)</label><input type="text" class="form-control mb-1" id="tcBbmd">
+                  <small class="text-muted" style="font-size:0.7rem">상대 경로는 bacnet_ip_gateway 폴더 기준</small>
+                </div>
+              </details>
+
+              <div class="form-check form-switch mb-1">
+                <input class="form-check-input" type="checkbox" id="tcLong">
+                <label class="form-check-label" for="tcLong" style="font-size:0.8rem;color:inherit">장시간 TC 포함 (60초/10분, 약 15분 추가)</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="tcReleaseBac0" checked>
+                <label class="form-check-label" for="tcReleaseBac0" style="font-size:0.8rem;color:inherit">실행 전 BAC0 연결 해제 (트래픽 간섭 방지)</label>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm" onclick="tcCheckEnv()" id="tcCheckBtn">
+                  <i class="bi bi-clipboard-check me-1"></i>환경 점검
+                </button>
+                <button class="btn btn-success btn-sm flex-fill" onclick="tcRun()" id="tcRunBtn">
+                  <i class="bi bi-play-fill me-1"></i>TC 실행
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="tcStop()" id="tcStopBtn" disabled>
+                  <i class="bi bi-stop-fill"></i>
+                </button>
+              </div>
+              <div id="tcEnvResult" class="mt-2" style="font-size:0.78rem"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <!-- ── TC 목록 ── -->
+          <div class="card mb-3">
+            <div class="card-header card-header-primary d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-list-ol me-2"></i>TC 목록 <small class="ms-2" id="tcCaseCount" style="font-size:0.75rem"></small></span>
+              <div class="d-flex gap-2 align-items-center">
+                <input type="text" class="form-control form-control-sm" id="tcFilter" placeholder="검색 (ID/제목)" style="width:180px" oninput="tcRenderCases()">
+                <button class="btn btn-sm btn-light" onclick="tcCollapseCases()" id="tcCaseToggle">펼치기</button>
+              </div>
+            </div>
+            <div id="tcCaseSection" style="display:none">
+              <div class="px-3 py-2 d-flex flex-wrap gap-1" id="tcGroupBtns" style="border-bottom:1px solid var(--border)"></div>
+              <div class="table-responsive" style="max-height:300px;overflow-y:auto">
+                <table class="table table-hover tbl-compact mb-0">
+                  <thead><tr>
+                    <th style="width:30px"><input type="checkbox" class="form-check-input" id="tcCheckAll" onchange="tcToggleAll(this.checked)"></th>
+                    <th style="width:120px">TC ID</th><th style="width:150px">SRS</th><th>제목</th>
+                  </tr></thead>
+                  <tbody id="tcCaseBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 진행/결과 ── -->
+          <div class="card mb-3">
+            <div class="card-header card-header-primary d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-activity me-2"></i>실행 결과 <span class="badge ms-2" id="tcStatusBadge" style="background:#7F8C8D">대기</span></span>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-light" onclick="tcOpenFolder()" id="tcFolderBtn" disabled><i class="bi bi-folder2-open me-1"></i>결과 폴더</button>
+                <button class="btn btn-sm btn-light" onclick="tcGenerateReport()" id="tcReportBtn" disabled><i class="bi bi-file-earmark-excel me-1"></i>엑셀 리포트</button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="px-3 py-2" style="background:#F8F9FA;border-bottom:1px solid var(--border);font-size:0.82rem">
+                <div class="d-flex flex-wrap gap-3 mb-1">
+                  <span>전체: <strong id="tcStatTotal">-</strong></span>
+                  <span class="text-success">PASS: <strong id="tcStatPass">-</strong></span>
+                  <span class="text-danger">FAIL: <strong id="tcStatFail">-</strong></span>
+                  <span style="color:#D68910">BLOCKED: <strong id="tcStatBlocked">-</strong></span>
+                  <span class="text-secondary">SKIP: <strong id="tcStatSkip">-</strong></span>
+                  <span class="ms-auto text-muted" id="tcProgressMsg"></span>
+                </div>
+                <div class="progress" style="height:6px"><div class="progress-bar" id="tcProgressBar" style="width:0%"></div></div>
+              </div>
+              <div class="table-responsive" style="max-height:420px;overflow-y:auto">
+                <table class="table tbl-compact mb-0">
+                  <thead><tr>
+                    <th style="width:120px">TC ID</th><th>제목</th><th style="width:80px">판정</th>
+                    <th style="width:60px">소요(s)</th><th>메시지</th>
+                  </tr></thead>
+                  <tbody id="tcResultBody">
+                    <tr><td colspan="5" class="text-center text-muted py-3">실행 결과가 없습니다</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 콘솔 로그 ── -->
+          <div class="card mb-3">
+            <div class="card-header card-header-primary d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-terminal me-2"></i>Runner 콘솔</span>
+              <small class="text-truncate ms-3" id="tcCommand" style="font-size:0.7rem;max-width:70%;opacity:0.8"></small>
+            </div>
+            <div class="card-body p-2"><div id="tcLogBox"></div></div>
+          </div>
+
+          <!-- ── 실행 이력 ── -->
+          <div class="card">
+            <div class="card-header card-header-primary d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-clock-history me-2"></i>실행 이력 <small style="font-size:0.72rem">(verification/results)</small></span>
+              <button class="btn btn-sm btn-light" onclick="tcLoadHistory()"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-responsive" style="max-height:260px;overflow-y:auto">
+              <table class="table table-hover tbl-compact mb-0">
+                <thead><tr>
+                  <th>Run ID</th><th>모드</th><th>스위트</th><th>대상</th>
+                  <th class="text-center">PASS</th><th class="text-center">FAIL</th><th class="text-center">BLOCKED</th><th class="text-center">전체</th>
+                </tr></thead>
+                <tbody id="tcHistoryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tab6 -->
 
   </div><!-- /tab-content -->
 </div><!-- /container -->
@@ -4601,7 +4842,8 @@ async function bbmdGenerateReport() {
 }
 
 // Tab5 진입 시 연결된 장치 IP 자동 채우기
-document.querySelector('[data-bs-target="#tab5"]').addEventListener('shown.bs.tab', () => {
+// (FD 탭은 btl_config.json features.fd_tab 이 false 이면 렌더링되지 않음)
+document.querySelector('[data-bs-target="#tab5"]')?.addEventListener('shown.bs.tab', () => {
   const ipEl = document.getElementById('bbmdIp');
   if (!ipEl.value && g.deviceIp) {
     ipEl.value = g.deviceIp;
@@ -4770,6 +5012,338 @@ async function fdGenerateReport() {
     btn.disabled = false;
     btn.innerHTML = '<i class="bi bi-file-earmark-excel me-1"></i>엑셀 리포트';
   }
+}
+
+// ═══════════════════════════════════════════════════════
+//  Tab 6: TC 검증 (verification/run_gateway_tcs.py)
+// ═══════════════════════════════════════════════════════
+const tc = {
+  loaded: false, cases: [], checked: new Set(), group: '',
+  pollTimer: null, logSeq: 0, runId: '', isWindows: true, expanded: new Set(), result: null,
+};
+const _tcEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const _tcBadge = s => `<span class="badge ${({PASS:'bg-success',FAIL:'bg-danger',SKIP:'bg-secondary'})[s] || 'badge-' + s}">${_tcEsc(s)}</span>`;
+const _tcVal = id => document.getElementById(id).value.trim();
+const _tcChk = id => document.getElementById(id).checked;
+const _tcSet = (id, v) => { if (v !== undefined && v !== null) document.getElementById(id).value = v; };
+const _tcSetChk = (id, v) => { if (v !== undefined && v !== null) document.getElementById(id).checked = !!v; };
+
+document.getElementById('tab6Btn').addEventListener('shown.bs.tab', () => { if (!tc.loaded) tcInit(); });
+
+async function tcInit() {
+  tc.loaded = true;
+  try {
+    const d = await (await fetch('/api/tc-config')).json();
+    tc.isWindows = d.is_windows;
+    _tcSet('tcRoot', d.root);
+    const o = d.opts || {};
+    document.getElementById(o.mode === 'managed' ? 'tcModeManaged' : 'tcModeLive').checked = true;
+    _tcSet('tcSuite', o.suite || 'quick');
+    _tcSet('tcTargetIp', o.target_ip); _tcSet('tcTargetPort', o.target_port);
+    _tcSet('tcDeviceId', o.device_id); _tcSet('tcRespMs', o.response_time_ms);
+    _tcSet('tcTpi', o.tpi_path); _tcSet('tcPics', o.pics_doc);
+    _tcSet('tcGwConf', o.gateway_config_dir); _tcSet('tcVportConf', o.vport_config_path);
+    _tcSet('tcBbmd', o.bbmd_endpoint);
+    _tcSet('tcSshUser', o.ssh_user); _tcSet('tcSshPort', o.ssh_port);
+    _tcSet('tcSoakHours', o.soak_hours); _tcSet('tcSoakInterval', o.soak_interval);
+    _tcSetChk('tcMutation', o.allow_live_mutation); _tcSetChk('tcSsh', o.ssh_enabled);
+    _tcSetChk('tcLong', o.long); _tcSetChk('tcAutoBuild', o.auto_build ?? true);
+    _tcSetChk('tcAllowBuild', o.allow_build); _tcSetChk('tcReleaseBac0', o.release_bac0 ?? true);
+    document.getElementById('tcSshFields').style.display = _tcChk('tcSsh') ? '' : 'none';
+    tc.bins = {gateway_bin: o.gateway_bin, vport_bin: o.vport_bin,
+               vport_test_bin: o.vport_test_bin, unit_test_bin: o.unit_test_bin};
+    tcModeChanged(); tcSuiteChanged();
+    if (!d.root) {
+      document.getElementById('tcEnvResult').innerHTML =
+        '<div class="text-danger">verification 폴더를 찾지 못했습니다. 경로를 입력하고 [적용]을 누르세요.</div>';
+      return;
+    }
+  } catch (e) { console.error(e); }
+  tcLoadCases(); tcLoadHistory();
+  // 페이지 새로고침 후에도 진행 중인 실행에 다시 붙음
+  const s = await (await fetch('/api/tc-status')).json();
+  if (s.running || s.run_id) { tcApplyStatus(s); if (s.running) tcStartPoll(); }
+}
+
+async function tcSetRoot() {
+  const r = await fetch('/api/tc-config', {method:'POST', headers:{'Content-Type':'application/json'},
+                                          body: JSON.stringify({root: _tcVal('tcRoot')})});
+  const d = await r.json();
+  if (!d.success) { alert(d.error); return; }
+  tc.loaded = false; tcInit();
+}
+
+function tcMode() { return _tcChk('tcModeManaged') ? 'managed' : 'live'; }
+
+function tcModeChanged() {
+  const managed = tcMode() === 'managed';
+  document.getElementById('tcLiveFields').style.display = managed ? 'none' : '';
+  document.getElementById('tcManagedFields').style.display = managed ? '' : 'none';
+  document.getElementById('tcModeHint').textContent = managed
+    ? (tc.isWindows ? 'WSL(Ubuntu)에서 vport · Gateway · Main 시뮬레이터를 자동 구동합니다.' : 'vport · Gateway · Main 시뮬레이터를 로컬에서 자동 구동합니다.')
+    : '실행 중인 장비에 BACnet/IP로 직접 접속합니다 (WSL/Docker 불필요). 장비 구동이 필요한 TC는 BLOCKED 처리됩니다.';
+}
+
+function tcSuiteChanged() {
+  document.getElementById('tcSoakFields').style.display = _tcVal('tcSuite') === 'soak' ? '' : 'none';
+  if (_tcVal('tcSuite') === 'custom' && document.getElementById('tcCaseSection').style.display === 'none') tcCollapseCases();
+}
+
+function tcCollapseCases() {
+  const sec = document.getElementById('tcCaseSection');
+  const show = sec.style.display === 'none';
+  sec.style.display = show ? '' : 'none';
+  document.getElementById('tcCaseToggle').textContent = show ? '접기' : '펼치기';
+}
+
+async function tcLoadCases() {
+  document.getElementById('tcCaseBody').innerHTML =
+    '<tr><td colspan="4" class="text-center py-2"><span class="spinner-border spinner-border-sm me-2"></span>TC 목록 로드 중...</td></tr>';
+  const d = await (await fetch('/api/tc-cases?suite=all')).json();
+  if (!d.success) {
+    document.getElementById('tcCaseBody').innerHTML = `<tr><td colspan="4" class="text-danger">${_tcEsc(d.error)}</td></tr>`;
+    return;
+  }
+  tc.cases = d.cases;
+  const groups = [...new Set(tc.cases.map(c => c.tc_id.split('-').slice(0, 2).join('-')))];
+  document.getElementById('tcGroupBtns').innerHTML =
+    ['', ...groups].map(g => `<button class="btn btn-outline-secondary tc-group-btn" onclick="tcSetGroup('${g}')" data-g="${g}">${g || '전체'}</button>`).join('');
+  tcSetGroup('');
+}
+
+function tcSetGroup(g) {
+  tc.group = g;
+  document.querySelectorAll('#tcGroupBtns button').forEach(b => b.classList.toggle('active', b.dataset.g === g));
+  tcRenderCases();
+}
+
+function tcVisibleCases() {
+  const q = _tcVal('tcFilter').toLowerCase();
+  return tc.cases.filter(c => (!tc.group || c.tc_id.startsWith(tc.group + '-')) &&
+    (!q || (c.tc_id + ' ' + c.title + ' ' + c.srs_id).toLowerCase().includes(q)));
+}
+
+function tcRenderCases() {
+  const rows = tcVisibleCases();
+  document.getElementById('tcCaseBody').innerHTML = rows.map(c => `
+    <tr><td><input type="checkbox" class="form-check-input" ${tc.checked.has(c.tc_id) ? 'checked' : ''}
+          onchange="tcToggleCase('${c.tc_id}', this.checked)"></td>
+        <td><code>${c.tc_id}</code></td><td style="font-size:0.75rem">${_tcEsc(c.srs_id)}</td><td>${_tcEsc(c.title)}</td></tr>`).join('');
+  document.getElementById('tcCheckAll').checked = rows.length > 0 && rows.every(c => tc.checked.has(c.tc_id));
+  document.getElementById('tcCaseCount').textContent = `전체 ${tc.cases.length} · 선택 ${tc.checked.size}`;
+}
+
+function tcToggleCase(id, on) {
+  on ? tc.checked.add(id) : tc.checked.delete(id);
+  if (on && _tcVal('tcSuite') !== 'custom') _tcSet('tcSuite', 'custom');
+  tcRenderCases();
+}
+
+function tcToggleAll(on) {
+  tcVisibleCases().forEach(c => on ? tc.checked.add(c.tc_id) : tc.checked.delete(c.tc_id));
+  if (on && _tcVal('tcSuite') !== 'custom') _tcSet('tcSuite', 'custom');
+  tcRenderCases();
+}
+
+function tcCollectOpts() {
+  const suite = _tcVal('tcSuite');
+  const o = {
+    mode: tcMode(),
+    suite: suite === 'custom' ? 'all' : suite,
+    cases: suite === 'custom' ? [...tc.checked] : (suite === 'soak' ? ['TC-AVL-004'] : []),
+    soak: suite === 'soak' || (suite === 'custom' && tc.checked.has('TC-AVL-004')),
+    soak_hours: parseFloat(_tcVal('tcSoakHours')) || 12, soak_interval: parseFloat(_tcVal('tcSoakInterval')) || 15,
+    target_ip: _tcVal('tcTargetIp'), target_port: parseInt(_tcVal('tcTargetPort')) || 47808,
+    device_id: parseInt(_tcVal('tcDeviceId')) || 1200, response_time_ms: parseInt(_tcVal('tcRespMs')) || 0,
+    tpi_path: _tcVal('tcTpi'), pics_doc: _tcVal('tcPics'),
+    gateway_config_dir: _tcVal('tcGwConf'), vport_config_path: _tcVal('tcVportConf'),
+    bbmd_endpoint: _tcVal('tcBbmd'),
+    allow_live_mutation: _tcChk('tcMutation'), long: _tcChk('tcLong'),
+    ssh_enabled: _tcChk('tcSsh'), ssh_user: _tcVal('tcSshUser'), ssh_port: parseInt(_tcVal('tcSshPort')) || 22,
+    ssh_pass: document.getElementById('tcSshPass').value,
+    auto_build: _tcChk('tcAutoBuild'), allow_build: _tcChk('tcAllowBuild'), release_bac0: _tcChk('tcReleaseBac0'),
+    ...(tc.bins || {}),
+  };
+  if (suite === 'custom') o.ui_suite = 'custom';
+  return o;
+}
+
+async function tcCheckEnv() {
+  const box = document.getElementById('tcEnvResult');
+  box.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>점검 중...';
+  const d = await (await fetch('/api/tc-check', {method:'POST', headers:{'Content-Type':'application/json'},
+                                                body: JSON.stringify(tcCollectOpts())})).json();
+  if (!d.success) { box.innerHTML = `<div class="text-danger">${_tcEsc(d.error)}</div>`; return; }
+  tc.envItems = d.items;
+  box.innerHTML =`<div class="text-muted mb-1">실행 환경: ${d.runner === 'wsl' ? 'WSL' : '호스트 Python'}</div>` +
+    d.items.map(i => `<div class="lib-item py-0"><i class="bi ${i.ok ? 'bi-check-circle-fill lib-ok' : 'bi-exclamation-triangle-fill lib-warn'}"></i>
+      <span>${_tcEsc(i.name)}</span><small class="text-muted text-truncate" title="${_tcEsc(i.detail)}">${_tcEsc(i.detail)}</small></div>`).join('') +
+    '<div class="text-muted mt-1" style="font-size:0.7rem">누락 항목을 사용하는 TC만 BLOCKED 처리되고 나머지는 계속 실행됩니다.</div>';
+}
+
+async function tcRun() {
+  const o = tcCollectOpts();
+  if (o.ui_suite === 'custom' && !o.cases.length) { alert('실행할 TC를 목록에서 선택하세요.'); return; }
+  if (o.mode === 'live' && !o.target_ip) { alert('대상 IP를 입력하세요.'); return; }
+  if (o.mode === 'live' && o.allow_live_mutation &&
+      !confirm('실장비 상태 변경(WriteProperty/DCC/COV) TC가 포함됩니다. 계속할까요?')) return;
+  // SSH는 soak(TC-AVL-004) 자원 모니터링에만 사용 → 장시간 실행 전에 접속을 먼저 확인
+  if (o.mode === 'live' && o.soak && o.ssh_enabled) {
+    await tcCheckEnv();
+    const ssh = (tc.envItems || []).find(i => i.name.startsWith('SSH'));
+    if (ssh && !ssh.ok && !confirm(`SSH 접속 실패: ${ssh.detail}\n\nTC-AVL-004가 BLOCKED 처리됩니다. 그래도 실행할까요?`)) return;
+  }
+  const r = await fetch('/api/tc-run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(o)});
+  const d = await r.json();
+  if (!d.success) { alert('TC 실행 오류: ' + d.error); return; }
+  tc.logSeq = 0; tc.expanded.clear(); tc.result = null;
+  document.getElementById('tcLogBox').innerHTML = '';
+  document.getElementById('tcCommand').textContent = d.command;
+  document.getElementById('tcCommand').title = d.command;
+  tcStartPoll();
+}
+
+async function tcStop() {
+  if (!confirm('진행 중인 TC 실행을 중지할까요?')) return;
+  await fetch('/api/tc-stop', {method:'POST'});
+}
+
+function tcStartPoll() {
+  if (tc.pollTimer) clearInterval(tc.pollTimer);
+  tc.pollTimer = setInterval(tcPoll, 1000);
+  tcPoll();
+}
+
+async function tcPoll() {
+  try {
+    const s = await (await fetch('/api/tc-status?since=' + tc.logSeq)).json();
+    tcApplyStatus(s);
+    if (!s.running) {
+      clearInterval(tc.pollTimer); tc.pollTimer = null;
+      if (s.run_id) await tcShowResult(s.run_id);
+      tcLoadHistory();
+    }
+  } catch (e) { /* 무시 */ }
+}
+
+function tcAppendLog(lines) {
+  const box = document.getElementById('tcLogBox');
+  const stick = box.scrollTop + box.clientHeight >= box.scrollHeight - 20;
+  // 판정은 줄 앞의 상태 토큰으로만 결정 (요약 줄의 "steps=...(PASS:n FAIL:0 ...)" 오탐 방지)
+  //   요약: "[PASS   ] TC-..."  단계: "[TC-..][STEP-01][PASS]"  진행: "[01/10] TC-... => PASS"
+  const statusCls = {PASS: 'log-pass', FAIL: 'log-fail', BLOCKED: 'log-blocked', SKIP: 'log-skip'};
+  const html = lines.map(l => {
+    const m = l.match(/^\s*\[(PASS|FAIL|BLOCKED|SKIP)\s*\]/) || l.match(/\]\[(PASS|FAIL|BLOCKED|SKIP)\]/)
+           || l.match(/=> (PASS|FAIL|BLOCKED|SKIP)\b/);
+    const cls = m ? statusCls[m[1]] : /^\[\d+\/\d+\]|^\$ |^\[Auto-Build\]/.test(l) ? 'log-info' : '';
+    return `<div class="${cls}">${_tcEsc(l)}</div>`;
+  }).join('');
+  box.insertAdjacentHTML('beforeend', html);
+  while (box.childElementCount > 3000) box.firstElementChild.remove();
+  if (stick) box.scrollTop = box.scrollHeight;
+}
+
+function tcApplyStatus(s) {
+  if (s.log && s.log.length) tcAppendLog(s.log);
+  tc.logSeq = s.log_seq;
+  if (s.command) { document.getElementById('tcCommand').textContent = s.command; document.getElementById('tcCommand').title = s.command; }
+  document.getElementById('tcRunBtn').disabled = s.running;
+  document.getElementById('tcStopBtn').disabled = !s.running;
+  document.getElementById('tcRunBtn').innerHTML = s.running
+    ? '<span class="spinner-border spinner-border-sm me-1"></span>실행 중...' : '<i class="bi bi-play-fill me-1"></i>TC 실행';
+  const badge = document.getElementById('tcStatusBadge');
+  if (s.running) { badge.style.background = '#3498DB'; badge.textContent = s.phase || '실행 중'; }
+  else if (s.error) { badge.style.background = '#E74C3C'; badge.textContent = s.error; }
+  else if (s.run_id) { badge.style.background = '#27AE60'; badge.textContent = '완료'; }
+
+  const pct = s.total ? Math.round(s.done * 100 / s.total) : 0;
+  document.getElementById('tcProgressBar').style.width = pct + '%';
+  document.getElementById('tcProgressMsg').textContent = s.running
+    ? `${s.done}/${s.total || '?'}${s.current ? ' · ' + s.current + ' 실행 중' : ''}`
+    : (s.finished_at ? `완료 ${s.finished_at}` : '');
+  if (s.running || !tc.result) {
+    const count = k => s.cases.filter(c => c.status === k).length;
+    document.getElementById('tcStatTotal').textContent = s.total || '-';
+    document.getElementById('tcStatPass').textContent = count('PASS');
+    document.getElementById('tcStatFail').textContent = count('FAIL');
+    document.getElementById('tcStatBlocked').textContent = count('BLOCKED');
+    document.getElementById('tcStatSkip').textContent = count('SKIP');
+    if (s.cases.length) {
+      document.getElementById('tcResultBody').innerHTML = s.cases.map(c => `
+        <tr><td><code>${c.tc_id}</code></td><td>${_tcEsc((tc.cases.find(x => x.tc_id === c.tc_id) || {}).title)}</td>
+            <td>${_tcBadge(c.status)}</td><td></td><td style="font-size:0.76rem">${_tcEsc(c.message)}</td></tr>`).join('');
+    }
+  }
+}
+
+async function tcShowResult(runId) {
+  const d = await (await fetch('/api/tc-result/' + encodeURIComponent(runId))).json();
+  if (!d.success) { alert(d.error); return; }
+  tc.result = d; tc.runId = runId; tc.expanded.clear();
+  const sm = d.summary || {};
+  document.getElementById('tcStatTotal').textContent = sm.total ?? '-';
+  document.getElementById('tcStatPass').textContent = sm.PASS ?? 0;
+  document.getElementById('tcStatFail').textContent = sm.FAIL ?? 0;
+  document.getElementById('tcStatBlocked').textContent = sm.BLOCKED ?? 0;
+  document.getElementById('tcStatSkip').textContent = sm.SKIP ?? 0;
+  const m = d.metadata || {};
+  document.getElementById('tcProgressMsg').textContent = `${runId} · ${m.mode} · ${m.suite} · ${m.target}`;
+  document.getElementById('tcProgressBar').style.width = '100%';
+  document.getElementById('tcReportBtn').disabled = false;
+  document.getElementById('tcFolderBtn').disabled = false;
+  tcRenderResult();
+  document.querySelectorAll('#tcHistoryBody tr').forEach(tr => tr.classList.toggle('table-active', tr.dataset.run === runId));
+}
+
+function tcRenderResult() {
+  const d = tc.result;
+  document.getElementById('tcResultBody').innerHTML = d.results.map((r, i) => {
+    const open = tc.expanded.has(r.tc_id);
+    const steps = open ? r.steps.map(s => `
+      <tr class="tc-step-row"><td class="text-end">#${s.step}</td><td>${_tcEsc(s.label)}</td><td>${_tcBadge(s.status)}</td>
+        <td colspan="2"><div><span class="text-muted">기대:</span> ${_tcEsc(s.expected)}</div>
+          <div><span class="text-muted">수신:</span> ${_tcEsc(s.actual)}</div>
+          ${s.message ? `<div class="text-danger">${_tcEsc(s.message)}</div>` : ''}</td></tr>`).join('') : '';
+    return `<tr style="cursor:pointer" onclick="tcToggleSteps('${r.tc_id}')">
+        <td><code>${r.tc_id}</code> <small class="text-secondary">${open ? '▲' : '▼'}</small></td>
+        <td>${_tcEsc(r.title)}<br><small class="text-muted">${_tcEsc(r.srs_id)}</small></td>
+        <td>${_tcBadge(r.status)}</td><td class="text-center">${_tcEsc(r.duration_sec)}</td>
+        <td style="font-size:0.76rem">${_tcEsc(r.message)}</td></tr>${steps}`;
+  }).join('') || '<tr><td colspan="5" class="text-center text-muted py-3">결과 없음</td></tr>';
+}
+
+function tcToggleSteps(id) {
+  tc.expanded.has(id) ? tc.expanded.delete(id) : tc.expanded.add(id);
+  tcRenderResult();
+}
+
+async function tcLoadHistory() {
+  const d = await (await fetch('/api/tc-history')).json();
+  document.getElementById('tcHistoryBody').innerHTML = (d.runs || []).map(r => {
+    const s = r.summary || {};
+    return `<tr style="cursor:pointer" data-run="${_tcEsc(r.run_id)}" class="${r.run_id === tc.runId ? 'table-active' : ''}"
+               onclick="tcShowResult('${_tcEsc(r.run_id)}')">
+      <td><code>${_tcEsc(r.run_id)}</code></td><td>${_tcEsc(r.mode)}</td><td>${_tcEsc(r.suite)}</td><td>${_tcEsc(r.target)}</td>
+      <td class="text-center text-success">${s.PASS ?? 0}</td><td class="text-center text-danger">${s.FAIL ?? 0}</td>
+      <td class="text-center" style="color:#D68910">${s.BLOCKED ?? 0}</td><td class="text-center">${s.total ?? 0}</td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="text-center text-muted py-2">이력 없음</td></tr>';
+}
+
+async function tcGenerateReport() {
+  const btn = document.getElementById('tcReportBtn');
+  btn.disabled = true;
+  try {
+    const d = await (await fetch('/api/tc-report', {method:'POST', headers:{'Content-Type':'application/json'},
+                                                   body: JSON.stringify({run_id: tc.runId})})).json();
+    if (!d.success) { alert('리포트 생성 실패: ' + d.error); return; }
+    window.location.href = '/api/download/' + d.filename;
+  } finally { btn.disabled = false; }
+}
+
+async function tcOpenFolder() {
+  const d = await (await fetch('/api/tc-open-folder', {method:'POST', headers:{'Content-Type':'application/json'},
+                                                      body: JSON.stringify({run_id: tc.runId})})).json();
+  if (!d.success) alert(d.error);
 }
 
 </script>

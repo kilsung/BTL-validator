@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-s" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181825" />
+      <stop offset="100%" stop-color="#11111b" />
+    </linearGradient>
+    <filter id="sh-s" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+  <rect x="20" y="20" width="860" height="480" rx="12" fill="url(#bg-s)" stroke="#313244" stroke-width="1.5" filter="url(#sh-s)"/>
+  <path d="M20,32 A12,12 0 0,1 32,20 L868,20 A12,12 0 0,1 880,32 L880,60 L20,60 Z" fill="#1e1e2e"/>
+  <circle cx="46" cy="40" r="6" fill="#f38ba8"/><circle cx="66" cy="40" r="6" fill="#f9e2af"/><circle cx="86" cy="40" r="6" fill="#a6e3a1"/>
+  <text x="450" y="45" fill="#a6adc8" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">terminal — Soak 12시간 신뢰성 시험 &amp; SSH 원격 OS 자원 모니터링</text>
+
+  <g font-family="'Fira Code', 'JetBrains Mono', Consolas, monospace" font-size="12.5" xml:space="preserve">
+    <text x="45" y="90" fill="#89b4fa" font-weight="bold">chulvx@kcserver:~/bacnet_ip_gateway$ <tspan fill="#f5e0dc">./verification/run_test.sh</tspan></text>
+
+    <text x="45" y="115" fill="#f9e2af">[2] 테스트 스위트를 선택하십시오: <tspan fill="#a6e3a1" font-weight="bold">4) soak (12시간 전체 관제점 장기 연속 운용 신뢰성)</tspan></text>
+    <text x="45" y="135" fill="#cdd6f4">    신뢰성 시험 시간 (시간 단위) [기본값: 12.0]: <tspan fill="#89dceb">0.1</tspan> (6분 테스트)</text>
+    <text x="45" y="153" fill="#cdd6f4">    전체 관제점 순환 질의 주기 (초 단위) [기본값: 15.0]: <tspan fill="#89dceb">5.0</tspan></text>
+
+    <text x="45" y="180" fill="#f9e2af">[SSH] 원격 OS 자원(메모리/FD/vport) 모니터링(SSH) 옵션:</text>
+    <text x="45" y="198" fill="#cdd6f4">    SSH 자원 감시를 활성화하시겠습니까? (y/N, 기본: N): <tspan fill="#f5e0dc" font-weight="bold">y</tspan></text>
+    <text x="45" y="216" fill="#cdd6f4">    SSH 접속 계정 [기본값: chulvx]: <tspan fill="#f5e0dc">chulvx</tspan></text>
+    <text x="45" y="234" fill="#cdd6f4">    SSH 접속 암호: <tspan fill="#6c7086">••••••••</tspan> (1회성 메모리 주입, 미저장)</text>
+
+    <text x="45" y="265" fill="#a6e3a1" font-weight="bold">    [SSH] 원격 대상(chulvx@192.168.1.31:22) 접속 성공:</text>
+    <text x="45" y="285" fill="#b4befe">          Gateway PID=1452 (초기 RSS 3520 KB, FD 12) | vport PID=1453 (RSS 2840 KB, FD 9)</text>
+
+    <text x="45" y="315" fill="#cdd6f4">    [SOAK] 진행률:  25.0% [00:01:30 / 00:06:00] | Cycle 18 | Reads: 120 (성공률 100.0%) | GW RSS: 3520 KB (+0 KB), FD: 12</text>
+    <text x="45" y="335" fill="#cdd6f4">    [SOAK] 진행률:  50.0% [00:03:00 / 00:06:00] | Cycle 36 | Reads: 240 (성공률 100.0%) | GW RSS: 3524 KB (+4 KB), FD: 12</text>
+    <text x="45" y="355" fill="#cdd6f4">    [SOAK] 진행률: 100.0% [00:06:00 / 00:06:00] | Cycle 72 | Reads: 480 (성공률 100.0%) | GW RSS: 3524 KB (+4 KB), FD: 12</text>
+
+    <text x="45" y="385" fill="#585b70">------------------------------------------------------------------------</text>
+    <text x="45" y="405" fill="#a6e3a1" font-weight="bold">[PASS] TC-AVL-004 12시간 전체 관제점 장기 연속 운용 신뢰성 (steps=6 PASS)</text>
+    <text x="45" y="423" fill="#cdd6f4">    ✔ STEP-01 프로세스 무중단 생존 (Gateway &amp; vport 생존) ...................... [PASS]</text>
+    <text x="45" y="441" fill="#cdd6f4">    ✔ STEP-02 전체 관제점 통신 성공률 (&gt;=99.9%) -&gt; 100.0% (480/480 성공) ....... [PASS]</text>
+    <text x="45" y="459" fill="#cdd6f4">    ✔ STEP-03 메모리(RSS) 누수 억제 (&lt;5% 성장) -&gt; +4 KB (0.11% 성장) ........... [PASS]</text>
+    <text x="45" y="477" fill="#cdd6f4">    ✔ STEP-04 파일 디스크립터(FD) 누수 없음 (&lt;=0) -&gt; 증가량 0개 (소켓 누수 0) ... [PASS]</text>
+  </g>
+</svg>

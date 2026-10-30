@@ -1,0 +1,15558 @@
+/*
+ * BACstac(TM) BACACC.H
+ * Copyright (c) 1996-2024 by Cimetrics Inc. All rights reserved.
+ *
+ * Purpose: define BACstac data access routines
+ *
+ */
+
+
+#ifndef BACACC_H
+#define BACACC_H
+
+#ifndef BACTYPES_H
+#include <bactypes.h>
+#endif /* BACTYPES_H */
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+
+
+/*
+ * Error Type
+ */
+
+
+/*
+ *  typedef struct tagBACSTAC_ERROR_TYPE
+ *  {
+ *      BACSTAC_ERROR_CLASS errClass;
+ *      BACSTAC_ERROR_CODE  errCode;
+ *  } BACSTAC_ERROR_TYPE, *PBACSTAC_ERROR_TYPE;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitErrorType (
+    BACSTAC_ERROR_TYPE *errorType,
+    BACSTAC_ERROR_CLASS errClass,
+    BACSTAC_ERROR_CODE errCode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CLASS BACstac_api BACstacGetErrorTypeClass (
+    const BACSTAC_ERROR_TYPE *errorType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetErrorTypeClass (
+    BACSTAC_ERROR_TYPE *errorType,
+    BACSTAC_ERROR_CLASS errClass
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CODE BACstac_api BACstacGetErrorTypeCode (
+    const BACSTAC_ERROR_TYPE *errorType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetErrorTypeCode (
+    BACSTAC_ERROR_TYPE *errorType,
+    BACSTAC_ERROR_CODE errCode
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyErrorType (
+    BACSTAC_ERROR_TYPE *destErrorType,
+    const BACSTAC_ERROR_TYPE *srcErrorType
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Error
+ */
+
+
+/*
+ *  typedef struct tagBACSTAC_ERROR
+ *  {
+ *      BACSTAC_FAILURE_TYPE    tag;
+ *      union {
+ *          BACSTAC_ABORT_REASON    abortReason;
+ *          BACSTAC_REJECT_REASON   rejectReason;
+ *          BACSTAC_ERROR_TYPE      errorSpec;
+ *      } failure;
+ *  } BACSTAC_ERROR, *PBACSTAC_ERROR;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitErrorError (
+    BACSTAC_ERROR *pError,
+    BACSTAC_ERROR_CLASS errClass,
+    BACSTAC_ERROR_CODE errCode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitErrorAbort (
+    BACSTAC_ERROR *pError,
+    BACSTAC_ABORT_REASON abortReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitErrorReject (
+    BACSTAC_ERROR *pError,
+    BACSTAC_REJECT_REASON rejectReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FAILURE_TYPE BACstac_api BACstacGetErrorFailureType (
+    const BACSTAC_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetErrorErrorSpec (
+    BACSTAC_ERROR *pError,
+    BACSTAC_ERROR_CLASS errClass,
+    BACSTAC_ERROR_CODE errCode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CLASS BACstac_api BACstacGetErrorErrorClass (
+    const BACSTAC_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CODE BACstac_api BACstacGetErrorErrorCode (
+    const BACSTAC_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetErrorAbortReason (
+    BACSTAC_ERROR *pError,
+    BACSTAC_ABORT_REASON abortReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ABORT_REASON BACstac_api BACstacGetErrorAbortReason (
+    const BACSTAC_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetErrorRejectReason (
+    BACSTAC_ERROR *pError,
+    BACSTAC_REJECT_REASON rejectReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REJECT_REASON BACstac_api BACstacGetErrorRejectReason (
+    const BACSTAC_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyError (
+    BACSTAC_ERROR *pDestError,
+    const BACSTAC_ERROR *pSrcError
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Bit string
+ */
+
+
+/* Sets bitCount and zeroes bits */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitBitString (
+    BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UINT bitCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitBitStringFromMask32(
+    BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UI32 mask,
+    BACSTAC_UINT nBitCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitBitStringFromMask64(
+    BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UI64 mask,
+    BACSTAC_UINT nBitCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetBitStringBitCount (
+    BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UINT nBitCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UINT BACstac_api BACstacGetBitStringBitCount (
+    const BACSTAC_BIT_STRING *pBitString
+) BACSTAC_NOTHROW;
+
+/* Copies bitCount bits, assuming that bitCount has been already set */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyBitStringBits (
+    BACSTAC_BIT_STRING *pBitString,
+    const BACSTAC_BYTE *pBits
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetBitStringBitsPtr (
+    const BACSTAC_BIT_STRING *pBitString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetBitStringBit (
+    BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UINT bitIndex,
+    BACSTAC_BOOLEAN bitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacTestBitStringBit (
+    const BACSTAC_BIT_STRING *pBitString,
+    BACSTAC_UINT bitIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyBitString (
+    BACSTAC_BIT_STRING *pDestBitString,
+    const BACSTAC_BIT_STRING *pSrcBitString
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Octet String
+ */
+
+
+/* pBuffer may be NULL if bufferSize and octetCount are both 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOctetString (
+    BACSTAC_OCTET_STRING *pOctetString,
+    const void *octets,
+    BACSTAC_VALUE_SIZE count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetOctetStringBufferPtr (
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetOctetStringPtr (
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetOctetStringCount (
+    BACSTAC_OCTET_STRING *pOctetString,
+    BACSTAC_VALUE_SIZE octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetOctetStringCount (
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyOctetString (
+    BACSTAC_OCTET_STRING *pDestOctetString,
+    const BACSTAC_OCTET_STRING *pSrcOctetString
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Date
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDate (
+    BACSTAC_DATE *pDate,
+    BACSTAC_YEAR year,
+    BACSTAC_MONTH month,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateYear (
+    BACSTAC_DATE *pDate,
+    BACSTAC_YEAR year
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_YEAR BACstac_api BACstacGetDateYear (
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateMonth (
+    BACSTAC_DATE *pDate,
+    BACSTAC_MONTH month
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MONTH BACstac_api BACstacGetDateMonth (
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateDayOfMonth (
+    BACSTAC_DATE *pDate,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DAY_OF_MONTH BACstac_api BACstacGetDateDayOfMonth (
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateDayOfWeek (
+    BACSTAC_DATE *pDate,
+    BACSTAC_DAY_OF_WEEK dayOfWeek
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DAY_OF_WEEK BACstac_api BACstacGetDateDayOfWeek (
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDate (
+    BACSTAC_DATE *pDestDate,
+    const BACSTAC_DATE *pSrcDate
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Time
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTime (
+    BACSTAC_TIME *pTime,
+    BACSTAC_HOUR hour,
+    BACSTAC_MINUTE minute,
+    BACSTAC_SECOND second,
+    BACSTAC_HUNDREDTHS hundredths
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetTimeHour (
+    BACSTAC_TIME *pTime,
+    BACSTAC_HOUR hour
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOUR BACstac_api BACstacGetTimeHour (
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetTimeMinute (
+    BACSTAC_TIME *pTime,
+    BACSTAC_MINUTE minute
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MINUTE BACstac_api BACstacGetTimeMinute (
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetTimeSecond (
+    BACSTAC_TIME *pTime,
+    BACSTAC_SECOND second
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SECOND BACstac_api BACstacGetTimeSecond (
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetTimeHundredths (
+    BACSTAC_TIME *pTime,
+    BACSTAC_HUNDREDTHS hundredths
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HUNDREDTHS BACstac_api BACstacGetTimeHundredths (
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyTime (
+    BACSTAC_TIME *pDestTime,
+    const BACSTAC_TIME *pSrcTime
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * Date Time
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDateTime (
+    BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+/* Sets dayOfWeek to UNSPECIFIED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateTimeDate (
+    BACSTAC_DATE_TIME *pDateTime,
+    BACSTAC_YEAR year,
+    BACSTAC_MONTH month,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateTimeTime (
+    BACSTAC_DATE_TIME *pDateTime,
+    BACSTAC_HOUR hour,
+    BACSTAC_MINUTE minute,
+    BACSTAC_SECOND second,
+    BACSTAC_HUNDREDTHS hundredths
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetDateTimeDatePtr (
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateTimeDate (
+    BACSTAC_DATE_TIME *pDateTime,
+    const BACSTAC_DATE *pSrcDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetDateTimeTimePtr (
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateTimeTime (
+    BACSTAC_DATE_TIME *pDateTime,
+    const BACSTAC_TIME *pSrcTime
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateTime (
+    BACSTAC_DATE_TIME *pDestDateTime,
+    const BACSTAC_DATE_TIME *pSrcDateTime
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Priority array item
+ */
+
+
+/* Initializes NULL choice */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPriArrayItem (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI void *BACstac_api BACstacGetPriArrayItemValuePtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetPriArrayItemTag (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemNull (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsPriArrayItemNull (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemEnum (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetPriArrayItemEnum (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemReal (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetPriArrayItemReal (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemUnsigned (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetPriArrayItemUnsigned (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemBoolean (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_BOOLEAN booleanValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetPriArrayItemBoolean (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemInteger (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetPriArrayItemInteger (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemDouble (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_DOUBLE doubleValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetPriArrayItemDouble (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemTime (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_TIME *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetPriArrayItemTimePtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemCharStr (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_CHAR_STRING *pCharStrValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetPriArrayItemCharStrPtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemOctetStr (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_OCTET_STRING *pOctetStrValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api BACstacGetPriArrayItemOctetStrPtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemBitStr (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_BIT_STRING *pBitStrValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetPriArrayItemBitStrPtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemDate (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_DATE *pDateValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetPriArrayItemDatePtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemObjectID (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_OBJECT_ID *pObjectIDValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetPriArrayItemObjectIDPtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItemDateTime (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    const BACSTAC_DATE_TIME *pDateTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetPriArrayItemDateTimePtr (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArrayItem (
+    BACSTAC_PRI_ARRAY_ITEM *pDest,
+    const BACSTAC_PRI_ARRAY_ITEM *pSrc
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPriArrayItemSigned (
+    BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetPriArrayItemSigned (
+    const BACSTAC_PRI_ARRAY_ITEM *pPriArrayItem
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Priority Array
+ */
+
+
+/* Sets all 16 elements to NULL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPriArray (
+    BACSTAC_PRIORITY_ARRAY *pPriArray
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPriArray (
+    BACSTAC_PRIORITY_ARRAY *pDestArray,
+    const BACSTAC_PRIORITY_ARRAY *pSrcArray
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Object ID
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitObjectID (
+    BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_OBJECT_TYPE objType,
+    BACSTAC_INST_NUMBER instNum
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjectIDType (
+    BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_OBJECT_TYPE objType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_TYPE BACstac_api  BACstacGetObjectIDType (
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjectIDInstNum (
+    BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_INST_NUMBER instNum
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetObjectIDInstNum (
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyObjectID (
+    BACSTAC_OBJECT_ID *pDestObjectID,
+    const BACSTAC_OBJECT_ID *pSrcObjectID
+) BACSTAC_NOTHROW;
+
+
+/*
+ * Address
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddrLocal (
+    BACSTAC_ADDRESS *pAddress,
+    const BACSTAC_BYTE *pMac,
+    BACSTAC_SIZE_T macLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddrRemote (
+    BACSTAC_ADDRESS *pAddress,
+    const BACSTAC_BYTE *pMac,
+    BACSTAC_SIZE_T macLength,
+    BACSTAC_UI16 netNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddrLocalBroadcast (
+    BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddrRemoteBroadcast (
+    BACSTAC_ADDRESS *pAddress,
+    BACSTAC_UI16 netNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddrGlobalBroadcast (
+    BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAddrLocal (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAddrRemote (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW; /* remote && !global */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAddrGlobal (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;  /* remote && global */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAddrBroadcast (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;  /* nMacLen == BACSTAC_MAC_BROADCAST_LENGTH */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAddrMAC (
+    BACSTAC_ADDRESS *pAddress,
+    BACSTAC_BYTE *pMac,
+    BACSTAC_SIZE_T macLength
+) BACSTAC_NOTHROW;  /* if (nNetwork == NETWORK_GLOBAL) nNetwork = NETWORK_LOCAL */
+
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetAddrMACPtr (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SIZE_T BACstac_api BACstacGetAddrMACLength (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAddrNetworkNumber (
+    BACSTAC_ADDRESS *pAddress,
+    BACSTAC_UI16 netNumber
+) BACSTAC_NOTHROW;  /* if nNetwork == NETWORK_GLOBAL, nMacLen = 0 */
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetAddrNetworkNumber (
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+#define BACstacSetAddrLocal(pAddr)          \
+    BACstacSetAddrNetworkNumber (pAddr, BACSTAC_NETWORK_LOCAL)
+#define BACstacSetAddrGlobal(pAddr)         \
+    BACstacSetAddrNetworkNumber (pAddr, BACSTAC_NETWORK_GLOBAL)
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAddr (
+    BACSTAC_ADDRESS *pDestAddress,
+    const BACSTAC_ADDRESS *pSrcAddress
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_DEV_OBJ_PROP_REF
+ */
+
+
+/* index = BACSTAC_VOID_INDEX */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDevObjPropReference (
+    BACSTAC_DEV_OBJ_PROP_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjPropReferenceObjID (
+    BACSTAC_DEV_OBJ_PROP_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetDevObjPropReferenceObjIDPtr (
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevObjPropReferencePropID (
+    BACSTAC_DEV_OBJ_PROP_REF *pReference,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetDevObjPropReferencePropID (
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevObjPropReferenceIndex (
+    BACSTAC_DEV_OBJ_PROP_REF *pReference,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetDevObjPropReferenceIndex (
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsDevObjPropReferenceDevPresent (
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetDevObjPropReferenceDevPtr (
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjPropReferenceDevice (
+    BACSTAC_DEV_OBJ_PROP_REF *pReference,
+    BACSTAC_OBJECT_ID *pDevice
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjPropReference (
+    BACSTAC_DEV_OBJ_PROP_REF *pDestReference,
+    const BACSTAC_DEV_OBJ_PROP_REF *pSrcReference
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_OBJ_PROP_REF
+ */
+
+
+/* index = BACSTAC_VOID_INDEX */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitObjPropRef (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_OBJECT_ID objectID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjPropRefObjectID (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetObjPropRefObjectID (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjPropRefPropID (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetObjPropRefPropID (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjPropRefIndex (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetObjPropRefIndex (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacInitObjPropRef instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitObjPropReference (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetObjPropRefObjectID instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyObjPropReferenceObjID (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetObjPropRefObjectID instead */
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetObjPropReferenceObjIDPtr (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetObjPropRefPropID instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjPropReferencePropID (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetObjPropRefPropID instead */
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetObjPropReferencePropID (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetObjPropRefIndex instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetObjPropReferenceIndex (
+    BACSTAC_OBJ_PROP_REF *pReference,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetObjPropRefIndex instead */
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetObjPropReferenceIndex (
+    const BACSTAC_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyObjPropReference (
+    BACSTAC_OBJ_PROP_REF *pDestReference,
+    const BACSTAC_OBJ_PROP_REF *pSrcReference
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_PROPERTY_STATES
+ */
+
+
+/* Initialize BACSTAC_BOOLEAN:FALSE choice */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPropStates (
+    BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_STATES_TYPE BACstac_api BACstacGetPropStatesTag (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesBoolean (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_BOOLEAN state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetPropStatesBoolean (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesBinary (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_BINARY_PV state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BINARY_PV BACstac_api BACstacGetPropStatesBinary (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesEvType (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_EVENT_TYPE state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetPropStatesEvType (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesPolarity (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_POLARITY state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_POLARITY BACstac_api BACstacGetPropStatesPolarity (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesPrgReq (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_PROGRAM_REQUEST state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROGRAM_REQUEST BACstac_api BACstacGetPropStatesPrgReq (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesPrgState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_PROGRAM_STATE state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROGRAM_STATE BACstac_api BACstacGetPropStatesPrgState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesHaltReason (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_PROGRAM_ERROR state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROGRAM_ERROR BACstac_api BACstacGetPropStatesHaltReason (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesReliability (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_RELIABILITY state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RELIABILITY BACstac_api BACstacGetPropStatesReliability (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesEvState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_EVENT_STATE state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetPropStatesEvState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesDevStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_DEVICE_STATUS state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEVICE_STATUS BACstac_api BACstacGetPropStatesDevStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesUnits (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ENGINEERING_UNITS state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENGINEERING_UNITS BACstac_api BACstacGetPropStatesUnits (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesUnsigned (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_UNSIGNED state
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetPropStatesUnsigned (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+/* Add-135c Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSafetyMode (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFE_SAFETY_MODE lifeSafetyMode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFE_SAFETY_MODE BACstac_api BACstacGetPropStatesSafetyMode (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSafetyState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFE_SAFETY_STATE lifeSafetyState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFE_SAFETY_STATE BACstac_api BACstacGetPropStatesSafetyState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135c End */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesRestartReason (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_RESTART_REASON restartReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RESTART_REASON BACstac_api BACstacGetPropStatesRestartReason (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+/* Add-135-2004f Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAlarmState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_DOOR_ALARM_STATE doorAlarmState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOOR_ALARM_STATE BACstac_api BACstacGetPropStatesAlarmState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2004f End */
+
+/* Add-135-2008j-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAccEvent (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ACCESS_EVENT accessEvent
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACCESS_EVENT BACstac_api BACstacGetPropStatesAccEvent (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesZoneOccState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ZONE_OCCUPANCY_STATE zoneOccupancyState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ZONE_OCCUPANCY_STATE BACstac_api BACstacGetPropStatesZoneOccState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAccCredDisableReason (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ACCESS_CRED_DISABLE_REASON accessCredDisableReason
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACCESS_CRED_DISABLE_REASON BACstac_api BACstacGetPropStatesAccCredDisableReason (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAccCredDisable (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ACCESS_CRED_DISABLE accessCredDisable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACCESS_CRED_DISABLE BACstac_api BACstacGetPropStatesAccCredDisable (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAuthnStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_AUTHN_STATUS authnStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUTHN_STATUS BACstac_api BACstacGetPropStatesAuthnStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2008j-1 End */
+
+/* Add-135-2008h-3 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAction (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ACTION action
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACTION BACstac_api BACstacGetPropStatesAction (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesDoorSecuredStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_DOOR_SECURED_STATUS doorSecuredStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOOR_SECURED_STATUS BACstac_api BACstacGetPropStatesDoorSecuredStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesDoorStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_DOOR_STATUS doorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOOR_STATUS BACstac_api BACstacGetPropStatesDoorStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesDoorValue (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_DOOR_VALUE doorValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOOR_VALUE BACstac_api BACstacGetPropStatesDoorValue (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesFileAccMethod (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_FILE_ACCESS_METHOD fileAccessMethod
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FILE_ACCESS_METHOD BACstac_api BACstacGetPropStatesFileAccMethod (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLockStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LOCK_STATUS lockStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOCK_STATUS BACstac_api BACstacGetPropStatesLockStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSafetyOperation (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFE_SAFETY_OPERATION lifeSafetyOperation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFE_SAFETY_OPERATION BACstac_api BACstacGetPropStatesSafetyOperation (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesMaintenance (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_MAINTENANCE maintenance
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MAINTENANCE BACstac_api BACstacGetPropStatesMaintenance (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesNodeType (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_NODE_TYPE nodeType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NODE_TYPE BACstac_api BACstacGetPropStatesNodeType (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesNotifyType (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_NOTIFY_TYPE notifyType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NOTIFY_TYPE BACstac_api BACstacGetPropStatesNotifyType (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesShedState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_SHED_STATE shedState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SHED_STATE BACstac_api BACstacGetPropStatesShedState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSilencedState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_SILENCED_STATE silencedState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SILENCED_STATE BACstac_api BACstacGetPropStatesSilencedState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2008h-3 End */
+
+/* Add-135-2008n-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesBackupState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_BACKUP_STATE backupState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BACKUP_STATE BACstac_api BACstacGetPropStatesBackupState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2008n-1 End */
+
+/* Add-135-2012ai-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesBipMode (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_BIP_MODE bipMode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIP_MODE BACstac_api BACstacGetPropStatesBipMode (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesNetPortCmd (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_NET_PORT_CMD portCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NET_PORT_CMD BACstac_api BACstacGetPropStatesNetPortCmd (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesNetworkType (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_NETWORK_TYPE networkType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NETWORK_TYPE BACstac_api BACstacGetPropStatesNetworkType (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesNetNumberQuality (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_NET_NUMBER_QUALITY netNumberQuality
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NET_NUMBER_QUALITY BACstac_api BACstacGetPropStatesNetNumberQuality (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012ai-1 End */
+
+/* Add-135-2012aq Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesEscalatorOperDir (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ESCALATOR_OPER_DIR escalatorOperationDir
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ESCALATOR_OPER_DIR BACstac_api BACstacGetPropStatesEscalatorOperDir (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesEscalatorFault (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ESCALATOR_FAULT escalatorFault
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ESCALATOR_FAULT BACstac_api BACstacGetPropStatesEscalatorFault (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesEscalatorMode (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_ESCALATOR_MODE escalatorMode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ESCALATOR_MODE BACstac_api BACstacGetPropStatesEscalatorMode (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftCarDir (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_CAR_DIR liftCarDir
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_CAR_DIR BACstac_api BACstacGetPropStatesLiftCarDir (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftCarDoorCmd (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_CAR_DOOR_CMD liftCarDoorCmd
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_CAR_DOOR_CMD BACstac_api BACstacGetPropStatesLiftCarDoorCmd (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftCarDriveStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_CAR_DRIVE_STATUS liftCarDriveStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_CAR_DRIVE_STATUS BACstac_api BACstacGetPropStatesLiftCarDriveStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftCarMode (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_CAR_MODE liftCarMode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_CAR_MODE BACstac_api BACstacGetPropStatesLiftCarMode (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftGroupMode (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_GROUP_MODE liftCarMode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_GROUP_MODE BACstac_api BACstacGetPropStatesLiftGroupMode (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLiftFault (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIFT_FAULT liftFault
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_FAULT BACstac_api BACstacGetPropStatesLiftFault (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012aq End */
+
+/* Add-135-2012bf Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesProtocolLevel (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_PROTOCOL_LEVEL protocolLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROTOCOL_LEVEL BACstac_api BACstacGetPropStatesProtocolLevel (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012bf End */
+
+/* Add-135-2010i Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLightingInProgress (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIGHTING_IN_PROGRESS lightingInProgress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_IN_PROGRESS BACstac_api BACstacGetPropStatesLightingInProgress (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLightingOperation (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIGHTING_OPERATION lightingOperation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_OPERATION BACstac_api BACstacGetPropStatesLightingOperation (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesLightingTransition (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_LIGHTING_TRANSITION lightingTransition
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_TRANSITION BACstac_api BACstacGetPropStatesLightingTransition (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2010i End */
+
+/* Add-135-2010aa-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesWriteStatus (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_WRITE_STATUS WriteStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WRITE_STATUS BACstac_api BACstacGetPropStatesWriteStatus (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2010aa-1 End */
+
+/* Add-135-2012az-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesBinaryLightingPV (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_BINARY_LIGHTING_PV binaryLightingPV
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BINARY_LIGHTING_PV BACstac_api BACstacGetPropStatesBinaryLightingPV (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012az-1 End */
+
+/* Add-135-2008g Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSecurityLevel (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_SECURITY_LEVEL securityLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SECURITY_LEVEL BACstac_api BACstacGetPropStatesSecurityLevel (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2008g End */
+
+/* Add-135-2012aw-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesInteger (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetPropStatesInteger (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012aw-1 End */
+
+/* Add-135-2012ay-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesTimerState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_TIMER_STATE timerState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIMER_STATE BACstac_api BACstacGetPropStatesTimerState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesTimerTransition (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_TIMER_TRANSITION timerTransition
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIMER_TRANSITION BACstac_api BACstacGetPropStatesTimerTransition (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2012ay-1 End */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCmpPropStates (
+    const BACSTAC_PROPERTY_STATES *p1,
+    const BACSTAC_PROPERTY_STATES *p2
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetPropStatesProprietary (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesProprietary (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_PROP_STATES_TYPE tag,
+    BACSTAC_ENUM value
+) BACSTAC_NOTHROW;
+
+/* Add-135-2020cc Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSCConnectState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_SC_CONNECT_STATE scConnectState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SC_CONNECT_STATE BACstac_api BACstacGetPropStatesSCConnectState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSCHubConnectorState (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_SC_HUB_CONNECTOR_STATE scHubConnectorState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SC_HUB_CONNECTOR_STATE BACstac_api BACstacGetPropStatesSCHubConnectorState (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2020cc End */
+
+/* Add-135-2016bi Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAuditLevel (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_AUDIT_LEVEL auditLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_LEVEL BACstac_api BACstacGetPropStatesAuditLevel (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesAuditOperation (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_AUDIT_OPERATION auditOperation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_OPERATION BACstac_api BACstacGetPropStatesAuditOperation (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+/* Add-135-2016bi End */
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropStatesSigned (
+    BACSTAC_PROPERTY_STATES *pStates,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetPropStatesSigned (
+    const BACSTAC_PROPERTY_STATES *pStates
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPropStates (
+    BACSTAC_PROPERTY_STATES *pDestStates,
+    const BACSTAC_PROPERTY_STATES *pSrcStates
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_DATE_RANGE
+ */
+
+
+/* Set all fields to | UNSPECIFIED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDateRange (
+    BACSTAC_DATE_RANGE *pDateRange
+) BACSTAC_NOTHROW;
+
+/* Set dayOfWeek to | UNSPECIFIED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateRangeStartDate (
+    BACSTAC_DATE_RANGE *pDateRange,
+    BACSTAC_YEAR year,
+    BACSTAC_MONTH month,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateRangeStartDate (
+    BACSTAC_DATE_RANGE *pDateRange,
+    const BACSTAC_DATE *pSrcDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetDateRangeStartDatePtr (
+    const BACSTAC_DATE_RANGE *pDateRange
+) BACSTAC_NOTHROW;
+
+/* Set dayOfWeek to | UNSPECIFIED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDateRangeEndDate (
+    BACSTAC_DATE_RANGE *pDateRange,
+    BACSTAC_YEAR year,
+    BACSTAC_MONTH month,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateRangeEndDate (
+    BACSTAC_DATE_RANGE *pDateRange,
+    const BACSTAC_DATE *pSrcDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetDateRangeEndDatePtr (
+    const BACSTAC_DATE_RANGE *pDateRange
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDateRange (
+    BACSTAC_DATE_RANGE *pDestDateRange,
+    const BACSTAC_DATE_RANGE *pSrcDateRange
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_WEEK_N_DAY
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWeekNDay (
+    BACSTAC_WEEK_N_DAY *pWeekNDay,
+    BACSTAC_MONTH month,
+    BACSTAC_WEEK_OF_MONTH weekOfMonth,
+    BACSTAC_DAY_OF_WEEK dayOfWeek
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWeekNDayMonth (
+    BACSTAC_WEEK_N_DAY *pWeekNDay,
+    BACSTAC_MONTH month
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MONTH BACstac_api BACstacGetWeekNDayMonth (
+    const BACSTAC_WEEK_N_DAY *pWeekNDay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWeekNDayWeek (
+    BACSTAC_WEEK_N_DAY *pWeekNDay,
+    BACSTAC_WEEK_OF_MONTH weekOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WEEK_OF_MONTH BACstac_api BACstacGetWeekNDayWeek (
+    const BACSTAC_WEEK_N_DAY *pWeekNDay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWeekNDayDay (
+    BACSTAC_WEEK_N_DAY *pWeekNDay,
+    BACSTAC_DAY_OF_WEEK dayOfWeek
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DAY_OF_WEEK BACstac_api BACstacGetWeekNDayDay (
+    const BACSTAC_WEEK_N_DAY *pWeekNDay
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWeekNDay (
+    BACSTAC_WEEK_N_DAY *pDestWeekNDay,
+    const BACSTAC_WEEK_N_DAY *pSrcWeekNDay
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_CALENDAR_ENTRY
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCalEntryDate (
+    BACSTAC_CALENDAR_ENTRY *pCalendarEntry,
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCalEntryDateRange (
+    BACSTAC_CALENDAR_ENTRY *pCalendarEntry,
+    const BACSTAC_DATE_RANGE *pDateRange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCalEntryWeekNDay (
+    BACSTAC_CALENDAR_ENTRY *pCalendarEntry,
+    const BACSTAC_WEEK_N_DAY *pWeekNDay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CALENDAR_ENTRY_TYPE BACstac_api BACstacGetCalEntryTag (
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetCalEntryDatePtr (
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_RANGE * BACstac_api BACstacGetCalEntryDateRangePtr (
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WEEK_N_DAY * BACstac_api BACstacGetCalEntryWeekNDayPtr (
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCalEntry (
+    BACSTAC_CALENDAR_ENTRY *pDestCalendarEntry,
+    const BACSTAC_CALENDAR_ENTRY *pSrcCalendarEntry
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_TIME_VALUE
+ */
+
+
+/* clones PROPERTY_CONTENTS pointed to by pValue*/
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTimeValue (
+    BACSTAC_TIME_VALUE *pTimeValue,
+    const BACSTAC_TIME *pTime,
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyTimeValueTime (
+    BACSTAC_TIME_VALUE *pTimeValue,
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetTimeValueTimePtr (
+    const BACSTAC_TIME_VALUE *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneTimeValueValue (
+    BACSTAC_TIME_VALUE *pTimeValue,
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetTimeValueValuePtr (
+    const BACSTAC_TIME_VALUE *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneTimeValue (
+    BACSTAC_TIME_VALUE *pDestTimeValue,
+    const BACSTAC_TIME_VALUE *pSrcTimeValue
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_SPECIAL_EVENT
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSpecEventCalEntry (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry,
+    const BACSTAC_TIME_VALUE *pEntries,
+    BACSTAC_ELEMENT_COUNT entryCount,
+    BACSTAC_UI8 eventPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSpecEventCalRef (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    const BACSTAC_OBJECT_ID *pCalendarRef,
+    const BACSTAC_TIME_VALUE *pEntries,
+    BACSTAC_ELEMENT_COUNT entryCount,
+    BACSTAC_UI8 eventPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PERIOD_TYPE BACstac_api BACstacGetSpecEventTag (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySpecEventCalEntry (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    const BACSTAC_CALENDAR_ENTRY *pCalendarEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CALENDAR_ENTRY * BACstac_api
+BACstacGetSpecEventCalEntryPtr (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySpecEventCalRef (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    const BACSTAC_OBJECT_ID *pCalendarRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetSpecEventCalRefPtr (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSpecEventEntries (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    const BACSTAC_TIME_VALUE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_VALUE * BACstac_api BACstacGetSpecEventEntryPtr (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetSpecEventCount (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSpecEventPriority (
+    BACSTAC_SPECIAL_EVENT *pSpecEvent,
+    BACSTAC_UI8 priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetSpecEventPriority (
+    const BACSTAC_SPECIAL_EVENT *pSpecEvent
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneSpecEvent (
+    BACSTAC_SPECIAL_EVENT *pDestSpecEvent,
+    const BACSTAC_SPECIAL_EVENT *pSrcSpecEvent
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_PROPERTY_VALUE
+ */
+
+
+/* Set index & priority to VOID; _clones_ value */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPropValue (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPropValueToBuf (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    BACSTAC_PROPERTY_ID propID,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropValuePropID (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetPropValuePropID (
+    const BACSTAC_PROPERTY_VALUE *pPropValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropValueIndex (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetPropValueIndex (
+    const BACSTAC_PROPERTY_VALUE *pPropValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacClonePropValueValue (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetPropValueValuePtr (
+    const BACSTAC_PROPERTY_VALUE *pPropValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropValuePriority (
+    BACSTAC_PROPERTY_VALUE *pPropValue,
+    BACSTAC_PRIORITY_LEVEL priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetPropValuePriority (
+    const BACSTAC_PROPERTY_VALUE *pPropValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacClonePropValue (
+    BACSTAC_PROPERTY_VALUE *pDestPropValue,
+    const BACSTAC_PROPERTY_VALUE *pSrcPropValue
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_DEV_OBJ_PROP_VALUE / Add-135-2001a /
+ */
+
+
+/* Set index to VOID; _clones_ value */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDevObjPropValue (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    const BACSTAC_OBJECT_ID *pDevID,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjPropValueDevID (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    const BACSTAC_OBJECT_ID *pDevID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjPropValueObjID (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevObjPropValuePropID (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevObjPropValueIndex (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneDevObjPropValueValue (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetDevObjPropValueDevPtr (
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetDevObjPropValueObjPtr (
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetDevObjPropValuePropID (
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetDevObjPropValueIndex (
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetDevObjPropValueValuePtr (
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pDOPValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneDevObjPropValue (
+    BACSTAC_DEV_OBJ_PROP_VALUE *pDestValue,
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pSrcValue
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * BACSTAC_RECIPIENT
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRecipientDevice (
+    BACSTAC_RECIPIENT *pRecipient,
+    const BACSTAC_OBJECT_ID *pDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRecipientAddress (
+    BACSTAC_RECIPIENT *pRecipient,
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT_TYPE BACstac_api BACstacGetRecipientTag (
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetRecipientDevicePtr (
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ADDRESS * BACstac_api BACstacGetRecipientAddressPtr (
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRecipient (
+    BACSTAC_RECIPIENT *pDestRecipient,
+    const BACSTAC_RECIPIENT *pSrcRecipient
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_SETPOINT_REF
+ */
+
+
+/* Initialize empty reference */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSetpointRef (
+    BACSTAC_SETPOINT_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsSetpointRefEmpty (
+    const BACSTAC_SETPOINT_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySetpointRefProperty (
+    BACSTAC_SETPOINT_REF *pReference,
+    const BACSTAC_OBJ_PROP_REF *pPropReference
+) BACSTAC_NOTHROW;
+
+/* Return NULL if empty*/
+BACSTACAPI BACSTAC_OBJ_PROP_REF *
+BACstac_api BACstacGetSetpointRefPropertyPtr (
+    const BACSTAC_SETPOINT_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySetpointRef (
+    BACSTAC_SETPOINT_REF *pDestReference,
+    const BACSTAC_SETPOINT_REF *pSrcReference
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_DESTINATION
+ */
+
+
+/* Defaults: validDays - all to 1; transitions - all to 0*/
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDestination (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_TIME *pFromTime,
+    const BACSTAC_TIME *pToTime,
+    const BACSTAC_RECIPIENT *pRecipient,
+    BACSTAC_UI32 processID,
+    BACSTAC_BOOLEAN issueConfNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestinationDays (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_BIT_STRING *pValidDays
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetDestinationDaysPtr (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestinationFromTime (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_TIME *pFromTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetDestinationFromTimePtr (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestinationToTime (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_TIME *pToTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetDestinationToTimePtr (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestinationRecipient (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT * BACstac_api BACstacGetDestinationRecipientPtr (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDestinationProcessID (
+    BACSTAC_DESTINATION *pDestination,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetDestinationProcessID (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDestinationConfFlag (
+    BACSTAC_DESTINATION *pDestination,
+    BACSTAC_BOOLEAN issueConfNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetDestinationConfFlag (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestinationTransBits (
+    BACSTAC_DESTINATION *pDestination,
+    const BACSTAC_BIT_STRING *pTransionBits
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetDestinationTransBitsPtr (
+    const BACSTAC_DESTINATION *pDestination
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDestination (
+    BACSTAC_DESTINATION *pDestDestination,
+    const BACSTAC_DESTINATION *pSrcDestination
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_DAILY_SCHEDULE
+ */
+
+
+/* Set pEntries to NULL and entryCount to 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDailySchedule (
+    BACSTAC_DAILY_SCHEDULE *pSchedule
+) BACSTAC_NOTHROW;
+
+/* pEntries may be NULL if entryCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDailyScheduleEntries (
+    BACSTAC_DAILY_SCHEDULE *pSchedule,
+    const BACSTAC_TIME_VALUE *pEntries,
+    BACSTAC_ELEMENT_COUNT entryCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_VALUE * BACstac_api BACstacGetDailyScheduleEntryPtr (
+    const BACSTAC_DAILY_SCHEDULE *pSchedule,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetDailyScheduleCount (
+    const BACSTAC_DAILY_SCHEDULE *pSchedule
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneDailySchedule (
+    BACSTAC_DAILY_SCHEDULE *pDestSchedule,
+    const BACSTAC_DAILY_SCHEDULE *pSrcSchedule
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_TIME_STAMP
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTimeStampTime (
+    BACSTAC_TIME_STAMP *pTimeStamp,
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTimeStampSeqNumber (
+    BACSTAC_TIME_STAMP *pTimeStamp,
+    BACSTAC_UI16 seqNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTimeStampDateTime (
+    BACSTAC_TIME_STAMP *pTimeStamp,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP_TYPE BACstac_api BACstacGetTimeStampTag (
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetTimeStampTimePtr (
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetTimeStampSeqNumber (
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetTimeStampDateTimePtr (
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyTimeStamp (
+    BACSTAC_TIME_STAMP *pDestTimeStamp,
+    const BACSTAC_TIME_STAMP *pSrcTimeStamp
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * BACSTAC_PROP_REF
+ */
+
+
+/* Set index to VOID */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPropReference (
+    BACSTAC_PROP_REF *pPropRef,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropReferencePropID (
+    BACSTAC_PROP_REF *pPropRef,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetPropReferencePropID (
+    const BACSTAC_PROP_REF *pPropRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPropReferenceIndex (
+    BACSTAC_PROP_REF *pPropRef,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetPropReferenceIndex (
+    const BACSTAC_PROP_REF *pPropRef
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPropReference (
+    BACSTAC_PROP_REF *pDestPropRef,
+    const BACSTAC_PROP_REF *pSrcPropRef
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_NOTIFICATION_PARAMETERS
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOBitString (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_BIT_STRING *pRefBitString,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOState (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_STATES *pNewState,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOVBitString (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_BIT_STRING *pChangedBits,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOVIncrement (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL propIncrement,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+
+/* Clone pCmdValue and pFeedbackValue */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCmdFailure (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_CONTENTS *pCmdValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    const BACSTAC_PROPERTY_CONTENTS *pFeedbackValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPFloatingLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL refValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_REAL setpointValue,
+    BACSTAC_REAL errorLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPOutOfRange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL exceedingValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_REAL deadband,
+    BACSTAC_REAL exceededLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPBufferReady (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_OBJECT_ID *bufferDevice,
+    const BACSTAC_OBJECT_ID *bufferObject,
+    const BACSTAC_DATE_TIME *prevNotification,
+    const BACSTAC_DATE_TIME *currNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOLifeSafety (           /* Add-135c */
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_LIFE_SAFETY_STATE newState,
+    BACSTAC_LIFE_SAFETY_MODE newMode,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_LIFE_SAFETY_OPERATION operationExpected
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtended (               /* Add-135-2001a */
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UI16 vendorID,
+    BACSTAC_UNSIGNED extendedEventType,
+    const BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_ELEMENT_COUNT extParamCount
+) BACSTAC_NOTHROW;
+
+/* eventType is ignored */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPComplexEventType (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_EVENT_TYPE eventType,
+    const BACSTAC_PROPERTY_VALUE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPBufferReady2 (        /* Add-135-2001b */
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_DEV_OBJ_PROP_REF *bufferProperty,
+    BACSTAC_UI32 prevNotification,
+    BACSTAC_UI32 currNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPUnsignedRange (        /* Add-135-2001c-4 */
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceedingValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_UNSIGNED exceededLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPAccessEvent (        /* Add-135-2008j-7 */
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_ACCESS_EVENT accessEvent,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_UNSIGNED accessEventTag,
+    const BACSTAC_TIME_STAMP *pAccessEventTime,
+    const BACSTAC_DEV_OBJ_REF *pAccessCredential,
+    const BACSTAC_AUTHN_FACTOR *pAuthnFactor /* or NULL */
+) BACSTAC_NOTHROW;
+
+/* Add-135-2008w Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPDoubleOutOfRange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DOUBLE exceedingValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_DOUBLE deadband,
+    BACSTAC_DOUBLE exceededLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPSignedOutOfRange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_INTEGER exceedingValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_UNSIGNED deadband,
+    BACSTAC_INTEGER exceededLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPUnsignedOutOfRange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceedingValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    BACSTAC_UNSIGNED deadband,
+    BACSTAC_UNSIGNED exceededLimit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOCharString (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_CHAR_STRING *pChangedValue,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    const BACSTAC_CHAR_STRING *pAlarmValue
+) BACSTAC_NOTHROW;
+/* Add-135-2008w End */
+/* Add-135-2008p Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOStatusFlags (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_CONTENTS *pPresentValue,  /* or NULL */
+    const BACSTAC_BIT_STRING *pReferencedFlags
+) BACSTAC_NOTHROW;
+/* Add-135-2008p End */
+/* Add-135-2010af Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOReliability (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_RELIABILITY reliability,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    const BACSTAC_PROPERTY_VALUE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+/* Add-135-2010af End */
+/* Add-135-2012aw-2 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCODiscreteValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_DISCRETE_VAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPNewValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_DISCRETE_VAL */
+BACSTACAPI BACSTAC_NP_CODV_VALUE *BACstac_api BACstacGetNPNewValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2012aw-2 End */
+/* Add-135-2012ay-1 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPCOTimer (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_TIMER_STATE newState,
+    const BACSTAC_BIT_STRING *pStatusFlags,
+    const BACSTAC_DATE_TIME *pUpdateTime
+) BACSTAC_NOTHROW;
+/* Add-135-2012ay-1 End */
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetNPTag (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_BITSTRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPRefBitString (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_BIT_STRING *pRefBitString
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_BITSTRING */
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetNPRefBitStringPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to one of the standard event types*/
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPStatusFlags (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to one of the standard event types*/
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetNPStatusFlagsPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_STATE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPNewState (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_STATES *pNewState
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_STATE */
+BACSTACAPI BACSTAC_PROPERTY_STATES *BACstac_api BACstacGetNPNewStatePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_VALUE */
+BACSTACAPI BACSTAC_NP_COV_TYPE BACstac_api BACstacGetCOVType (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:NP_CHANGE_BIT_STRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPChangedBits (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_BIT_STRING *pChangedBits
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:NP_CHANGE_BIT_STRING */
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetNPChangedBitsPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:NP_CHANGE_VALUE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPPropIncrement (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL propIncrement
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:NP_CHANGE_VALUE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPPropIncrement (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+/* Clone pCmdValue */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPCmdValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_CONTENTS *pCmdValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetNPCmdValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+/* Clone pFeedbackValue */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPFeedbackValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_CONTENTS *pFeedbackValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetNPFeedbackValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPRefValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL refValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPRefValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPSetpointValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL setpointValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPSetpointValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPErrorLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL errorLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPErrorLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPExceedingValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL exceedingValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPExceedingValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPDeadband (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPDeadband (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPExceededLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_REAL exceededLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPExceededLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPBufferDev (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_OBJECT_ID *bufferDev
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetNPBufferDevPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPBufferObj (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_OBJECT_ID *bufferObj
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetNPBufferObjPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyBufferObjNPPrevNotif (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DATE_TIME *prevNotif
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetNPPrevNotifPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPCurrNotif (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DATE_TIME *currNotif
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY */
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetNPCurrNotifPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Add-135c Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPNewState (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_LIFE_SAFETY_STATE newState
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_STATE BACstac_api BACstacGetNPNewState (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPNewMode (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_LIFE_SAFETY_MODE newMode
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_MODE BACstac_api BACstacGetNPNewMode (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPOperationExpected (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_LIFE_SAFETY_OPERATION operationExpected
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_OPERATION BACstac_api BACstacGetNPOperationExpected (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135c End */
+
+/* Add-135-2001a Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPVendorID (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetNPVendorID (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPExtendedEventType (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED extendedEventType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPExtendedEventType (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPExtParameters (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_ELEMENT_COUNT extParamCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NP_E_PARAMETER * BACstac_api BACstacGetNPExtParametersPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetNPExtParametersCount (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamNull (
+    BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamReal (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamUnsigned (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamBoolean (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamInteger (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamDouble (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_DOUBLE doubleValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamOctetString (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamCharString (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_CHAR_STRING *pCharString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamBitString (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_BIT_STRING *pBitString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamEnumerated (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamDate (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_DATE *pDateValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamTime (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_TIME *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamObjID (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_OBJECT_ID *pObjectIDValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPExtParamValue (
+    BACSTAC_NP_E_PARAMETER *pExtParam,
+    const BACSTAC_DEV_OBJ_PROP_VALUE *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetNPExtParamTag (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNPExtParamReal (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPExtParamUnsigned (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetNPExtParamBoolean (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNPExtParamInteger (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetNPExtParamDouble (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api
+BACstacGetNPExtParamOctetStringPtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api
+BACstacGetNPExtParamCharStringPtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api
+BACstacGetNPExtParamBitStringPtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetNPExtParamEnumerated (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api
+BACstacGetNPExtParamDatePtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api
+BACstacGetNPExtParamTimePtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetNPExtParamObjIDPtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_VALUE * BACstac_api
+BACstacGetNPExtParamValuePtr (
+    const BACSTAC_NP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+/* Add-135-2001a End */
+
+
+/* Add-135-2001b Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPBufferProp (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DEV_OBJ_PROP_REF *bufferProp
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api BACstacGetNPBufferPropPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPPrevNotif (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UI32 prevNotification
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetNPPrevNotif (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPCurrNotif (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UI32 currNotification
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetNPCurrNotif (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2001b End */
+
+/* Add-135-2001c-4 Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPUrangeExceedingValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceedingValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPUrangeExceedingValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPUrangeExceededLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceededLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPUrangeExceededLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2001c-4 End */
+
+/* Add-135-2008j-7 Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPAccessEvent (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_ACCESS_EVENT accessEvent
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_ACCESS_EVENT BACstac_api BACstacGetNPAccessEvent (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPAccessEventTag (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED accessEventTag
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPAccessEventTag (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPAccessEventTime (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_TIME_STAMP *pAccessEventTime
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_TIME_STAMP *BACstac_api BACstacGetNPAccessEventTimePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPAccessCredential (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_DEV_OBJ_REF *pAccessCredential
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_DEV_OBJ_REF *BACstac_api BACstacGetNPAccessCredentialPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPAuthnFactor (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_AUTHN_FACTOR *pAuthnFactor /* or NULL */
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_AUTHN_FACTOR *BACstac_api BACstacGetNPAuthnFactorPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2008j-7 End */
+
+/* Add-135-2008w Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPDoubleExceedingValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DOUBLE exceedingValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetNPDoubleExceedingValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPDoubleDeadband (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DOUBLE deadband
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetNPDoubleDeadband (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPDoubleExceededLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_DOUBLE exceededLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetNPDoubleExceededLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPSignedExceedingValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_INTEGER exceedingValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNPSignedExceedingValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE or
+ * EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPUnsignedDeadband (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED deadband
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE or
+ * EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPUnsignedDeadband (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPSignedExceededLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_INTEGER exceededLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNPSignedExceededLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPUnsignedExceedingValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceedingValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPUnsignedExceedingValue (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPUnsignedExceededLimit (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED exceededLimit
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPUnsignedExceededLimit (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPChangedValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_CHAR_STRING *pChangedValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetNPChangedValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyNPAlarmValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_CHAR_STRING *pAlarmValue
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetNPAlarmValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2008w End */
+
+/* Add-135-2008p Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_STATUS_FLAGS */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPPresentValue (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_CONTENTS *pPresentValue  /* or NULL */
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_STATUS_FLAGS */
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetNPPresentValuePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+#define BACstacCopyNPReferencedFlags    BACstacCopyNPStatusFlags
+#define BACstacGetNPReferencedFlagsPtr  BACstacGetNPStatusFlagsPtr
+/* Add-135-2008p End */
+
+/* Add-135-2010af Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_RELIABILITY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPReliability (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_RELIABILITY reliability
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_RELIABILITY */
+BACSTACAPI BACSTAC_RELIABILITY BACstac_api BACstacGetNPReliability (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_RELIABILITY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPReliabilityValues (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_VALUE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_RELIABILITY */
+BACSTACAPI BACSTAC_PROPERTY_VALUE *BACstac_api BACstacGetNPReliabilityValuesPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_RELIABILITY */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetNPReliabilityValueCount (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2010af End */
+
+/* Add-135-2012aw-2 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueBoolean (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    BACSTAC_BOOLEAN boolean
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueUnsigned (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    BACSTAC_UNSIGNED nUnsigned
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueInteger (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    BACSTAC_INTEGER nInteger
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueEnum (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    BACSTAC_ENUM enumerated
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueCharString (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_CHAR_STRING *pCharString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueOctetString (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueDate (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueTime (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueDateTime (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueObjectID (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetNPNewValueTag (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_BOOLEAN */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetNPNewValueBoolean (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_UNSIGNED */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPNewValueUnsigned (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_INTEGER */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNPNewValueInteger (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_ENUM */
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetNPNewValueEnum (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_ANY_CHAR_STRING */
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetNPNewValueCharStringPtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_OCTET_STRING */
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetNPNewValueOctetStringPtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_DATE */
+BACSTACAPI BACSTAC_DATE *BACstac_api BACstacGetNPNewValueDatePtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_TIME */
+BACSTACAPI BACSTAC_TIME *BACstac_api BACstacGetNPNewValueTimePtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_OBJECT_ID */
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetNPNewValueObjectIDPtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_DATE_TIME */
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetNPNewValueDateTimePtr (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+/* Add-135-2012aw-2 End */
+/* Add-135-2012ay-1 Begin */
+/* Assumes that NP has been initialized to EVENT_TYPE_CHANGE_OF_TIMER */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPNewTimerState (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_TIMER_STATE newState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIMER_STATE BACstac_api BACstacGetNPNewTimerState (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPUpdateTime (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_DATE_TIME *pUpdateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetNPUpdateTimePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsNPLastStateChangePresent (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPLastStateChange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_TIMER_TRANSITION lastStateChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstaRemoveNPLastStateChange (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIMER_TRANSITION BACstac_api BACstacGetNPLastStateChange (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsNPInitialTimeoutPresent (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNPInitialTimeout (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    BACSTAC_UNSIGNED initialTimeout
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveNPInitialTimeout (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNPInitialTimeout (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsNPExpirationTimePresent (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPExpirationTime (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_DATE_TIME *pExpirationTime
+) BACSTAC_NOTHROW;
+#define BACstacRemoveNPExpirationTime(pParameters) \
+    BACstacCloneNPExpirationTime(pParameters, NULL)
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetNPExpirationTimePtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+/* Add-135-2012ay-1 End */
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMPLEX */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNPComplexValues (
+    BACSTAC_NOTIFICATION_PARAMETERS *pParameters,
+    const BACSTAC_PROPERTY_VALUE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMPLEX */
+BACSTACAPI BACSTAC_PROPERTY_VALUE *BACstac_api BACstacGetNPComplexValuesPtr (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+/* Assumes that NP has been initialized to EVENT_TYPE_COMPLEX */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetNPComplexValuesCount (
+    const BACSTAC_NOTIFICATION_PARAMETERS *pParameters
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNPNewValueSigned (
+    BACSTAC_NP_CODV_VALUE *pNewValue,
+    BACSTAC_INTEGER nInteger
+) BACSTAC_NOTHROW;
+
+/* assumes that BACSTAC_NP_CODV_VALUE has been initialized to DATA_TYPE_INTEGER */
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNPNewValueSigned (
+    const BACSTAC_NP_CODV_VALUE *pNewValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneNP (
+    BACSTAC_NOTIFICATION_PARAMETERS *pDestParameters,
+    const BACSTAC_NOTIFICATION_PARAMETERS *pSrcParameters
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * Address Binding
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAddressBinding (
+    BACSTAC_ADDRESS_BINDING *pAddressBinding,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAdrBindingObjectID  (
+    BACSTAC_ADDRESS_BINDING *pAddressBinding,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAdrBindingAddress  (
+    BACSTAC_ADDRESS_BINDING *pAddressBinding,
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetAdrBindingObjectIDPtr (
+    const BACSTAC_ADDRESS_BINDING *pAddressBinding
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ADDRESS * BACstac_api BACstacGetAdrBindingAddressPtr (
+    const BACSTAC_ADDRESS_BINDING *pAddressBinding
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAddressBinding (
+    BACSTAC_ADDRESS_BINDING *pDestAdrBinding,
+    const BACSTAC_ADDRESS_BINDING *pSrcAdrBinding
+) BACSTAC_NOTHROW;
+
+
+
+
+
+/*
+ * PropertyContents
+ */
+
+
+/* Raw variable mode initialization routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitContentsToVar (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_DATA_TYPE dataType,
+    const void *pPropVar,
+    BACSTAC_VALUE_SIZE propVarSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitContentsToArray (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_DATA_TYPE dataType,
+    const void *pArray,     /* buffer */
+    BACSTAC_VALUE_SIZE arraySize,       /* buffer size */
+    BACSTAC_ELEMENT_COUNT nElements
+) BACSTAC_NOTHROW;
+
+/* Generic buffer mode initialization routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitContentsToBuf (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE bufferSize
+) BACSTAC_NOTHROW;
+
+/* Is it empty? */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsContentsEmpty (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/*
+ * Free dynamic allocated Contents
+ */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeContents (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* Data type */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsType (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_DATA_TYPE dataType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetContentsType (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* Buffer */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsBuffer (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const void *pBuffer,
+    BACSTAC_VALUE_SIZE bufferSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI void * BACstac_api BACstacGetContentsBufferPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetContentsBufferSize (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* Value size */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsElementsNum (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_ELEMENT_COUNT nElements
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetContentsElementsNum (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* BACstacGetContentsSize return size of all top-level elements
+ * in the content buffer. This size does not include the size of
+ * structures (which may be located in the same buffer) referred
+ * by these elements. For most BACstac types, the size returned
+ * by this function will be sizeof(BACSTAC_TYPE) * nElements.
+ * However, for elements with a variable length (such as null
+ * terminated string), the size will determine dynamically based
+ * on the content of the buffer.
+ *
+ * Note: BACstac v4.3 or before required that the buffer was not
+ * empty. BACstac v5.0 allows the buffer to be empty, and it
+ * returns the correct size for elements of the fixed size, and
+ * 0 otherwise.
+ */
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetContentsSize (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* Misc. */
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContents (
+    BACSTAC_PROPERTY_CONTENTS *pCloneContents,
+    const BACSTAC_PROPERTY_CONTENTS *pOrgContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContents (
+    BACSTAC_PROPERTY_CONTENTS *pCopyContents,
+    const BACSTAC_PROPERTY_CONTENTS *pOrgContents
+) BACSTAC_NOTHROW;
+
+
+/*
+ * 'in-contents' routines
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsNull (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsContentsNull (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsReal (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetContentsReal (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsDouble (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_DOUBLE doublValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetContentsDouble (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsInteger (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetContentsInteger (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsSigned (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetContentsSigned (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsUnsigned (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetContentsUnsigned (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsEnum (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetContentsEnum (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetContentsBool (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetContentsBool (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsObjList (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pObjectIDList,
+    BACSTAC_ELEMENT_COUNT nObjectCount
+) BACSTAC_NOTHROW;
+
+/* Bit String in Contents access routines */
+
+/* Sets bitCount and zeroes bits */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsBitString (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UINT nBitCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetContentsBitStrPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsBitString (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_BIT_STRING *pSrcBitString
+) BACSTAC_NOTHROW;
+
+/* Priority Array Item in Contents access routines */
+
+/* Set tag to NULL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsPriItem (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTAC_PRI_ARRAY_ITEM
+BACSTACAPI * BACstac_api BACstacGetContentsPriItemPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsPriItem (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_PRI_ARRAY_ITEM *pSrc
+) BACSTAC_NOTHROW;
+
+/* Priority Array in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsPriArray (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_ARRAY * BACstac_api BACstacGetContentsPriArrayPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsPriArray (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_PRIORITY_ARRAY *srcArray
+) BACSTAC_NOTHROW;
+
+/* Object ID in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsObjectID (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_OBJECT_TYPE objType,
+    BACSTAC_INST_NUMBER instNum
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetContentsObjectIDPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsObjectID (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pSrcObjectID
+) BACSTAC_NOTHROW;
+
+/* String in Contents access routines */
+
+/* Initializes an empty UTF-8 string */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsString (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetContentsStringPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsString (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CHAR *pSrcString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DBCS_STRING * BACstac_api BACstacGetContentsStringDBCSPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsStringDBCS (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DBCS_STRING *pSrcString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetContentsStringJISX0208Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacGetContentsStringJISC6226Ptr BACstacGetContentsStringJISX0208Ptr
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsStringJISX0208 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CHAR *pSrcString
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacCopyContentsStringJISC6226 BACstacCopyContentsStringJISX0208
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetContentsStringUCS4Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsStringUCS4 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_UCS4_CHAR *pSrcString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetContentsStringUCS2Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsStringUCS2 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_UCS2_CHAR *pSrcString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetContentsString88591Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsString88591 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CHAR *pSrcString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetContentsCharStringPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsCharString (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CHAR_STRING *pSrcString
+) BACSTAC_NOTHROW;
+
+/* Octet String in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsOctetStr (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const void *octets,
+    BACSTAC_VALUE_SIZE count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api BACstacGetContentsOctetStrPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsOctetStr (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OCTET_STRING *pSrcOctetStr
+) BACSTAC_NOTHROW;
+
+/* Date in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDate (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_YEAR year,
+    BACSTAC_MONTH month,
+    BACSTAC_DAY_OF_MONTH dayOfMonth
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetContentsDatePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDate (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE *pSrcDate
+) BACSTAC_NOTHROW;
+
+/* Time in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_HOUR hour,
+    BACSTAC_MINUTE minute,
+    BACSTAC_SECOND second,
+    BACSTAC_HUNDREDTHS hundredths
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetContentsTimePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_TIME *pSrcTime
+) BACSTAC_NOTHROW;
+
+/* Date Time in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDateTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetContentsDateTimePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDateTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE_TIME *pSrcDateTime
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDateRange (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_RANGE * BACstac_api BACstacGetContentsDateRangePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDateRange (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE_RANGE *pSrcDateRange
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsWeekNDay (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_MONTH month,
+    BACSTAC_WEEK_OF_MONTH weekOfMonth,
+    BACSTAC_DAY_OF_WEEK dayOfWeek
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WEEK_N_DAY * BACstac_api BACstacGetContentsWeekNDayPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsWeekNDay (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_WEEK_N_DAY *pSrcWeekNDay
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsCalEntryDate (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE *pDate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsCalEntryRange (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE_RANGE *pDateRange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsCalEntryWeekNDay (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_WEEK_N_DAY *pWeekNDay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CALENDAR_ENTRY * BACstac_api BACstacGetContentsCalEntryPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsCalEntry (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CALENDAR_ENTRY *pSrcCalEntry
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsObjPropRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJ_PROP_REF *
+BACstac_api BACstacGetContentsObjPropRefPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsObjPropRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJ_PROP_REF *pSrcObjPropRef
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDevObjPropRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *
+BACstac_api BACstacGetContentsDevObjPropRefPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDevObjPropRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DEV_OBJ_PROP_REF *pSrcDevObjPropRef
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDevObjRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_REF *
+BACstac_api BACstacGetContentsDevObjRefPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDevObjRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DEV_OBJ_REF *pSrcDevObjRef
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsPropStates (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_STATES *
+BACstac_api BACstacGetContentsPropStatesPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsPropStates (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_PROPERTY_STATES *pSrcPropStates
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsTimeValue (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_TIME *pTime,
+    BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_VALUE * BACstac_api BACstacGetContentsTimeValuePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsTimeValue (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_TIME_VALUE *pSrcTimeValue
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsSpecEvEntry (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CALENDAR_ENTRY *pCalEntry,
+    const BACSTAC_TIME_VALUE *pEntries,
+    BACSTAC_ELEMENT_COUNT entryCount,
+    BACSTAC_UI8 eventPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsSpecEvRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pCalendarRef,
+    const BACSTAC_TIME_VALUE *pEntries,
+    BACSTAC_ELEMENT_COUNT entryCount,
+    BACSTAC_UI8 eventPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SPECIAL_EVENT * BACstac_api BACstacGetContentsSpecEvPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsSpecEv (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_SPECIAL_EVENT *pSrcEvent
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsRecipientDev (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *pDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsRecipientAddr (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT * BACstac_api BACstacGetContentsRecipientPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsRecipient (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_RECIPIENT *pSrcRecipient
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsSetpointRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SETPOINT_REF *
+BACstac_api BACstacGetContentsSetpointRefPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsSetpointRef (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_SETPOINT_REF *pSrcSetpointRef
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsDestination (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_TIME *pFromTime,
+    const BACSTAC_TIME *pToTime,
+    const BACSTAC_RECIPIENT *pRecipient,
+    BACSTAC_UI32 processID,
+    BACSTAC_BOOLEAN issueConfNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DESTINATION * BACstac_api BACstacGetContentsDestinationPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsDestination (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DESTINATION *pSrcDestination
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsSchedule (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DAILY_SCHEDULE * BACstac_api BACstacGetContentsSchedulePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsSchedule (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DAILY_SCHEDULE *pSrcSchedule
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsPropValue (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_VALUE *BACstac_api BACstacGetContentsPropValuePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsPropValue (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_PROPERTY_VALUE *pSrcValue
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsPropReference (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF *
+BACstac_api BACstacGetContentsPropReferencePtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsPropReference (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_PROP_REF *pSrcReference
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * BACSTAC_EVENT_PARAMETER2
+ */
+
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2COBitStr (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_BIT_STRING *pBitMask,
+    const BACSTAC_BIT_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2COState (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_PROPERTY_STATES *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2COVBitStr (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_BIT_STRING *pBitMask
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2COVIncrement (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_REAL propIncrement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2CmdFailure (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_DEV_OBJ_PROP_REF *pFeedbackProperty
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2FLimit (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_DEV_OBJ_PROP_REF *pSetpoint,
+    BACSTAC_REAL lowDiffLimit,
+    BACSTAC_REAL highDiffLimit,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2OutOfRange (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_REAL lowLimit,
+    BACSTAC_REAL highLimit,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2BufferReady ( /* deprecated by Add-135-2001b */
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UI32 notifyThreshold,
+    BACSTAC_UI32 prevNotifyCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2BufferReady2 (/* Add-135-2001b */
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UI32 notifyThreshold,
+    BACSTAC_UI32 prevNotifyCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsEP2COSafety ( /* Add-135c */
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_LIFE_SAFETY_STATE *pLifeSafetyAlarmValues,
+    BACSTAC_ELEMENT_COUNT safetyAlarmValueCount,
+    const BACSTAC_LIFE_SAFETY_STATE *pAlarmValues,
+    BACSTAC_ELEMENT_COUNT alarmValueCount,
+    const BACSTAC_DEV_OBJ_PROP_REF *pModePropertyReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_PARAMETER2 * BACstac_api BACstacGetContentsEP2Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsEP2 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_EVENT_PARAMETER2 *pSrcParameter
+) BACSTAC_NOTHROW;
+
+
+
+
+/* ActionList */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsActionList (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_ACTION_COMMAND *actions,
+    BACSTAC_ELEMENT_COUNT actionCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACTION_LIST * BACstac_api BACstacGetContentsActionListPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsActionList (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_ACTION_LIST *actionList
+) BACSTAC_NOTHROW;
+
+/* ReadAccessSpecification */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsReadAccSpec (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_OBJECT_ID *objectID,
+    BACSTAC_PROP_REF *items,
+    BACSTAC_PROPERTY_COUNT itemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_ACCESS_SPEC *
+BACstac_api BACstacGetContentsReadAccSpecPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsReadAccSpec (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_READ_ACCESS_SPEC  *readAccSpec
+) BACSTAC_NOTHROW;
+
+/* ReadAccessResult */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsReadAccRes (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_ACCESS_RESULT *
+BACstac_api BACstacGetContentsReadAccResPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsReadAccRes (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_READ_ACCESS_RESULT *readAccResult
+) BACSTAC_NOTHROW;
+
+/* ClientCOV */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsClientCOVReal (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_REAL incrementValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsClientCOVNull (
+    BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CLIENT_COV * BACstac_api BACstacGetContentsClientCOVPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsClientCOV (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_CLIENT_COV *clientCOV
+) BACSTAC_NOTHROW;
+
+/* RAW_ASN1 */
+/* Sets tag to DATA_TYPE_PROPRIETARY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsRawASN1 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_BYTE *asnData,
+    BACSTAC_VALUE_SIZE length
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RAW_ASN1_VALUE *BACstac_api BACstacGetContentsRawASN1Ptr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+/* Sets tag to DATA_TYPE_PROPRIETARY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneContentsRawASN1 (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_RAW_ASN1_VALUE *rawASN1
+) BACSTAC_NOTHROW;
+
+/*
+ * BACSTAC_WHO_HAS_PARAM
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasParamID (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasParamNameStr (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    const BACSTAC_CHAR_STRING *objectName
+) BACSTAC_NOTHROW;
+
+/* object name is assumed to have UTF-8 encoding */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasParamName (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    const BACSTAC_CHAR *pszObjName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasParamNameType (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasParamNameUCS2 (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    BACSTAC_UCS2_CHAR *pszObjName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasParamNameUCS4 (
+    BACSTAC_WHO_HAS_PARAM *pWhoHasParam,
+    BACSTAC_UCS4_CHAR *pszObjName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WHO_HAS_TYPE BACstac_api BACstacGetWhoHasParamType (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetWhoHasParamIDPtr (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetWhoHasParamNameType (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetWhoHasParamNameStrPtr (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetWhoHasParamNamePtr (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetWhoHasParamNameUCS2Ptr (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetWhoHasParamNameUCS4Ptr (
+    const BACSTAC_WHO_HAS_PARAM *pWhoHasParam
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWhoHasParam (
+    BACSTAC_WHO_HAS_PARAM *pDestParam,
+    const BACSTAC_WHO_HAS_PARAM *pSrcParam
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_COV_NOTIF_INFO {
+ *      BACSTAC_UI32        processID;
+ *      BACSTAC_OBJECT_ID   initDeviceID;
+ *      BACSTAC_OBJECT_ID   monitoredObjectID;
+ *      BACSTAC_UNSIGNED    timeRemaining;
+ *      BACSTAC_PROPERTY_CONTENTS *listOfValues;
+ *      BACSTAC_PROPERTY_COUNT nValueCount;
+ * } BACSTAC_COV_NOTIF_INFO;
+ */
+
+
+/* Clones 'listOfValues' */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVNotification (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *pInitDeviceID,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID,
+    BACSTAC_UNSIGNED timeRemaining,
+    BACSTAC_PROPERTY_VALUE *listOfValues,
+    BACSTAC_PROPERTY_COUNT nValueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetCOVNotifProcessID (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVNotifProcessID (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetCOVNotifDeviceIDPtr (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotifDeviceID (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    const BACSTAC_OBJECT_ID *pInitDeviceID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetCOVNotifObjectIDPtr (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotifObjectID (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVNotifTime (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVNotifTime (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    BACSTAC_UNSIGNED timeRemaining
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_VALUE *
+BACstac_api BACstacGetCOVNotifValuesPtr (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetCOVNotifValuesCount (
+    const BACSTAC_COV_NOTIF_INFO *pCOVNotif
+) BACSTAC_NOTHROW;
+
+/* Clones 'listOfValues' */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCOVNotifValues (
+    BACSTAC_COV_NOTIF_INFO *pCOVNotif,
+    BACSTAC_PROPERTY_VALUE *listOfValues,
+    BACSTAC_PROPERTY_COUNT nValueCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotif (
+    BACSTAC_COV_NOTIF_INFO *pDestCOVNotif,
+    const BACSTAC_COV_NOTIF_INFO *pSourceCOVNotif
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_SUBSCRIBE_COV_INFO {
+ *      BACSTAC_BOOLEAN     fSubscribe;
+ *      BACSTAC_UI32        processID;
+ *      BACSTAC_OBJECT_ID   monitoredObjectID;
+ *      BACSTAC_BOOLEAN     issueConfirmedNotifications;
+ *      BACSTAC_UNSIGNED    lifetime;
+ *  } BACSTAC_SUBSCRIBE_COV_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVSubscription (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID,
+    BACSTAC_BOOLEAN issueConfirmedNotifications,
+    BACSTAC_UNSIGNED lifetime   /* BACSTAC_INFINITE_LIFETIME for indefinite */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVCancellation (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVContextSubscription (
+    const BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetCOVContextProcessID (
+    const BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVContextProcessID (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetCOVContextObjectIDPtr (
+    const BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVContextObjectID (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetCOVContextNotifType (
+    const BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVContextNotifType (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    BACSTAC_BOOLEAN issueConfirmedNotifications
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVContextLifetime (
+    const BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVContextLifetime (
+    BACSTAC_SUBSCRIBE_COV_INFO *pCOVContext,
+    BACSTAC_UNSIGNED lifetime
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVContext (
+    BACSTAC_SUBSCRIBE_COV_INFO *pDestCOVContext,
+    const BACSTAC_SUBSCRIBE_COV_INFO *pSourceCOVContext
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_ACK_ALARM_INFO {
+ *      BACSTAC_UI32        processID;
+ *      BACSTAC_OBJECT_ID   eventObjectID;
+ *      BACSTAC_EVENT_STATE eventState;
+ *      BACSTAC_TIME_STAMP  timeStamp;
+ *      BACSTAC_CHAR_STRING ackSource;
+ *      BACSTAC_TIME_STAMP  ackTime;
+ *  } BACSTAC_ACK_ALARM_INFO;
+ */
+
+
+/* Clones 'ackSource' */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAckAlarm (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *pEventObjectID,
+    BACSTAC_EVENT_STATE eventState,
+    const BACSTAC_TIME_STAMP *pTimeStamp,
+    const BACSTAC_CHAR *pszAckSource,
+    const BACSTAC_TIME_STAMP *pAckTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAckAlarmParamNameType (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarmParam,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetAckAlarmProcessID (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAckAlarmProcessID (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetAckAlarmObjectIDPtr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAckAlarmObjectID (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    const BACSTAC_OBJECT_ID *pEventObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetAckAlarmEventState (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAckAlarmEventState (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_EVENT_STATE eventState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetAckAlarmTimeStampPtr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAckAlarmTimeStamp (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetAckAlarmAckSourceStrPtr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetAckAlarmParamNameType (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarmParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetAckAlarmAckSourcePtr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetAckAlarmAckSourceUCS2Ptr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetAckAlarmAckSourceUCS4Ptr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAckAlarmAckSourceStr (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_CHAR_STRING *pAckSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAckAlarmAckSource (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_CHAR *pszAckSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAckAlarmAckSourceDBCS (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_DBCS_STRING *pAckSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAckAlarmAckSourceUCS2 (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_UCS2_CHAR *pszAckSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAckAlarmAckSourceUCS4 (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    BACSTAC_UCS4_CHAR *pszAckSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetAckAlarmAckTimePtr (
+    const BACSTAC_ACK_ALARM_INFO *pAckAlarm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAckAlarmAckTime (
+    BACSTAC_ACK_ALARM_INFO *pAckAlarm,
+    const BACSTAC_TIME_STAMP *pAckTime
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAckAlarm (
+    BACSTAC_ACK_ALARM_INFO *pDestAckAlarm,
+    const BACSTAC_ACK_ALARM_INFO *pSourceAckAlarm
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_ALARM_SUMMARY {
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_EVENT_STATE alarmState;
+ *      BACSTAC_BIT_STRING  ackedTransitions;
+ *  } BACSTAC_ALARM_SUMMARY;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAlarmSummary (
+    BACSTAC_ALARM_SUMMARY *pAlarmSummary,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_EVENT_STATE alarmState,
+    const BACSTAC_BIT_STRING *pAckedTransitions
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetAlarmSummaryObjectIDPtr (
+    const BACSTAC_ALARM_SUMMARY *pAlarmSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAlarmSummaryObjectID (
+    BACSTAC_ALARM_SUMMARY *pAlarmSummary,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetAlarmSummaryState (
+    const BACSTAC_ALARM_SUMMARY *pAlarmSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAlarmSummaryState (
+    BACSTAC_ALARM_SUMMARY *pAlarmSummary,
+    BACSTAC_EVENT_STATE alarmState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *
+BACstac_api BACstacGetAlarmSummaryAckedPtr (
+    const BACSTAC_ALARM_SUMMARY *pAlarmSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAlarmSummaryAcked (
+    BACSTAC_ALARM_SUMMARY *pAlarmSummary,
+    const BACSTAC_BIT_STRING *pAckedTransitions
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAlarmSummary (
+    BACSTAC_ALARM_SUMMARY *pDestSummary,
+    const BACSTAC_ALARM_SUMMARY *pSourceSummary
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_RECIPIENT_PROCESS {
+ *      BACSTAC_RECIPIENT   recipient;
+ *      BACSTAC_UI32        processID;
+ *  } BACSTAC_RECIPIENT_PROCESS;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRecipProcess (
+    BACSTAC_RECIPIENT_PROCESS *pRecipientProcess,
+    const BACSTAC_RECIPIENT *pRecipient,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRecipProcessRecip (
+    BACSTAC_RECIPIENT_PROCESS *pRecipientProcess,
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT *
+BACstac_api BACstacGetRecipProcessRecipPtr (
+    const BACSTAC_RECIPIENT_PROCESS *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRecipProcessID (
+    BACSTAC_RECIPIENT_PROCESS *pRecipient,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRecipProcessID (
+    const BACSTAC_RECIPIENT_PROCESS *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRecipProcess (
+    BACSTAC_RECIPIENT_PROCESS *pDestRecipient,
+    const BACSTAC_RECIPIENT_PROCESS *pSrcRecipient
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_ENROLLMENT_FILTER {
+ *      BACSTAC_UINT                mask;
+ *      BACSTAC_ACK_FILTER          acknowledgement;
+ *      BACSTAC_RECIPIENT_PROCESS   enrollment;
+ *      BACSTAC_STATE_FILTER        eventState;
+ *      BACSTAC_EVENT_TYPE          eventType;
+ *      BACSTAC_UI8                 minPriority;
+ *      BACSTAC_UI8                 maxPriority;
+ *      BACSTAC_UNSIGNED            notificationClass;
+ *  } BACSTAC_ENROLLMENT_FILTER;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEnrlFilter (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_ACK_FILTER acknowledgement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UINT BACstac_api BACstacGetEnrlFilterMask (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACK_FILTER  BACstac_api BACstacGetEnrlFilterAck (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlFilterAck (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_ACK_FILTER acknowledgement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT_PROCESS *
+BACstac_api BACstacGetEnrlFilterRecipientPtr (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEnrlFilterRecipient (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    const BACSTAC_RECIPIENT_PROCESS *recipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STATE_FILTER BACstac_api BACstacGetEnrlFilterEventState (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlFilterEventState (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_STATE_FILTER eventState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetEnrlFilterEventType (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlFilterEventType (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_EVENT_TYPE eventType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetEnrlFilterMinPriority (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetEnrlFilterMaxPriority (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlFilterPriority (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_UI8 minPriority,
+    BACSTAC_UI8 maxPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEnrlFilterNotClass (
+    const BACSTAC_ENROLLMENT_FILTER *pEnrlFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlFilterNotClass (
+    BACSTAC_ENROLLMENT_FILTER *pEnrlFilter,
+    BACSTAC_UNSIGNED notClass
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEnrlFilter (
+    BACSTAC_ENROLLMENT_FILTER *pDestEnrlFilter,
+    const BACSTAC_ENROLLMENT_FILTER *pSrcEnrlFilter
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_ENROLLMENT_SUMMARY {
+ *      BACSTAC_BOOLEAN         fNotClassPresent;
+ *      BACSTAC_OBJECT_ID       objectID;
+ *      BACSTAC_EVENT_TYPE      eventType;
+ *      BACSTAC_EVENT_STATE     eventState;
+ *      BACSTAC_UI8             priority;
+ *      BACSTAC_UNSIGNED        notificationClass;
+ *  } BACSTAC_ENROLLMENT_SUMMARY;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEnrlSummary (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_EVENT_TYPE eventType,
+    BACSTAC_EVENT_STATE eventState,
+    BACSTAC_UI8 priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacEnrlSummaryContainsNotClass (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetEnrlSummaryObjectIDPtr (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEnrlSummaryObjectID (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    const BACSTAC_OBJECT_ID *objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetEnrlSummaryEventType (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlSummaryEventType (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    BACSTAC_EVENT_TYPE eventType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetEnrlSummaryEventState (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlSummaryEventState (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    BACSTAC_EVENT_STATE eventState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetEnrlSummaryPriority (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlSummaryPriority (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    BACSTAC_UI8 priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEnrlSummaryNotClass (
+    const BACSTAC_ENROLLMENT_SUMMARY *pSummary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEnrlSummaryNotClass (
+    BACSTAC_ENROLLMENT_SUMMARY *pSummary,
+    BACSTAC_UNSIGNED notificationClass
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEnrlSummary (
+    BACSTAC_ENROLLMENT_SUMMARY *pDestSummary,
+    const BACSTAC_ENROLLMENT_SUMMARY *pSourceSummary
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_APDU_PROPERTIES {
+ *      BACSTAC_UINT         mask;
+ *      BACSTAC_UINT         nMaxLength;
+ *      BACSTAC_UINT         nMaxSegments;
+ *      BACSTAC_UINT         nWindowSize;
+ *      BACSTAC_UINT         nSegmentTimeout;
+ *      BACSTAC_UINT         nTimeout;
+ *      BACSTAC_UINT         nRetryCount;
+ *      BACSTAC_SEGMENTATION eSegmentation;
+ *      BACSTAC_UINT         nMaxSegmentsToSend;
+ *  } BACSTAC_APDU_PROPERTIES;
+ */
+
+
+typedef enum {
+    BACSTAC_APDU_MAX_LENGTH,        /* 50..maximum supported by the DL */
+    BACSTAC_APDU_MAX_SEGMENTS,
+    BACSTAC_APDU_WINDOW_SIZE,       /* 1..127 */
+    BACSTAC_APDU_SEGMENT_TIMEOUT,
+    BACSTAC_APDU_TIMEOUT,
+    BACSTAC_APDU_NUM_RETRIES,
+    BACSTAC_APDU_MAX_SEG_TO_SEND
+} BACSTAC_APDU_PROP_TYPE;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAPDUProp (   /* no fields are present */
+    BACSTAC_APDU_PROPERTIES *pAPDUProps
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAPDUPropSegmentation (
+    BACSTAC_APDU_PROPERTIES *pAPDUProps,
+    BACSTAC_SEGMENTATION eSegmentation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAPDUPropSegmentationPresent (
+    const BACSTAC_APDU_PROPERTIES *pAPDUProps
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SEGMENTATION BACstac_api BACstacGetAPDUPropSegmentation (
+    const BACSTAC_APDU_PROPERTIES *pAPDUProps
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveAPDUPropSegmentation (
+    BACSTAC_APDU_PROPERTIES *pAPDUProps
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAPDUPropInt (
+    BACSTAC_APDU_PROPERTIES *pAPDUProps,
+    BACSTAC_APDU_PROP_TYPE type,
+    BACSTAC_UINT nValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAPDUPropIntPresent (
+    const BACSTAC_APDU_PROPERTIES *pAPDUProps,
+    BACSTAC_APDU_PROP_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UINT BACstac_api BACstacGetAPDUPropInt (
+    const BACSTAC_APDU_PROPERTIES *pAPDUProps,
+    BACSTAC_APDU_PROP_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveAPDUPropInt (
+    BACSTAC_APDU_PROPERTIES *pAPDUProps,
+    BACSTAC_APDU_PROP_TYPE type
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_INFO
+ *  {
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_PROPERTY_ID ePropertyID;
+ *      BACSTAC_ARRAY_INDEX nIndex;
+ *  } BACSTAC_READ_INFO, *PBACSTAC_READ_INFO;
+ */
+
+
+/* sets index to BACSTAC_VOID_INDEX */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReadInfo (
+    BACSTAC_READ_INFO *pReadInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID ePropertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReadInfoObjectID (
+    BACSTAC_READ_INFO *pReadInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetReadInfoObjectIDPtr (
+    const BACSTAC_READ_INFO *pReadInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReadInfoPropID (
+    BACSTAC_READ_INFO *pReadInfo,
+    BACSTAC_PROPERTY_ID ePropertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetReadInfoPropID (
+    const BACSTAC_READ_INFO *pReadInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReadInfoIndex (
+    BACSTAC_READ_INFO *pReadInfo,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetReadInfoIndex (
+    const BACSTAC_READ_INFO *pReadInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReadInfo (
+    BACSTAC_READ_INFO *pDestInfo,
+    const BACSTAC_READ_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_WRITE_INFO
+ *  {
+ *      BACSTAC_OBJECT_ID         objectID;
+ *      BACSTAC_PROPERTY_ID       ePropertyID;
+ *      BACSTAC_ARRAY_INDEX       nIndex;
+ *      BACSTAC_PRIORITY_LEVEL    nWritePriority;
+ *      BACSTAC_PROPERTY_CONTENTS *pValue;
+ *  } BACSTAC_WRITE_INFO, *PBACSTAC_WRITE_INFO;
+ */
+
+
+/* sets index to BACSTAC_VOID_INDEX, priority to BACSTAC_VOID_PRI */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWriteInfo (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID ePropertyID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWriteInfoObjectID (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetWriteInfoObjectIDPtr (
+    const BACSTAC_WRITE_INFO *pWriteInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteInfoPropID (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    BACSTAC_PROPERTY_ID ePropertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetWriteInfoPropID (
+    const BACSTAC_WRITE_INFO *pWriteInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteInfoIndex (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetWriteInfoIndex (
+    const BACSTAC_WRITE_INFO *pWriteInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteInfoPriority (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    BACSTAC_PRIORITY_LEVEL nPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetWriteInfoPriority (
+    const BACSTAC_WRITE_INFO *pWriteInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteInfoValuePtr (
+    BACSTAC_WRITE_INFO *pWriteInfo,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetWriteInfoValuePtr (
+    const BACSTAC_WRITE_INFO *pWriteInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWriteInfo (
+    BACSTAC_WRITE_INFO *pDestInfo,
+    const BACSTAC_WRITE_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_LIST
+ *  {
+ *      BACSTAC_HOBJECT        hObject;
+ *      BACSTAC_PROPERTY_COUNT nItemCount;
+ *      BACSTAC_PROP_REF       *readItems;
+ *  } BACSTAC_READ_LIST, *PBACSTAC_READ_LIST;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMAccessList (
+    BACSTAC_READ_LIST *pList,
+    BACSTAC_HOBJECT hObject,
+    const BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOBJECT BACstac_api BACstacGetRPMListObject (
+    const BACSTAC_READ_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMListObject (
+    BACSTAC_READ_LIST *pList,
+    BACSTAC_HOBJECT hObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMListItems (
+    BACSTAC_READ_LIST *pList,
+    BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF * BACstac_api
+BACstacGetRPMListItemPtr (
+    const BACSTAC_READ_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRPMListItemID (
+    const BACSTAC_READ_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRPMListItemIndex (
+    const BACSTAC_READ_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPMListItemCount (
+    const BACSTAC_READ_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMList (
+    BACSTAC_READ_LIST *pDestList,
+    const BACSTAC_READ_LIST *pSrcList
+) BACSTAC_NOTHROW;
+
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_ACCESS_SPEC
+ *  {
+ *      BACSTAC_OBJECT_ID      objectID;
+ *      BACSTAC_PROPERTY_COUNT nItemCount;
+ *      BACSTAC_PROP_REF       *readItems;
+ *  } BACSTAC_READ_ACCESS_SPEC, *PBACSTAC_READ_ACCESS_SPEC;
+ *
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReadAccSpec (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    const BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetReadAccSpecObjectIDPtr (
+    const BACSTAC_READ_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReadAccSpecObjectID (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReadAccSpecItems (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF * BACstac_api
+BACstacGetReadAccSpecItemPtr (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetReadAccSpecItemID (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetReadAccSpecItemIndex (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetReadAccSpecItemCount (
+    const BACSTAC_READ_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneReadAccSpec (
+    BACSTAC_READ_ACCESS_SPEC *pDestList,
+    const BACSTAC_READ_ACCESS_SPEC *pSrcList
+) BACSTAC_NOTHROW;
+
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMHookList (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRPMHookListObjectIDPtr (
+    const BACSTAC_READ_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMHookListObjectID (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMHookListItems (
+    BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROP_REF *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_PROP_REF * BACstac_api
+BACstacGetRPMHookListItemPtr (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRPMHookListItemID (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRPMHookListItemIndex (
+    const BACSTAC_READ_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPMHookListItemCount (
+    const BACSTAC_READ_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPMHookList (
+    BACSTAC_READ_ACCESS_SPEC *pDestList,
+    const BACSTAC_READ_ACCESS_SPEC *pSrcList
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_MUL_HOOK_INFO
+ *  {
+ *      BACSTAC_OBJECT_COUNT     nListCount;
+ *      BACSTAC_READ_ACCESS_SPEC *readSpec;
+ *  } BACSTAC_READ_MUL_HOOK_INFO, *PBACSTAC_READ_MUL_HOOK_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMHookInfo (
+    BACSTAC_READ_MUL_HOOK_INFO *pInfo,
+    BACSTAC_READ_ACCESS_SPEC *readSpec,
+    BACSTAC_OBJECT_COUNT nListCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_COUNT BACstac_api BACstacGetRPMHookInfoCount (
+    const BACSTAC_READ_MUL_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_ACCESS_SPEC * BACstac_api BACstacGetRPMHookInfoList (
+    const BACSTAC_READ_MUL_HOOK_INFO *pInfo,
+    BACSTAC_OBJECT_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPMHookInfo (
+    BACSTAC_READ_MUL_HOOK_INFO *pDestInfo,
+    const BACSTAC_READ_MUL_HOOK_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_RESULT_ITEM
+ *  {
+ *      BACSTAC_PROPERTY_ID         propID;
+ *      BACSTAC_ARRAY_INDEX         index;  // optional
+ *      BACSTAC_BOOLEAN             status;
+ *      BACSTAC_PROPERTY_CONTENTS   value;  // valid if status == BACSTAC_TRUE
+ *      BACSTAC_ERROR_TYPE          error;  // valid if status == BACSTAC_FALSE
+ *  } BACSTAC_READ_RESULT_ITEM, *PBACSTAC_READ_RESULT_ITEM;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMResultItem (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMResultItemID (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRPMResultItemID (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMResultItemIndex (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRPMResultItemIndex (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* The 'status' flag is set automatically by
+BACstacSetRPMResultItemError and BACstacCloneRPMResultItemValue */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMResultItemStatus (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    BACSTAC_BOOLEAN fStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetRPMResultItemStatus (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+/* Sets 'status' field to TRUE */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPMResultItemValue (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS * BACstac_api
+BACstacGetRPMResultItemValuePtr (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_TYPE * BACstac_api
+BACstacGetRPMResultItemErrPtr (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+/* Sets 'status' field to FALSE */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMResultItemError (
+    BACSTAC_READ_RESULT_ITEM *pItem,
+    BACSTAC_ERROR_CLASS errClass,
+    BACSTAC_ERROR_CODE errCode
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CLASS BACstac_api BACstacGetRPMResultItemErrClass (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_CODE BACstac_api BACstacGetRPMResultItemErrCode (
+    const BACSTAC_READ_RESULT_ITEM *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMResultItem (
+    BACSTAC_READ_RESULT_ITEM *pDestItem,
+    const BACSTAC_READ_RESULT_ITEM *pSrcItem
+) BACSTAC_NOTHROW;
+
+
+typedef enum {  /* used to access READ_RESULT_LIST
+                   and READ_RAW_RESULT_LIST */
+    RPM_RESULT_COUNT_BUFFER,    /* size of the buffer (in items) */
+    RPM_RESULT_COUNT_ACTUAL,    /* number of items contained by the packet*/
+    RPM_RESULT_COUNT_RETURNED   /* number of items available (the smallest of
+                                   the COUNT_BUFFER and COUNT_ACTUAL) */
+} BACSTAC_RPM_RESULT_COUNT;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_RESULT_LIST
+ *  {
+ *      BACSTAC_HOBJECT          hObject;    // or BACSTAC_INVALID_HANDLE
+ *      BACSTAC_PROPERTY_COUNT   nResultBufferCount;
+ *      BACSTAC_PROPERTY_COUNT   nResultActualCount;
+ *      BACSTAC_READ_RESULT_ITEM *readResults;
+ *  } BACSTAC_READ_RESULT_LIST, *PBACSTAC_READ_RESULT_LIST;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMResultList (
+    BACSTAC_READ_RESULT_LIST *pList,
+    BACSTAC_READ_RESULT_ITEM *resultBuffer,
+    BACSTAC_PROPERTY_COUNT nBufferCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRPMResultList (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_RESULT_LIST *pList,
+    BACSTAC_OBJECT_COUNT nObjectCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMResultListObject (
+    BACSTAC_READ_RESULT_LIST *pList,
+    BACSTAC_HOBJECT hObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOBJECT BACstac_api BACstacGetRPMResultListObject (
+    const BACSTAC_READ_RESULT_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_RESULT_ITEM * BACstac_api
+BACstacGetRPMResultListItemPtr (
+    const BACSTAC_READ_RESULT_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPMResultListCount  (
+    const BACSTAC_READ_RESULT_LIST *pList,
+    BACSTAC_RPM_RESULT_COUNT eCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMResultList (
+    BACSTAC_READ_RESULT_LIST *pDestList,
+    const BACSTAC_READ_RESULT_LIST *pSrcList
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_RAW_RESULT_LIST
+ *  {
+ *      BACSTAC_OBJECT_ID        objectID;
+ *      BACSTAC_PROPERTY_COUNT   nResultBufferCount;
+ *      BACSTAC_PROPERTY_COUNT   nResultActualCount;
+ *      BACSTAC_READ_RESULT_ITEM *readResults;
+ *  } BACSTAC_READ_RAW_RESULT_LIST, *PBACSTAC_READ_RAW_RESULT_LIST;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMRawResultList (
+    BACSTAC_READ_RAW_RESULT_LIST *pList,
+    BACSTAC_READ_RESULT_ITEM *resultBuffer,
+    BACSTAC_PROPERTY_COUNT nBufferCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRPMRawResultList (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_RAW_RESULT_LIST *pList,
+    BACSTAC_OBJECT_COUNT nObjectCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMRawResultListObjectID (
+    BACSTAC_READ_RAW_RESULT_LIST *pList,
+    const BACSTAC_OBJECT_ID *hObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRPMRawResultListObjectIDPtr (
+    const BACSTAC_READ_RAW_RESULT_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_RESULT_ITEM * BACstac_api
+BACstacGetRPMRawResultListItemPtr (
+    const BACSTAC_READ_RAW_RESULT_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPMRawResultListCount  (
+    const BACSTAC_READ_RAW_RESULT_LIST *pList,
+    BACSTAC_RPM_RESULT_COUNT eCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMRawResultList (
+    BACSTAC_READ_RAW_RESULT_LIST *pDestList,
+    const BACSTAC_READ_RAW_RESULT_LIST *pSrcList
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_ACCESS_RESULT
+ *  {
+ *      BACSTAC_OBJECT_ID        objectID;
+ *      BACSTAC_PROPERTY_COUNT   nItemCount;
+ *      BACSTAC_READ_RESULT_ITEM *readResults;
+ *  } BACSTAC_READ_ACCESS_RESULT, *PBACSTAC_READ_ACCESS_RESULT;
+ *
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReadAccResult (
+    BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReadAccResultFromRawResult (
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    const BACSTAC_READ_RAW_RESULT_LIST *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeReadAccResult (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    BACSTAC_OBJECT_COUNT nObjectCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReadAccResultObjectID (
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetReadAccResultObjectIDPtr (
+    const BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReadAccResultItems (
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    const BACSTAC_READ_RESULT_ITEM *resultBuffer,
+    BACSTAC_PROPERTY_COUNT nResultCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetReadAccResultCount  (
+    const BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_RESULT_ITEM * BACstac_api
+BACstacGetReadAccResultItemPtr (
+    const BACSTAC_READ_ACCESS_RESULT *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* It is always return TRUE now */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsReadAccResultListPresent (
+    const BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneReadAccResult (
+    BACSTAC_READ_ACCESS_RESULT *pDestList,
+    const BACSTAC_READ_ACCESS_RESULT *pSrcList
+) BACSTAC_NOTHROW;
+
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPMHookResultList (
+    BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRPMHookResultListObjectID (
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetRPMHookResultListObjectIDPtr (
+    const BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPMHookResultListItems (
+    BACSTAC_READ_ACCESS_RESULT *pList,
+    const BACSTAC_READ_RESULT_ITEM *resultBuffer,
+    BACSTAC_PROPERTY_COUNT nResultCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPMHookResultListCount  (
+    const BACSTAC_READ_ACCESS_RESULT *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_READ_RESULT_ITEM * BACstac_api
+BACstacGetRPMHookResultListItemPtr (
+    const BACSTAC_READ_ACCESS_RESULT *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPMHookResultList (
+    BACSTAC_READ_ACCESS_RESULT *pDestList,
+    const BACSTAC_READ_ACCESS_RESULT *pSrcList
+) BACSTAC_NOTHROW;
+
+
+BACSTAC_DEPRECATED /* use BACstacInitPropValueToBuf instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWPMItem (
+    BACSTAC_PROPERTY_VALUE *pItem,
+    BACSTAC_PROPERTY_ID id,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetPropValuePropID instead */
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetWPMItemPropID (
+    const BACSTAC_PROPERTY_VALUE *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetPropValueIndex instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMItemIndex (
+    BACSTAC_PROPERTY_VALUE *pItem,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetPropValueIndex instead */
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetWPMItemIndex (
+    const BACSTAC_PROPERTY_VALUE *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetPropValueValuePtr instead */
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS * BACstac_api BACstacGetWPMItemValuePtr (
+    const BACSTAC_PROPERTY_VALUE *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetPropValuePriority instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMItemPriority (
+    BACSTAC_PROPERTY_VALUE *pItem,
+    BACSTAC_PRIORITY_LEVEL nPriority
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetPropValuePriority instead */
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetWPMItemPriority (
+    const BACSTAC_PROPERTY_VALUE *pItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWPMItem (
+    BACSTAC_PROPERTY_VALUE *pDestItem,
+    const BACSTAC_PROPERTY_VALUE *pSrcItem
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_WRITE_LIST
+ *  {
+ *      BACSTAC_HOBJECT        hObject;
+ *      BACSTAC_PROPERTY_VALUE *writeItems;
+ *      BACSTAC_PROPERTY_COUNT nItemCount;
+ *  } BACSTAC_WRITE_LIST, *PBACSTAC_WRITE_LIST;
+ */
+
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWPMList (
+    BACSTAC_WRITE_LIST *pList,
+    BACSTAC_HOBJECT hObject,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMListObject (
+    BACSTAC_WRITE_LIST *pList,
+    BACSTAC_HOBJECT hObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOBJECT BACstac_api BACstacGetWPMListObject (
+    const BACSTAC_WRITE_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMListItems (
+    BACSTAC_WRITE_LIST *pList,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_VALUE * BACstac_api BACstacGetWPMListItemPtr (
+    const BACSTAC_WRITE_LIST *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetWPMListItemCount (
+    const BACSTAC_WRITE_LIST *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWPMList (
+    BACSTAC_WRITE_LIST *pDestList,
+    const BACSTAC_WRITE_LIST *pSrcList
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *
+ *  typedef struct tagBACSTAC_WRITE_ACCESS_SPEC
+ *  {
+ *      BACSTAC_OBJECT_ID      objectID;
+ *      BACSTAC_PROPERTY_COUNT nItemCount;
+ *      BACSTAC_PROPERTY_VALUE *writeItems;
+ *  } BACSTAC_WRITE_ACCESS_SPEC, *PBACSTAC_WRITE_ACCESS_SPEC;
+ *
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWriteAccessSpec (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_OBJECT_ID objectID,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteAccessSpecObjectID (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetWriteAccessSpecObjectID (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWriteAccessSpecItems (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_VALUE * BACstac_api BACstacGetWriteAccessSpecItemPtr (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetWriteAccessSpecItemCount (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacInitWriteAccessSpec instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWPMHookList (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetWriteAccessSpecObjectID instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMHookListObject (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWriteAccessSpecObjectID instead */
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetWPMHookListObjectIDPtr (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetWriteAccessSpecItems instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWPMHookListItems (
+    BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_VALUE *pItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWriteAccessSpecItemPtr instead */
+BACSTACAPI BACSTAC_PROPERTY_VALUE * BACstac_api BACstacGetWPMHookListItemPtr (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList,
+    BACSTAC_PROPERTY_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWriteAccessSpecItemCount instead */
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetWPMHookListItemCount (
+    const BACSTAC_WRITE_ACCESS_SPEC *pList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneWPMHookList (
+    BACSTAC_WRITE_ACCESS_SPEC *pDestList,
+    const BACSTAC_WRITE_ACCESS_SPEC *pSrcList
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_WRITE_PROP_MUL_INFO
+ *  {
+ *      BACSTAC_OBJECT_COUNT       nListCount;
+ *      BACSTAC_WRITE_ACCESS_SPEC *writeSpec;
+ *  } BACSTAC_WRITE_PROP_MUL_INFO, *PBACSTAC_WRITE_PROP_MUL_INFO;
+ *
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWPMInfo (
+    BACSTAC_WRITE_PROP_MUL_INFO *pInfo,
+    BACSTAC_WRITE_ACCESS_SPEC *writeSpec,
+    BACSTAC_OBJECT_COUNT nCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_COUNT BACstac_api BACstacGetWPMInfoCount (
+    const BACSTAC_WRITE_PROP_MUL_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WRITE_ACCESS_SPEC * BACstac_api BACstacGetWPMInfoWriteSpec (
+    const BACSTAC_WRITE_PROP_MUL_INFO *pInfo,
+    BACSTAC_OBJECT_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacInitWPMInfo instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWPMHookInfo (
+    BACSTAC_WRITE_PROP_MUL_INFO *pInfo,
+    BACSTAC_WRITE_ACCESS_SPEC *writeSpec,
+    BACSTAC_OBJECT_COUNT nListCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWPMInfoCount instead */
+BACSTACAPI BACSTAC_OBJECT_COUNT BACstac_api BACstacGetWPMHookInfoCount (
+    const BACSTAC_WRITE_PROP_MUL_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWPMInfoWriteSpec instead */
+BACSTACAPI BACSTAC_WRITE_ACCESS_SPEC * BACstac_api BACstacGetWPMHookInfoList (
+    const BACSTAC_WRITE_PROP_MUL_INFO *pInfo,
+    BACSTAC_OBJECT_COUNT nIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneWPMHookInfo (
+    BACSTAC_WRITE_PROP_MUL_INFO *pDestInfo,
+    const BACSTAC_WRITE_PROP_MUL_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_CHANGE_LIST_INFO
+ *  {
+ *      BACSTAC_OBJECT_ID         objectID;
+ *      BACSTAC_PROPERTY_ID       ePropertyID;
+ *      BACSTAC_ARRAY_INDEX       nIndex;     // optional
+ *      BACSTAC_PROPERTY_CONTENTS *pElements;
+ *  } BACSTAC_CHANGE_LIST_INFO, *PBACSTAC_CHANGE_LIST_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitARLEHookInfo (
+    BACSTAC_CHANGE_LIST_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObject,
+    BACSTAC_PROPERTY_ID ePropertyID,
+    const BACSTAC_PROPERTY_CONTENTS *pElements
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyARLEHookInfoObjectID (
+    BACSTAC_CHANGE_LIST_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetARLEHookInfoObjectIDPtr (
+    const BACSTAC_CHANGE_LIST_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetARLEHookInfoPropID (
+    BACSTAC_CHANGE_LIST_INFO *pInfo,
+    BACSTAC_PROPERTY_ID ePropertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetARLEHookInfoPropID (
+    const BACSTAC_CHANGE_LIST_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetARLEHookInfoIndex (
+    BACSTAC_CHANGE_LIST_INFO *pInfo,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetARLEHookInfoIndex (
+    const BACSTAC_CHANGE_LIST_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneARLEHookInfoElements (
+    BACSTAC_CHANGE_LIST_INFO *pInfo,
+    const BACSTAC_PROPERTY_CONTENTS *pElements
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetARLEHookInfoElementsPtr (
+    const BACSTAC_CHANGE_LIST_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneARLEHookInfo (
+    BACSTAC_CHANGE_LIST_INFO *pDestInfo,
+    const BACSTAC_CHANGE_LIST_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_EVENT_NOTIF {
+ *     BACSTAC_UI32                    processID;
+ *     BACSTAC_OBJECT_ID               initDevice;
+ *     BACSTAC_OBJECT_ID               initObject;
+ *     BACSTAC_TIME_STAMP              timeStamp;
+ *     BACSTAC_UNSIGNED                notificationClass;
+ *     BACSTAC_UI8                     priority;
+ *     BACSTAC_EVENT_TYPE              eventType;
+ *     BACSTAC_CHAR_STRING             messageText;
+ *     BACSTAC_NOTIFY_TYPE             notifyType;
+ *     BACSTAC_BOOLEAN                 ackRequired; / only for notify type alarm or event /
+ *     BACSTAC_EVENT_STATE             fromState;   / only for notify type alarm or event /
+ *     BACSTAC_EVENT_STATE             toState;
+ *     BACSTAC_NOTIFICATION_PARAMETERS eventValues; / only for notify type alarm or event /
+ * } BACSTAC_EVENT_NOTIF, *PBACSTAC_EVENT_NOTIF;
+ */
+
+/*
+ * There are three inititializations routines for BACSTAC_EVENT_NOTIF:
+ * - BACstacInitEventNotifToAlarm initializes it to be ALARM
+ * - BACstacInitEventNotifToEvent initializes it to be EVENT
+ * - BACstacInitEventNotifToACK initializes it to be ACK_NOTIFICATION
+ *
+ * These access routines use the following default values to initialize fields
+ * that are not specified as parameters of initialization functions.
+ *
+ *     processID:         0
+ *     initDevice:        (OBJ_DEVICE, BACSTAC_INST_NUMBER_MAX)
+ *     initObject:        (BACSTAC_OBJECT_TYPE_MAX, BACSTAC_INST_NUMBER_MAX)
+ *     timeStamp:         unspecified
+ *     notificationClass: 0
+ *     priority:          255
+ *     notifyType:        ALARM
+ *     ackRequired:       FALSE
+ *     messageText:       None
+ *
+ * NOTE: Type of BACSTAC_NOTIFICATION_PARAMETERS should match eventType.
+ */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventNotifToAlarm (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_TYPE eventType,
+    BACSTAC_EVENT_STATE fromState,
+    BACSTAC_EVENT_STATE toState,
+    const BACSTAC_NOTIFICATION_PARAMETERS *pEventValues
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventNotifToEvent (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_TYPE eventType,
+    BACSTAC_EVENT_STATE fromState,
+    BACSTAC_EVENT_STATE toState,
+    const BACSTAC_NOTIFICATION_PARAMETERS *pEventValues
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventNotifToACK (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_TYPE eventType,
+    BACSTAC_EVENT_STATE toState
+) BACSTAC_NOTHROW;
+
+/*
+ * Sets notifyType to ACK_NOTIFICATION,
+ * Copies processID, initDevice, initObject, timeStamp, notificationClass,
+ *        priority, eventType, messageText and toState
+ */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventNotifToACKByCopy (
+    BACSTAC_EVENT_NOTIF *pDest,
+    const BACSTAC_EVENT_NOTIF *pSrc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifProcessID (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetEventNotifProcessID (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventNotifTimeStamp (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    const BACSTAC_TIME_STAMP *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifInitDeviceInsNum (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_INST_NUMBER initDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetEventNotifInitDeviceInsNum (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventNotifInitObject (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    const BACSTAC_OBJECT_ID *pInitObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetEventNotifInitObjectPtr (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP *BACstac_api BACstacGetEventNotifTimeStampPtr (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifNotifClass (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_UNSIGNED notificationClass
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEventNotifNotifClass (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifPriority (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_UI8 priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetEventNotifPriority (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifEventType (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_TYPE eventType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetEventNotifEventType (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneEventNotifMsgText (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    const BACSTAC_CHAR_STRING *pMessageText /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetEventNotifMsgTextPtr (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifNotifyType (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_NOTIFY_TYPE notifyType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NOTIFY_TYPE BACstac_api BACstacGetEventNotifNotifyType (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifAckRequired (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_BOOLEAN ackRequired
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetEventNotifAckRequired (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifFromState (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_STATE fromState
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetEventNotifFromState (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventNotifToState (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    BACSTAC_EVENT_STATE toState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetEventNotifToState (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventNotifEventValues (
+    BACSTAC_EVENT_NOTIF *pEventNotif,
+    const BACSTAC_NOTIFICATION_PARAMETERS *pEventValues
+) BACSTAC_NOTHROW;
+
+/* Assumes that notifyType has been initialized to ALARM or EVENT */
+BACSTACAPI BACSTAC_NOTIFICATION_PARAMETERS *
+BACstac_api BACstacGetEventNotifEventValuesPtr (
+    const BACSTAC_EVENT_NOTIF *pEventNotif
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneEventNotif (
+    BACSTAC_EVENT_NOTIF *pDest,
+    const BACSTAC_EVENT_NOTIF *pSrc
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  typedef struct tagBACSTAC_I_AM_INFO
+ *  {
+ *      BACSTAC_INST_NUMBER     deviceNumber;
+ *      BACSTAC_UNSIGNED        maxAPDULengthAccepted;
+ *      BACSTAC_SEGMENTATION    segmentationSupported;
+ *      BACSTAC_UN16            vendorID;
+ *  } BACSTAC_I_AM_INFO, *PBACSTAC_I_AM_INFO;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitIAmInfo (
+    BACSTAC_I_AM_INFO *pInfo,
+    BACSTAC_INST_NUMBER deviceNumber,
+    BACSTAC_UNSIGNED maxAPDULengthAccepted,
+    BACSTAC_SEGMENTATION segmentationSupported,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIAmInfoDeviceNumber (
+    BACSTAC_I_AM_INFO *pInfo,
+    BACSTAC_INST_NUMBER deviceNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetIAmInfoDeviceNumber (
+    const BACSTAC_I_AM_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIAmInfoMaxAPDU (
+    BACSTAC_I_AM_INFO *pInfo,
+    BACSTAC_UNSIGNED maxAPDULengthAccepted
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetIAmInfoMaxAPDU (
+    const BACSTAC_I_AM_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIAmInfoSegmentation (
+    BACSTAC_I_AM_INFO *pInfo,
+    BACSTAC_SEGMENTATION segmentationSupported
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SEGMENTATION BACstac_api BACstacGetIAmInfoSegmentation (
+    const BACSTAC_I_AM_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIAmInfoVendorID (
+    BACSTAC_I_AM_INFO *pInfo,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetIAmInfoVendorID (
+    const BACSTAC_I_AM_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyIAmInfo (
+    BACSTAC_I_AM_INFO *pDestInfo,
+    const BACSTAC_I_AM_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_I_HAVE_INFO
+ *  {
+ *      BACSTAC_INST_NUMBER deviceNumber;
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_CHAR_STRING objectName;
+ *  } BACSTAC_I_HAVE_INFO, *PBACSTAC_I_HAVE_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitIHaveInfoStr (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    BACSTAC_INST_NUMBER deviceNumber,
+    BACSTAC_OBJECT_ID objectID,
+    const BACSTAC_CHAR_STRING *objectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitIHaveInfo (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    BACSTAC_INST_NUMBER deviceNumber,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    const BACSTAC_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoObjectNameType (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoDeviceNumber (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    BACSTAC_INST_NUMBER deviceNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetIHaveInfoDeviceNumber (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyIHaveInfoObjectID (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetIHaveInfoObjectIDPtr (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoObjectNameStr (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoObjectNameUTF8 (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoObjectNameUCS2 (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_UCS2_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetIHaveInfoObjectNameUCS4 (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_UCS4_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetIHaveInfoObjectNameUTF8 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneIHaveInfoObjectName (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetIHaveInfoObjectNameUCS2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneIHaveInfoObjectNameUCS2 (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_UCS2_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetIHaveInfoObjectNameUCS4 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneIHaveInfoObjectNameUCS4 (
+    BACSTAC_I_HAVE_INFO *pInfo,
+    const BACSTAC_UCS4_CHAR *pObjectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetIHaveInfoObjectNameType (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING *BACstac_api BACstacGetIHaveInfoObjectNameStrPtr (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetIHaveInfoObjectNamePtr (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR *BACstac_api BACstacGetIHaveInfoObjectNameUCS2Ptr (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR *BACstac_api BACstacGetIHaveInfoObjectNameUCS4Ptr (
+    const BACSTAC_I_HAVE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneIHaveInfo (
+    BACSTAC_I_HAVE_INFO *pDestInfo,
+    const BACSTAC_I_HAVE_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_REINIT_DEV_INFO
+ *  {
+ *      BACSTAC_CHAR_STRING     password;
+ *      BACSTAC_REINIT_TYPE     reinitType;
+ *     // For backward compatibility, we need to provide some buffer here.
+ *     union BACSTAC_REINIT_DEV_INFO_BUF
+ *     {
+ *        BACSTAC_CHAR         chars[(BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE)/1 + 1];
+ *        BACSTAC_UCS2_CHAR    ucs2s[(BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE)/2 + 1];
+ *        BACSTAC_UCS4_CHAR    ucs4s[(BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE)/4 + 1];
+ *     } buffer;
+ *  } BACSTAC_REINIT_DEV_INFO, *PBACSTAC_REINIT_DEV_INFO;
+ */
+
+
+/* Initialize the structure. If 'password' is NULL then it is not set,
+ * otherwise it is copied to the internal buffer. The length of password
+ * in bytes should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReinitDevInfoStr (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    BACSTAC_REINIT_TYPE reinitType,
+    const BACSTAC_CHAR_STRING *password /* optional */
+) BACSTAC_NOTHROW;
+
+/* Initialize the structure. If 'password' is NULL then it is not set,
+ * otherwise it is copied to the internal buffer. The length of password
+ * in bytes should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReinitDevInfoUTF8 (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    BACSTAC_REINIT_TYPE reinitType,
+    const BACSTAC_CHAR *pszPassword /* optional */
+) BACSTAC_NOTHROW;
+
+/* Set the reinitialization type */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReinitDevInfoType (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    BACSTAC_REINIT_TYPE reinitType
+) BACSTAC_NOTHROW;
+
+/* Get the reinitialization type */
+BACSTACAPI BACSTAC_REINIT_TYPE BACstac_api BACstacGetReinitDevInfoType (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+/* Set the password without copying. If 'password' is NULL then unset the
+ * password field. If 'password' is not NULL then set the password field to
+ * the given value without copying the referred string. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReinitDevInfoPasswordStr (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *password /* optional */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING *BACstac_api BACstacGetReinitDevInfoPasswordStrPtr (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+/* Set the password field using the given 'password' parameter. The referred
+ * string is copied to the internal buffer. The length of password in bytes
+ * should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfoPasswordStr (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *password
+) BACSTAC_NOTHROW;
+
+/* Set the password field using the given 'pszPassword' parameter in the UTF-8
+ * encoding. The referred string is copied to the internal buffer. The length of
+ * password in bytes should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfoPasswordUTF8 (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+/* Set the password field using the given 'pszPassword' parameter in the UCS-2
+ * encoding. The referred string is copied to the internal buffer. The length of
+ * password in bytes should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfoPasswordUCS2 (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_UCS2_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+/* Set the password field using the given 'pszPassword' parameter in the UCS-4
+ * encoding. The referred string is copied to the internal buffer. The length of
+ * password in bytes should not exceed BACSTAC_MAX_REINIT_DEV_PASSWORD_SIZE. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfoPasswordUCS4 (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_UCS4_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetReinitDevInfoPasswordType (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetReinitDevInfoPasswordPtr (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR *BACstac_api BACstacGetReinitDevInfoPasswordUCS2Ptr (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR *BACstac_api BACstacGetReinitDevInfoPasswordUCS4Ptr (
+    const BACSTAC_REINIT_DEV_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacInitReinitDevInfoUTF8 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitReinitDevInfo (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    BACSTAC_REINIT_TYPE reinitType,
+    const BACSTAC_CHAR *pszPassword /* optional */
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacCopyReinitDevInfoPasswordUTF8 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfoPassword (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    const BACSTAC_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetReinitDevInfoPasswordType (
+    BACSTAC_REINIT_DEV_INFO *pInfo,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyReinitDevInfo (
+    BACSTAC_REINIT_DEV_INFO *pDestInfo,
+    const BACSTAC_REINIT_DEV_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_DCC_INFO {
+ *     BACSTAC_UNSIGNED    nTimeDuration;  // may be INDEFINITE
+ *     BACSTAC_DCC_VALUE   dccValue;
+ *     BACSTAC_CHAR_STRING password;
+ *     // For backward compatibility, we need to provide some buffer here.
+ *     union BACSTAC_REINIT_DEV_INFO_BUF
+ *     {
+ *        BACSTAC_CHAR         chars[(BACSTAC_MAX_DCC_PASSWORD_SIZE)/1 + 1];
+ *        BACSTAC_UCS2_CHAR    ucs2s[(BACSTAC_MAX_DCC_PASSWORD_SIZE)/2 + 1];
+ *        BACSTAC_UCS4_CHAR    ucs4s[(BACSTAC_MAX_DCC_PASSWORD_SIZE)/4 + 1];
+ *     } buffer;
+ * } BACSTAC_DCC_INFO, *PBACSTAC_DCC_INFO;
+ */
+
+/* Initialize the structure. The duration time is set to INDEFINITE. The
+ * password is not set. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDCCInfo (
+    BACSTAC_DCC_INFO *pInfo,
+    BACSTAC_DCC_VALUE dccValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDCCInfoValue (
+    BACSTAC_DCC_INFO *pInfo,
+    BACSTAC_DCC_VALUE dccValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DCC_VALUE BACstac_api BACstacGetDCCInfoValue (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDCCInfoDuration (
+    BACSTAC_DCC_INFO *pInfo,
+    BACSTAC_UNSIGNED nTimeDuration
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetDCCInfoDuration (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDCCInfoPasswordStr (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *password /* optional */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfoPasswordStr (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *password
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfoPasswordUTF8 (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_CHAR *password
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfoPasswordUCS2 (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_UCS2_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfoPasswordUCS4 (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_UCS4_CHAR *pszPassword
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetDCCInfoPasswordType (
+    const BACSTAC_DCC_INFO *pInfo  /* Apr 15, 1999 IlyaB. */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetDCCInfoPasswordStrPtr (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetDCCInfoPasswordPtr (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR *BACstac_api BACstacGetDCCInfoPasswordUCS2Ptr (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR *BACstac_api BACstacGetDCCInfoPasswordUCS4Ptr (
+    const BACSTAC_DCC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacCopyDCCInfoPasswordUTF8 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfoPassword (
+    BACSTAC_DCC_INFO *pInfo,
+    const BACSTAC_CHAR *pPassword
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDCCInfoPasswordType (
+    BACSTAC_DCC_INFO *pInfo,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDCCInfo (
+    BACSTAC_DCC_INFO *pDestInfo,
+    const BACSTAC_DCC_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_TIME_SYNC_INFO
+ *  {
+ *      BACSTAC_DATE_TIME   dateTime;
+ *  } BACSTAC_TIME_SYNC_INFO, *PBACSTAC_TIME_SYNC_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTimeSyncInfo (
+    BACSTAC_TIME_SYNC_INFO *pInfo,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyTimeSyncInfoDateTime (
+    BACSTAC_TIME_SYNC_INFO *pInfo,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetTimeSyncInfoDateTimePtr (
+    const BACSTAC_TIME_SYNC_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyTimeSyncInfo (
+    BACSTAC_TIME_SYNC_INFO *pDestInfo,
+    const BACSTAC_TIME_SYNC_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_FILE_INFO {
+ *      BACSTAC_OBJECT_ID           fileID;
+ *      BACSTAC_FILE_ACCESS_TYPE    accessType;
+ *      BACSTAC_READ_FILE_RANGE     request;
+ *  } BACSTAC_READ_FILE_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFInfoStream (
+    BACSTAC_READ_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID,
+    BACSTAC_INTEGER startPosition,  /* zero-based */
+    BACSTAC_UNSIGNED octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFInfoRecords (
+    BACSTAC_READ_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID,
+    BACSTAC_INTEGER startRecord,    /* zero-based */
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetRFInfoFileIDPtr (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFInfoFileID (
+    BACSTAC_READ_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FILE_ACCESS_TYPE BACstac_api BACstacGetRFInfoAccessType (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFInfoStreamRange (
+    BACSTAC_READ_FILE_INFO *pInfo,
+    BACSTAC_INTEGER startPosition,  /* zero-based */
+    BACSTAC_UNSIGNED octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFInfoStartPos (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetRFInfoOctetCount (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFInfoRecordRange (
+    BACSTAC_READ_FILE_INFO *pInfo,
+    BACSTAC_INTEGER startRecord,    /* zero-based */
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFInfoStartRecord (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetRFInfoRecordCount (
+    const BACSTAC_READ_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRFInfo (
+    BACSTAC_READ_FILE_INFO *pDestInfo,
+    const BACSTAC_READ_FILE_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_FILE_SPEC {
+ *      BACSTAC_FILE_ACCESS_TYPE    accessType;
+ *      BACSTAC_READ_FILE_RANGE     range;
+ *  } BACSTAC_READ_FILE_SPEC;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFSpecStream (
+    BACSTAC_READ_FILE_SPEC *pSpec,
+    BACSTAC_INTEGER startPosition,
+    BACSTAC_UNSIGNED octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFSpecRecords (
+    BACSTAC_READ_FILE_SPEC *pSpec,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FILE_ACCESS_TYPE BACstac_api BACstacGetRFSpecAccessType (
+    const BACSTAC_READ_FILE_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFSpecStartPos (
+    const BACSTAC_READ_FILE_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetRFSpecOctetCount (
+    const BACSTAC_READ_FILE_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFSpecStartRecord (
+    const BACSTAC_READ_FILE_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetRFSpecRecordCount (
+    const BACSTAC_READ_FILE_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRFSpec (
+    BACSTAC_READ_FILE_SPEC *pDestSpec,
+    const BACSTAC_READ_FILE_SPEC *pSrcSpec
+) BACSTAC_NOTHROW;
+
+
+
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_FILE_RESULT {
+ *      BACSTAC_BOOLEAN         endOfFile;
+ *      BACSTAC_FILE_ACCESS_TYPE accessType;
+ *      union {
+ *          BACSTAC_READ_STREAM_RESULT streamAccess;
+ *          BACSTAC_READ_RECORD_RESULT recordAccess;
+ *      } data;
+ *  } BACSTAC_READ_FILE_RESULT;
+ */
+
+
+/* Sets endOfFile to FALSE, clones octet string pointed to by <streamData> */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFResultStream (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startPosition,                  /* zero-based */
+    BACSTAC_OCTET_STRING *streamData    /* contains stream data;
+                                                       optional */
+) BACSTAC_NOTHROW;
+
+/* Sets endOfFile to FALSE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFResultStreamBuf (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+/* Sets endOfFile to FALSE, clones <pRecords> pointer */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFResultRecords (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_OCTET_STRING *pRecords, /* actual records; optional */
+    BACSTAC_UNSIGNED retRecordCount         /* must be 0 if pRecords is NULL */
+) BACSTAC_NOTHROW;
+
+/* Sets endOfFile to FALSE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRFResultRecBuf (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    void *pBuffer,      /* just a buffer */
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFResultEOF (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_BOOLEAN fEOF
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetRFResultEOF (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+/* doesn't affect EOF flag */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFResultStreamData (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startPosition,  /* zero-based */
+    BACSTAC_OCTET_STRING *pStreamData   /* optional */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFResultStartPos (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetRFResultStreamDataOctets (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetRFResultStreamDataSize (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+/* doesn't affect EOF flag */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRFResultRecordsData (
+    BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_OCTET_STRING *pRecords,
+    BACSTAC_UNSIGNED retRecordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRFResultStartRecord (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetRFResultRecordCount (
+    const BACSTAC_READ_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetRFResultRecordPtr (
+    const BACSTAC_READ_FILE_RESULT *pResult,
+    BACSTAC_UNSIGNED recordIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRFResult (
+    BACSTAC_READ_FILE_RESULT *pDestResult,
+    const BACSTAC_READ_FILE_RESULT *pSrcResult
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef union tagBACSTAC_WRITE_FILE_DATA {
+ *      BACSTAC_WRITE_STREAM_REQUEST streamAccess;
+ *      BACSTAC_WRITE_RECORD_REQUEST recordAccess;
+ *  } BACSTAC_WRITE_FILE_DATA;
+ *
+ *  typedef struct tagBACSTAC_WRITE_FILE_INFO {
+ *      BACSTAC_OBJECT_ID           fileID;
+ *      BACSTAC_FILE_ACCESS_TYPE    accessType;
+ *      BACSTAC_WRITE_FILE_DATA     request;
+ *  } BACSTAC_WRITE_FILE_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFInfoStream (
+    BACSTAC_WRITE_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID,
+    BACSTAC_INTEGER startPos,
+    BACSTAC_OCTET_STRING *pData
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFInfoRecords (
+    BACSTAC_WRITE_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_OCTET_STRING *pData,
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWFInfoFileID (
+    BACSTAC_WRITE_FILE_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pFileID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetWFInfoFileIDPtr (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FILE_ACCESS_TYPE BACstac_api BACstacGetWFInfoAccessType (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWFInfoStreamData (
+    BACSTAC_WRITE_FILE_INFO *pInfo,
+    BACSTAC_INTEGER startPos,
+    BACSTAC_OCTET_STRING *pData
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFInfoStartPos (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetWFInfoStreamDataPtr (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWFInfoRecordsData (
+    BACSTAC_WRITE_FILE_INFO *pInfo,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_OCTET_STRING *pData,
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFInfoStartRecord (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetWFInfoRecordCount (
+    const BACSTAC_WRITE_FILE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetWFInfoRecordPtr (
+    const BACSTAC_WRITE_FILE_INFO *pInfo,
+    BACSTAC_UNSIGNED arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneWFInfo (
+    BACSTAC_WRITE_FILE_INFO *pDestInfo,
+    const BACSTAC_WRITE_FILE_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_WRITE_FILE_RESULT {
+ *          BACSTAC_FILE_ACCESS_TYPE    accessType;
+ *          union {
+ *              BACSTAC_INTEGER         startPosition;  // zero-based
+ *              BACSTAC_INTEGER         startRecord;    // zero-based
+ *          } data;
+ *  } BACSTAC_WRITE_FILE_RESULT;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFResultStream (
+    BACSTAC_WRITE_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startPos
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFResultRecords (
+    BACSTAC_WRITE_FILE_RESULT *pResult,
+    BACSTAC_INTEGER startRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFResultStartPos (
+    const BACSTAC_WRITE_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFResultStartRecord (
+    const BACSTAC_WRITE_FILE_RESULT *pResult
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWFResult (
+    BACSTAC_WRITE_FILE_RESULT *pDestInfo,
+    const BACSTAC_WRITE_FILE_RESULT *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  typedef struct tagBACSTAC_WRITE_FILE_SPEC {
+ *      BACSTAC_FILE_ACCESS_TYPE    accessType;
+ *      BACSTAC_WRITE_FILE_DATA     data;
+ *  } BACSTAC_WRITE_FILE_SPEC;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFSpecStream (
+    BACSTAC_WRITE_FILE_SPEC *pInfo,
+    BACSTAC_INTEGER startPos,
+    BACSTAC_OCTET_STRING *pData
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWFSpecRecords (
+    BACSTAC_WRITE_FILE_SPEC *pInfo,
+    BACSTAC_INTEGER startRecord,
+    BACSTAC_OCTET_STRING *pData,
+    BACSTAC_UNSIGNED recordCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FILE_ACCESS_TYPE BACstac_api BACstacGetWFSpecAccessType (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFSpecStartPos (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetWFSpecStreamDataPtr (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetWFSpecStartRecord (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetWFSpecRecordCount (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING *BACstac_api BACstacGetWFSpecRecordPtr (
+    const BACSTAC_WRITE_FILE_SPEC *pInfo,
+    BACSTAC_UNSIGNED arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneWFSpec (
+    BACSTAC_WRITE_FILE_SPEC *pDestInfo,
+    const BACSTAC_WRITE_FILE_SPEC *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  typedef struct tagBACSTAC_CLIENT_COV {
+ *      BACSTAC_DATA_TYPE   tag;            // REAL or NULL
+ *      BACSTAC_REAL        realIncrement;  // if selected by tag
+ *  } BACSTAC_CLIENT_COV, *PBACSTAC_CLIENT_COV;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitClientCOVToReal (
+    BACSTAC_CLIENT_COV *clientCOV,
+    BACSTAC_REAL incrementValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitClientCOVToNull (
+    BACSTAC_CLIENT_COV *clientCOV
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetClientCOVType (
+    const BACSTAC_CLIENT_COV *clientCOV
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetClientCOVIncValue (
+    const BACSTAC_CLIENT_COV *clientCOV
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyClientCOV (
+    BACSTAC_CLIENT_COV *destClientCOV,
+    const BACSTAC_CLIENT_COV *srcClientCOV
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_LOG_RECORD {
+ *      BACSTAC_DATE_TIME           timeStamp;
+ *      BACSTAC_LOG_RECORD_TYPE     type;
+ *      union {
+ *          BACSTAC_BIT_STRING      logStatus;
+ *          BACSTAC_REAL            timeChange;
+ *          BACSTAC_ERROR_TYPE      error;
+ *          BACSTAC_BOOLEAN         boolValue;
+ *          BACSTAC_REAL            realValue;
+ *          BACSTAC_ENUM            enumValue;
+ *          BACSTAC_UNSIGNED        unsignedValue;
+ *          BACSTAC_INTEGER         integerValue;
+ *          BACSTAC_BIT_STRING      bitStringValue;
+ *          BACSTAC_PROPERTY_CONTENTS       anyValue;
+ *      } record;
+ *      BACSTAC_BOOLEAN         fStatusFlagsPresent;
+ *      BACSTAC_BIT_STRING      statusFlags;
+ *  } BACSTAC_LOG_RECORD, *PBACSTAC_LOG_RECORD;
+ */
+
+
+/* All Init()s set <status-flags> field as "not present" */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordLogStatus (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordTimeChange (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordError (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_ERROR_TYPE *pError
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordBoolValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordRealValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordEnumValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordUnsignedValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordIntegerValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordBitStrValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_BIT_STRING *pBitStringValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordAnyValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_PROPERTY_CONTENTS *pAnyValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordTimeStamp (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetLogRecordTimeStampPtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_LOG_RECORD_TYPE BACstac_api BACstacGetLogRecordType (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordLogStatus (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetLogRecordLogStatusPtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordTimeChange (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLogRecordTimeChange (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordError (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_ERROR_TYPE *pError
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ERROR_TYPE *BACstac_api BACstacGetLogRecordErrorPtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordBoolValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetLogRecordBoolValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordRealValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLogRecordRealValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordEnumValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetLogRecordEnumValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordUnsignedValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetLogRecordUnsignedValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordIntegerValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetLogRecordIntegerValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordBitStrValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_BIT_STRING *pBitStringValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetLogRecordBitStrValuePtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordNullValue (
+    BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordAnyValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_PROPERTY_CONTENTS *pAnyValue
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api
+BACstacGetLogRecordAnyValuePtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordStatusFlags (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_BIT_STRING *pStatusFlags
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveLogRecordStatusFlags (
+    BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacLogRecordStatusFlagsArePresent (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetLogRecordStatusFlagsPtr (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLogRecord (
+    BACSTAC_LOG_RECORD *pDestRecord,
+    const BACSTAC_LOG_RECORD *pSrcRecord
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogRecordSignedValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogRecordSignedValue (
+    BACSTAC_LOG_RECORD *pRecord,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetLogRecordSignedValue (
+    const BACSTAC_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_RANGE_INFO {
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_PROPERTY_ID ePropertyID;
+ *      BACSTAC_ARRAY_INDEX nIndex;
+ *      BACSTAC_RANGE_TYPE  tag;
+ *      union {
+ *          struct tagBACSTAC_RANGE_POSITION {
+ *              BACSTAC_ELEMENT_COUNT   nRefIndex;
+ *              BACSTAC_INTEGER         nCount;
+ *          } position;
+ *          struct tagBACSTAC_RANGE_TIME {
+ *              BACSTAC_DATE_TIME   refTime;
+ *              BACSTAC_INTEGER     nCount;
+ *          } time;
+ *          struct tagBACSTAC_RANGE_SEQ_NUM { / Add-135-2001b /
+ *              BACSTAC_SEQ_NUM     nSequenceNum;
+ *              BACSTAC_INTEGER     nCount;
+ *          } sequenceNum;
+ *      } range;
+ *  } BACSTAC_READ_RANGE_INFO, *PBACSTAC_READ_RANGE_INFO;
+ */
+
+/* All Init()s set <index> field to BACSTAC_VOID_INDEX */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64InfoWithoutRange (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64InfoByPos (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_UI64 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64InfoBySeqNum (     /* Add-135-2001b */
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_UI64 nRefSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64InfoByTime2 (          /* Add-135-2001b */
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoObjectID (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRR64InfoObjectIDPtr (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoPropID (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRR64InfoPropID (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoIndex (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRR64InfoIndex (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveRR64InfoRange (
+    BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoPosRange (
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    BACSTAC_UI64 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoSeqNumRange (  /* Add-135-2001b */
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    BACSTAC_UI64 nSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64InfoTime2Range (        /* Add-135-2001b */
+    BACSTAC_READ_RANGE_64_INFO *pInfo,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_RANGE_TYPE BACstac_api BACstacGetRR64InfoRangeType (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+/* For 'by pos', 'by time', 'by sequence number' and 'by time2' */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRR64InfoCount (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetRR64InfoRefIndex (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetRR64InfoRefSeqNum ( /* Add-135-2001b */
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetRR64InfoRefTimePtr (
+    const BACSTAC_READ_RANGE_64_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32InfoWithoutRange (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32InfoByPos (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_UI32 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32InfoBySeqNum (     /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_UI32 nRefSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRRInfoBySeqenceNum (     /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_UI32 nRefSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32InfoByTime2 (          /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoObjectID (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRR32InfoObjectIDPtr (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoPropID (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRR32InfoPropID (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoIndex (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRR32InfoIndex (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveRR32InfoRange (
+    BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoPosRange (
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    BACSTAC_UI32 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoSeqNumRange (  /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    BACSTAC_UI32 nSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRRInfoSequenceNumRange (  /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    BACSTAC_UI32 nSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32InfoTime2Range (        /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_INFO *pInfo,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_RANGE_TYPE BACstac_api BACstacGetRR32InfoRangeType (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+/* For 'by pos', 'by time', 'by sequence number' and 'by time2' */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRR32InfoCount (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRR32InfoRefIndex (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRR32InfoRefSeqNum ( /* Add-135-2001b */
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetRR32InfoRefTimePtr (
+    const BACSTAC_READ_RANGE_32_INFO *pInfo
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRRInfo (
+    BACSTAC_READ_RANGE_32_INFO *pDestInfo,
+    const BACSTAC_READ_RANGE_32_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+#ifdef BACSTAC_USE_64_BIT_READ_RANGE
+    #define BACstacInitRRInfoWithoutRange     BACstacInitRR64InfoWithoutRange
+    #define BACstacInitRRInfoByPos            BACstacInitRR64InfoByPos
+    #define BACstacInitRRInfoBySeqNum         BACstacInitRR64InfoBySeqNum
+    #define BACstacInitRRInfoByTime2          BACstacInitRR64InfoByTime2
+    #define BACstacSetRRInfoObjectID          BACstacSetRR64InfoObjectID
+    #define BACstacGetRRInfoObjectIDPtr       BACstacGetRR64InfoObjectIDPtr
+    #define BACstacSetRRInfoPropID            BACstacSetRR64InfoPropID
+    #define BACstacGetRRInfoPropID            BACstacGetRR64InfoPropID
+    #define BACstacSetRRInfoIndex             BACstacSetRR64InfoIndex
+    #define BACstacGetRRInfoIndex             BACstacGetRR64InfoIndex
+    #define BACstacRemoveRRInfoRange          BACstacRemoveRR64InfoRange
+    #define BACstacSetRRInfoPosRange          BACstacSetRR64InfoPosRange
+    #define BACstacSetRRInfoSeqNumRange       BACstacSetRR64InfoSeqNumRange
+    #define BACstacSetRRInfoTime2Range        BACstacSetRR64InfoTime2Range
+    #define BACstacGetRRInfoRangeType         BACstacGetRR64InfoRangeType
+    #define BACstacGetRRInfoCount             BACstacGetRR64InfoCount
+    #define BACstacGetRRInfoRefIndex          BACstacGetRR64InfoRefIndex
+    #define BACstacGetRRInfoRefSeqNum         BACstacGetRR64InfoRefSeqNum
+    #define BACstacGetRRInfoRefTimePtr        BACstacGetRR64InfoRefTimePtr
+#else  /* BACSTAC_USE_64_BIT_READ_RANGE */
+    #define BACstacInitRRInfoWithoutRange     BACstacInitRR32InfoWithoutRange
+    #define BACstacInitRRInfoByPos            BACstacInitRR32InfoByPos
+    #define BACstacInitRRInfoBySeqNum         BACstacInitRR32InfoBySeqNum
+    #define BACstacInitRRInfoByTime2          BACstacInitRR32InfoByTime2
+    #define BACstacSetRRInfoObjectID          BACstacSetRR32InfoObjectID
+    #define BACstacGetRRInfoObjectIDPtr       BACstacGetRR32InfoObjectIDPtr
+    #define BACstacSetRRInfoPropID            BACstacSetRR32InfoPropID
+    #define BACstacGetRRInfoPropID            BACstacGetRR32InfoPropID
+    #define BACstacSetRRInfoIndex             BACstacSetRR32InfoIndex
+    #define BACstacGetRRInfoIndex             BACstacGetRR32InfoIndex
+    #define BACstacRemoveRRInfoRange          BACstacRemoveRR32InfoRange
+    #define BACstacSetRRInfoPosRange          BACstacSetRR32InfoPosRange
+    #define BACstacSetRRInfoSeqNumRange       BACstacSetRR32InfoSeqNumRange
+    #define BACstacSetRRInfoTime2Range        BACstacSetRR32InfoTime2Range
+    #define BACstacGetRRInfoRangeType         BACstacGetRR32InfoRangeType
+    #define BACstacGetRRInfoCount             BACstacGetRR32InfoCount
+    #define BACstacGetRRInfoRefIndex          BACstacGetRR32InfoRefIndex
+    #define BACstacGetRRInfoRefSeqNum         BACstacGetRR32InfoRefSeqNum
+    #define BACstacGetRRInfoRefTimePtr        BACstacGetRR32InfoRefTimePtr
+#endif /* BACSTAC_USE_64_BIT_READ_RANGE */
+
+/*
+ *  typedef struct tagBACSTAC_READ_RANGE_RAW_RESULT {
+ *      BACSTAC_OBJECT_ID           objectID;
+ *      BACSTAC_PROPERTY_ID         ePropertyID;
+ *      BACSTAC_ARRAY_INDEX         nIndex;
+ *      BACSTAC_BIT_STRING          resultFlags;
+ *      BACSTAC_PROPERTY_CONTENTS   itemData;
+ *      BACSTAC_SEQ_NUM             firstSequenceNum;
+ *  } BACSTAC_READ_RANGE_RAW_RESULT, *PBACSTAC_READ_RANGE_RAW_RESULT;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64RawResult (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_ARRAY_INDEX nIndex,
+    const BACSTAC_BIT_STRING *pResultFlags,
+    BACSTAC_PROPERTY_CONTENTS *pItems
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultObjectID (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRR64RawResultObjectIDPtr (
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultPropID (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRR64RawResultPropID (
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultIndex (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRR64RawResultIndex (
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultFlags (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    const BACSTAC_BIT_STRING *pResultFlags
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetRR64RawResultFlagsPtr (
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultItems (
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    BACSTAC_PROPERTY_CONTENTS *pItems
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api
+BACstacGetRR64RawResultItemsPtr (
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR64RawResultSeqNum (        /* Add-135-2001b */
+    BACSTAC_READ_RANGE_64_RAW_RESULT *pResult,
+    BACSTAC_UI64 firstSequenceNum   /* | BACSTAC_INVALID_SEQ_NUM */
+) BACSTAC_NOTHROW;
+/* Return firstSequenceNum | BACSTAC_INVALID_SEQ_NUM */
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetRR64RawResultSeqNum (/* Add-135-2001b */
+    const BACSTAC_READ_RANGE_64_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRR64RawResult (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_RANGE_64_RAW_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32RawResult (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_ARRAY_INDEX nIndex,
+    const BACSTAC_BIT_STRING *pResultFlags,
+    BACSTAC_PROPERTY_CONTENTS *pItems
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultObjectID (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetRR32RawResultObjectIDPtr (
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultPropID (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetRR32RawResultPropID (
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultIndex (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetRR32RawResultIndex (
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultFlags (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    const BACSTAC_BIT_STRING *pResultFlags
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetRR32RawResultFlagsPtr (
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultItems (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    BACSTAC_PROPERTY_CONTENTS *pItems
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api
+BACstacGetRR32RawResultItemsPtr (
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRR32RawResultSeqNum (        /* Add-135-2001b */
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pResult,
+    BACSTAC_UI32 firstSequenceNum   /* | BACSTAC_INVALID_SEQ_NUM */
+) BACSTAC_NOTHROW;
+/* Return firstSequenceNum | BACSTAC_INVALID_SEQ_NUM */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRR32RawResultSeqNum (/* Add-135-2001b */
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pResult
+) BACSTAC_NOTHROW;
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRRRawResult (
+    BACSTAC_READ_RANGE_32_RAW_RESULT *pDestResult,
+    const BACSTAC_READ_RANGE_32_RAW_RESULT *pSrcResult
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRR32RawResult (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_RANGE_32_RAW_RESULT *result
+) BACSTAC_NOTHROW;
+
+#ifdef BACSTAC_USE_64_BIT_READ_RANGE
+    #define BACstacInitRRRawResult            BACstacInitRR64RawResult
+    #define BACstacSetRRRawResultObjectID     BACstacSetRR64RawResultObjectID
+    #define BACstacGetRRRawResultObjectIDPtr  BACstacGetRR64RawResultObjectIDPtr
+    #define BACstacSetRRRawResultPropID       BACstacSetRR64RawResultPropID
+    #define BACstacGetRRRawResultPropID       BACstacGetRR64RawResultPropID
+    #define BACstacSetRRRawResultIndex        BACstacSetRR64RawResultIndex
+    #define BACstacGetRRRawResultIndex        BACstacGetRR64RawResultIndex
+    #define BACstacSetRRRawResultFlags        BACstacSetRR64RawResultFlags
+    #define BACstacGetRRRawResultFlagsPtr     BACstacGetRR64RawResultFlagsPtr
+    #define BACstacSetRRRawResultItems        BACstacSetRR64RawResultItems
+    #define BACstacGetRRRawResultItemsPtr     BACstacGetRR64RawResultItemsPtr
+    #define BACstacSetRRRawResultSeqNum       BACstacSetRR64RawResultSeqNum
+    #define BACstacGetRRRawResultSeqNum       BACstacGetRR64RawResultSeqNum
+    #define BACstacFreeRRRawResult            BACstacFreeRR64RawResult
+#else  /* BACSTAC_USE_64_BIT_READ_RANGE */
+    #define BACstacInitRRRawResult            BACstacInitRR32RawResult
+    #define BACstacSetRRRawResultObjectID     BACstacSetRR32RawResultObjectID
+    #define BACstacGetRRRawResultObjectIDPtr  BACstacGetRR32RawResultObjectIDPtr
+    #define BACstacSetRRRawResultPropID       BACstacSetRR32RawResultPropID
+    #define BACstacGetRRRawResultPropID       BACstacGetRR32RawResultPropID
+    #define BACstacSetRRRawResultIndex        BACstacSetRR32RawResultIndex
+    #define BACstacGetRRRawResultIndex        BACstacGetRR32RawResultIndex
+    #define BACstacSetRRRawResultFlags        BACstacSetRR32RawResultFlags
+    #define BACstacGetRRRawResultFlagsPtr     BACstacGetRR32RawResultFlagsPtr
+    #define BACstacSetRRRawResultItems        BACstacSetRR32RawResultItems
+    #define BACstacGetRRRawResultItemsPtr     BACstacGetRR32RawResultItemsPtr
+    #define BACstacSetRRRawResultSeqNum       BACstacSetRR32RawResultSeqNum
+    #define BACstacGetRRRawResultSeqNum       BACstacGetRR32RawResultSeqNum
+    #define BACstacFreeRRRawResult            BACstacFreeRR32RawResult
+#endif /* BACSTAC_USE_64_BIT_READ_RANGE */
+
+
+
+/*
+ *  typedef union tagBACSTAC_READ_RANGE_RANGE {
+ *      struct tagBACSTAC_RANGE_POSITION { /= tag:BACSTAC_RANGE_BY_POSITION /
+ *          BACSTAC_ELEMENT_COUNT   nRefIndex;
+ *          BACSTAC_INTEGER         nCount;
+ *      } position;
+ *      struct tagBACSTAC_RANGE_TIME { /= tag:BACSTAC_RANGE_BY_TIME2 /
+ *          BACSTAC_DATE_TIME   refTime;
+ *          BACSTAC_INTEGER     nCount;
+ *      } time;
+ *      struct tagBACSTAC_RANGE_SEQUENCE_NUM { /= tag:BACSTAC_RANGE_BY_SEQUENCE_NUM /
+ *                                   / Add-135-2001b                      /
+ *          BACSTAC_SEQ_NUM     nRefSequenceNum;
+ *          BACSTAC_INTEGER     nCount;
+ *      } sequenceNum;
+ *  } BACSTAC_READ_RANGE_RANGE;
+ *
+ *  typedef struct tagBACSTAC_READ_RANGE_SPEC {
+ *      BACSTAC_RANGE_TYPE          tag;
+ *      BACSTAC_READ_RANGE_RANGE    range
+ *  } BACSTAC_READ_RANGE_SPEC, *PBACSTAC_READ_RANGE_SPEC;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64SpecWithoutRange (
+    BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64SpecByPos (
+    BACSTAC_READ_RANGE_64_SPEC *pSpec,
+    BACSTAC_UI64 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+/* Add-135-2001b Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64SpecBySeqNum (
+    BACSTAC_READ_RANGE_64_SPEC *pSpec,
+    BACSTAC_UI64 nRefSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR64SpecByTime2 (
+    BACSTAC_READ_RANGE_64_SPEC *pSpec,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+/* Add-135-2001b End */
+
+
+BACSTACAPI BACSTAC_RANGE_TYPE BACstac_api BACstacGetRR64SpecRangeType (
+    const BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+/* For 'by pos', 'by time', 'by sequence number' and 'by time2' */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRR64SpecCount (
+    const BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetRR64SpecRefIndex (
+    const BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetRR64SpecRefTimePtr (
+    const BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetRR64SpecRefSeqNum ( /* Add-135-2001b */
+    const BACSTAC_READ_RANGE_64_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32SpecWithoutRange (
+    BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32SpecByPos (
+    BACSTAC_READ_RANGE_32_SPEC *pSpec,
+    BACSTAC_UI32 nRefIndex,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+/* Add-135-2001b Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32SpecBySeqNum (
+    BACSTAC_READ_RANGE_32_SPEC *pSpec,
+    BACSTAC_UI32 nRefSeqNum,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRR32SpecByTime2 (
+    BACSTAC_READ_RANGE_32_SPEC *pSpec,
+    const BACSTAC_DATE_TIME *pRefTime,
+    BACSTAC_INTEGER nCount
+) BACSTAC_NOTHROW;
+/* Add-135-2001b End */
+
+
+BACSTACAPI BACSTAC_RANGE_TYPE BACstac_api BACstacGetRR32SpecRangeType (
+    const BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+/* For 'by pos', 'by time', 'by sequence number' and 'by time2' */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetRR32SpecCount (
+    const BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRR32SpecRefIndex (
+    const BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetRR32SpecRefTimePtr (
+    const BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetRR32SpecRefSeqNum ( /* Add-135-2001b */
+    const BACSTAC_READ_RANGE_32_SPEC *pSpec
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyRRSpec (
+    BACSTAC_READ_RANGE_32_SPEC *pDestSpec,
+    const BACSTAC_READ_RANGE_32_SPEC *pSrcSpec
+) BACSTAC_NOTHROW;
+
+#ifdef BACSTAC_USE_64_BIT_READ_RANGE
+    #define BACstacInitRRSpecWithoutRange     BACstacInitRR64SpecWithoutRange
+    #define BACstacInitRRSpecByPos            BACstacInitRR64SpecByPos
+    #define BACstacInitRRSpecBySeqNum         BACstacInitRR64SpecBySeqNum
+    #define BACstacInitRRSpecByTime2          BACstacInitRR64SpecByTime2
+    #define BACstacGetRRSpecRangeType         BACstacGetRR64SpecRangeType
+    #define BACstacGetRRSpecCount             BACstacGetRR64SpecCount
+    #define BACstacGetRRSpecRefIndex          BACstacGetRR64SpecRefIndex
+    #define BACstacGetRRSpecRefTimePtr        BACstacGetRR64SpecRefTimePtr
+    #define BACstacGetRRSpecRefSeqNum         BACstacGetRR64SpecRefSeqNum
+#else  /* BACSTAC_USE_64_BIT_READ_RANGE */
+    #define BACstacInitRRSpecWithoutRange     BACstacInitRR32SpecWithoutRange
+    #define BACstacInitRRSpecByPos            BACstacInitRR32SpecByPos
+    #define BACstacInitRRSpecBySeqNum         BACstacInitRR32SpecBySeqNum
+    #define BACstacInitRRSpecByTime2          BACstacInitRR32SpecByTime2
+    #define BACstacGetRRSpecRangeType         BACstacGetRR32SpecRangeType
+    #define BACstacGetRRSpecCount             BACstacGetRR32SpecCount
+    #define BACstacGetRRSpecRefIndex          BACstacGetRR32SpecRefIndex
+    #define BACstacGetRRSpecRefTimePtr        BACstacGetRR32SpecRefTimePtr
+    #define BACstacGetRRSpecRefSeqNum         BACstacGetRR32SpecRefSeqNum
+#endif /* BACSTAC_USE_64_BIT_READ_RANGE */
+
+
+/*
+ *  typedef struct tagBACSTAC_DBCS_STRING {
+ *      BACSTAC_UI16 codePage;
+ *      BACSTAC_CHAR *stringData;
+ *  } BACSTAC_DBCS_STRING, *PBACSTAC_DBCS_STRING;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDBCSString (
+    BACSTAC_DBCS_STRING *pString,
+    BACSTAC_UI16 codePage,
+    const BACSTAC_CHAR *stringPtr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDBCSStringCodePage (
+    BACSTAC_DBCS_STRING *pString,
+    BACSTAC_UI16 codePage
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetDBCSStringCodePage (
+    const BACSTAC_DBCS_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDBCSStringStringPtr (
+    BACSTAC_DBCS_STRING *pString,
+    BACSTAC_CHAR *stringPtr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetDBCSStringStringPtr (
+    const BACSTAC_DBCS_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneDBCSString (
+    BACSTAC_DBCS_STRING *pDestString,
+    const BACSTAC_DBCS_STRING *pSSrctring
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  typedef struct tagBACSTAC_CHAR_STRING
+ *  {
+ *      void               *data;
+ *      BACSTAC_VALUE_SIZE size;
+ *      BACSTAC_UI16       codePage;
+ *      BACSTAC_BYTE       charset;
+ *  } BACSTAC_CHAR_STRING;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringUTF8 (
+    BACSTAC_CHAR_STRING *pString,
+    const BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringASCII (
+    BACSTAC_CHAR_STRING *pString,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringDBCS (
+    BACSTAC_CHAR_STRING *pString,
+    BACSTAC_UI16 codePage,
+    const BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringJISX (
+    BACSTAC_CHAR_STRING *pString,
+    const BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacInitCharStringJISC BACstacInitCharStringJISX
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringUCS4 (
+    BACSTAC_CHAR_STRING *pString,
+    const BACSTAC_UCS4_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringUCS2 (
+    BACSTAC_CHAR_STRING *pString,
+    const BACSTAC_UCS2_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCharStringLatin1 (
+    BACSTAC_CHAR_STRING *pString,
+    const BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetCharStringCharSet (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetCharStringCodePage (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI void *BACstac_api BACstacGetCharStringData (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetCharStringUTF8 (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetCharStringASCII (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetCharStringDBCS (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetCharStringJISX (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacGetCharStringJISC BACstacGetCharStringJISX
+
+BACSTACAPI BACSTAC_UCS2_CHAR *BACstac_api BACstacGetCharStringUCS2 (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR *BACstac_api BACstacGetCharStringUCS4 (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetCharStringLatin1 (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetCharStringSize (
+    const BACSTAC_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCharString (
+    BACSTAC_CHAR_STRING *pDestString,
+    const BACSTAC_CHAR_STRING *pSrcString
+) BACSTAC_NOTHROW;
+
+
+/* pCharString is NULL in case of initialization to NULL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharString (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    const BACSTAC_CHAR_STRING *pCharString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringUTF8 (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringASCII (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringDBCS (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_UI16 codePage,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringJISX (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacInitOptCharStringJISC BACstacInitOptCharStringJISX
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringUCS4 (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_UCS4_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringUCS2 (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_UCS2_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptCharStringLatin1 (
+    BACSTAC_OPT_CHAR_STRING *pString,
+    BACSTAC_CHAR *str,
+    BACSTAC_VALUE_SIZE size
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetOptCharStringStrPtr (
+    const BACSTAC_OPT_CHAR_STRING *pString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneOptCharString (
+    BACSTAC_OPT_CHAR_STRING *pDest,
+    const BACSTAC_OPT_CHAR_STRING *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef enum BACSTAC_WHO_HAS_TYPE
+ *  {
+ *      WHO_HAS_ID,
+ *      WHO_HAS_NAME
+ *  } BACSTAC_WHO_HAS_TYPE;
+ *
+ *  typedef struct tagBACSTAC_WHO_HAS_HOOK_INFO
+ *  {
+ *      BACSTAC_INST_NUMBER         filterMin;  // | BACSTAC_NO_FILTER
+ *      BACSTAC_INST_NUMBER         filterMax;  // | BACSTAC_NO_FILTER
+ *      BACSTAC_WHO_HAS_TYPE tag;
+ *      union
+ *      {
+ *          BACSTAC_OBJECT_ID   objectID;   //= tag:WHO_HAS_ID
+ *          BACSTAC_CHAR_STRING objectName; //= tag:WHO_HAS_NAME
+ *      } objectSpec;
+ *  } BACSTAC_WHO_HAS_HOOK_INFO, *PBACSTAC_WHO_HAS_HOOK_INFO;
+ */
+
+
+
+/* All Init()s initialize void filter */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasInfoID (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasInfoNameStr (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    const  BACSTAC_CHAR_STRING *objectName
+) BACSTAC_NOTHROW;
+
+/* Sets type to STRING_UTF_8. Call BACstacSetWhoHasInfoNameType()
+    afterwards if required */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasInfoNameUTF8 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_CHAR *pName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasInfoNameUCS2 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_UCS2_CHAR *pName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoHasInfoNameUCS4 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_UCS4_CHAR *pName
+) BACSTAC_NOTHROW;
+
+/* for backward compatibility only */
+#define BACstacInitWhoHasInfoNamePtr     BACstacInitWhoHasInfoNameUTF8
+#define BACstacInitWhoHasInfoNameUCS2Ptr BACstacInitWhoHasInfoNameUCS2
+#define BACstacInitWhoHasInfoNameUCS4Ptr BACstacInitWhoHasInfoNameUCS4
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoFilter (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_INST_NUMBER filterMin,
+    BACSTAC_INST_NUMBER filterMax
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoID (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetWhoHasInfoID instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWhoHasInfoID (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoNameStr (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    const BACSTAC_CHAR_STRING *objectName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoNameUTF8 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_CHAR *pName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoNameUCS2 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_UCS2_CHAR *pName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoNameUCS4 (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_UCS4_CHAR *pName
+) BACSTAC_NOTHROW;
+
+/* for backward compatibility only */
+#define BACstacSetWhoHasInfoNamePtr      BACstacSetWhoHasInfoNameUTF8
+#define BACstacSetWhoHasInfoNameUCS2Ptr  BACstacSetWhoHasInfoNameUCS2
+#define BACstacSetWhoHasInfoNameUCS4Ptr  BACstacSetWhoHasInfoNameUCS4
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasInfoNameType (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    BACSTAC_STRING_TYPE type
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetWhoHasInfoFilterMin (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetWhoHasInfoFilterMax (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_WHO_HAS_TYPE BACstac_api BACstacGetWhoHasInfoType (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetWhoHasInfoID (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetWhoHasInfoID instead */
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetWhoHasInfoIDPtr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetWhoHasInfoNameType (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING *BACstac_api BACstacGetWhoHasInfoNameStrPtr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetWhoHasInfoNamePtr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR *BACstac_api BACstacGetWhoHasInfoNameUCS2Ptr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR *BACstac_api BACstacGetWhoHasInfoNameUCS4Ptr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_WHO_HAS_PARAM * BACstac_api BACstacGetWhoHasParamPtr (
+    const BACSTAC_WHO_HAS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoHasParam (
+    BACSTAC_WHO_HAS_HOOK_INFO *pInfo,
+    const BACSTAC_WHO_HAS_PARAM *pParam
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneWhoHasInfo (
+    BACSTAC_WHO_HAS_HOOK_INFO *pDestInfo,
+    const BACSTAC_WHO_HAS_HOOK_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_WHO_IS_HOOK_INFO
+ *  {
+ *      BACSTAC_INST_NUMBER     filterMin;  // | BACSTAC_NO_FILTER
+ *      BACSTAC_INST_NUMBER     filterMax;  // | BACSTAC_NO_FILTER
+ *  } BACSTAC_WHO_IS_HOOK_INFO, *PBACSTAC_WHO_IS_HOOK_INFO;
+ */
+
+
+
+/* Initializes void filter */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoIsInfo (
+    BACSTAC_WHO_IS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWhoIsInfoFilter (
+    BACSTAC_WHO_IS_HOOK_INFO *pInfo,
+    BACSTAC_INST_NUMBER filterMin,
+    BACSTAC_INST_NUMBER filterMax
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetWhoIsInfoFilterMin (
+    const BACSTAC_WHO_IS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INST_NUMBER BACstac_api BACstacGetWhoIsInfoFilterMax (
+    const BACSTAC_WHO_IS_HOOK_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyWhoIsInfo (
+    BACSTAC_WHO_IS_HOOK_INFO *pDestInfo,
+    const BACSTAC_WHO_IS_HOOK_INFO *pSrcInfo
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * typedef struct tagBACSTAC_ACTION_COMMAND {
+ *     BACSTAC_UINT                 mask;
+ *     BACSTAC_OBJECT_ID            deviceID;           // optional
+ *     BACSTAC_OBJECT_ID            objectID;
+ *     BACSTAC_PROPERTY_ID          propertyID;
+ *     BACSTAC_ARRAY_INDEX          index;              // | VOID
+ *     BACSTAC_PROPERTY_CONTENTS    value;
+ *     BACSTAC_PRIORITY_LEVEL       priority;           // | VOID
+ *     BACSTAC_UNSIGNED             postDelay;          // optional
+ *     BACSTAC_BOOLEAN              quitOnFailure;
+ *     BACSTAC_BOOLEAN              writeSuccessful;
+ * } BACSTAC_ACTION_COMMAND, *PBACSTAC_ACTION_COMMAND;
+ */
+
+/* Set DeviceID and PostDelay to non-present */
+/* Set Index to BACSTAC_VOID_INDEX */
+/* Set Priority to BACSTAC_VOID_PRI */
+/* Clear QuitOnFailure */
+/* Clear WriteSuccessful */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitActionCommand (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    const BACSTAC_OBJECT_ID *pObjectID,
+    BACSTAC_PROPERTY_ID propertyID,
+    BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsActionCommandDeviceIDPresent (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+/* Return NULL if not present */
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetActionCommandDeviceIDPtr (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyActionCommandDeviceID (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    const BACSTAC_OBJECT_ID *pInitDeviceID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveActionCommandDeviceID (
+    BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetActionCommandObjectIDPtr (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyActionCommandObjectID (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandPropID (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_PROPERTY_ID ePropertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetActionCommandPropID (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandIndex (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_ARRAY_INDEX nIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetActionCommandIndex (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneActionCommandValue (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetActionCommandValuePtr (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandPriority (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_PRIORITY_LEVEL priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetActionCommandPriority (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsActionCommandDelayPresent (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandDelay (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_UNSIGNED postDelay
+) BACSTAC_NOTHROW;
+
+/* Returns 0 if not present */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetActionCommandDelay (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveActionCommandDelay (
+    BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetActionCommandQuitFlag (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandQuitFlag (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_BOOLEAN fQuitOnFailure
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetActionCommandWriteFlag (
+    const BACSTAC_ACTION_COMMAND *pActionCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetActionCommandWriteFlag (
+    BACSTAC_ACTION_COMMAND *pActionCommand,
+    BACSTAC_BOOLEAN fWriteSuccessful
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneActionCommand (
+    BACSTAC_ACTION_COMMAND *pDestActionCommand,
+    const BACSTAC_ACTION_COMMAND *pSourceActionCommand
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_ACTION_LIST {
+ *     BACSTAC_ACTION_COMMAND *pAction;
+ *     BACSTAC_ELEMENT_COUNT  actionCount;
+ * } BACSTAC_ACTION_LIST, *PBACSTAC_ACTION_LIST;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitActionList (
+    BACSTAC_ACTION_LIST *pActionList,
+    BACSTAC_ACTION_COMMAND *pActions,
+    BACSTAC_ELEMENT_COUNT actionCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACTION_COMMAND * BACstac_api BACstacGetActionListCommandPtr (
+    const BACSTAC_ACTION_LIST *pActionList,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetActionListCommandCount (
+    const BACSTAC_ACTION_LIST *pActionList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneActionList (
+    BACSTAC_ACTION_LIST *pDestActionList,
+    const BACSTAC_ACTION_LIST *pSourceActionList
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_SELECTION_CRITERION {
+ *      BACSTAC_PROPERTY_ID         ePropertyID;
+ *      BACSTAC_ARRAY_INDEX         nIndex;
+ *      BACSTAC_RELATION_TYPE       eRelationSpecifier;
+ *      BACSTAC_PROPERTY_CONTENTS   comparisonValue;
+ *  } BACSTAC_SELECTION_CRITERION, *PBACSTAC_SELECTION_CRITERION;
+ */
+
+
+/* Set Index to BACSTAC_VOID_INDEX */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSelCriterion (
+    BACSTAC_SELECTION_CRITERION *selectionCriterion,
+    BACSTAC_PROPERTY_ID propertyID,
+    BACSTAC_RELATION_TYPE relationSpecifier,
+    const BACSTAC_PROPERTY_CONTENTS *value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetSelCriterionIndex (
+    const BACSTAC_SELECTION_CRITERION *selectionCriterion
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSelCriterionIndex (
+    BACSTAC_SELECTION_CRITERION *selectionCriterion,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RELATION_TYPE BACstac_api BACstacGetSelCriterionRelation (
+    const BACSTAC_SELECTION_CRITERION *selectionCriterion
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSelCriterionRelation (
+    BACSTAC_SELECTION_CRITERION *selectionCriterion,
+    BACSTAC_RELATION_TYPE relationSpecifier
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetSelCriterionPropID (
+    const BACSTAC_SELECTION_CRITERION *selectionCriterion
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSelCriterionPropID (
+    BACSTAC_SELECTION_CRITERION *selectionCriterion,
+    BACSTAC_PROPERTY_ID  propertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *
+BACstac_api BACstacGetSelCriterionValuePtr (
+    const BACSTAC_SELECTION_CRITERION *selectionCriterion
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneSelCriterionValue (
+    BACSTAC_SELECTION_CRITERION *selectionCriterion,
+    const BACSTAC_PROPERTY_CONTENTS *value
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneSelCriterion (
+    BACSTAC_SELECTION_CRITERION *destSelectionCriterion,
+    const BACSTAC_SELECTION_CRITERION *sourceSelectionCriterion
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_READ_CON_INFO
+ *  {
+ *      BACSTAC_SELECTION_CRITERIA objectSelectionCriteria;
+ *      BACSTAC_PROPERTY_COUNT     nItemCount;
+ *      //
+ *      // Optional; if not present, nItemCount == 0.
+ *      // Pseudo-properties ALL, REQUIRED and OPTIONAL are allowed
+ *      //
+ *      BACSTAC_PROP_REF           *readItems;
+ *  } BACSTAC_READ_CON_INFO, *PBACSTAC_READ_CON_INFO;
+ */
+
+
+/* Sets Selection Logic to ALL with criteria list empty. */
+/* The readItems pointer is cloned. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPCInfo (
+    BACSTAC_READ_CON_INFO *readRPCInfo,
+    BACSTAC_PROP_REF *readItems,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+/* The criteriaList pointer is cloned */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPCInfoSelectionCriteria (
+    BACSTAC_READ_CON_INFO *readRPCInfo,
+    BACSTAC_SELECTION_LOGIC selLogic,
+    BACSTAC_SELECTION_CRITERION *criteriaList,  /* optional */
+    BACSTAC_PROPERTY_COUNT criteriaCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SELECTION_LOGIC BACstac_api BACstacGetRPCInfoSelectionLogic (
+    const BACSTAC_READ_CON_INFO *readRPCInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPCInfoCriteriaCount (
+    const BACSTAC_READ_CON_INFO *readRPCInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsRPCInfoCriteriaListPresent (
+    const BACSTAC_READ_CON_INFO *readRPCInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SELECTION_CRITERION *
+BACstac_api BACstacGetRPCInfoCriterionPtr (
+    const BACSTAC_READ_CON_INFO *readRPCInfo,
+    BACSTAC_PROPERTY_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetRPCInfoItemCount (
+    const BACSTAC_READ_CON_INFO *readRPCInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF * BACstac_api BACstacGetRPCInfoItemPtr (
+    const BACSTAC_READ_CON_INFO *readRPCInfo,
+    BACSTAC_PROPERTY_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsRPCInfoReadItemsPresent (
+    const BACSTAC_READ_CON_INFO *readRPCInfo
+) BACSTAC_NOTHROW;
+
+/* The items pointer is cloned */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRPCInfoItems (
+    BACSTAC_READ_CON_INFO *readRPCInfo,
+    BACSTAC_SELECTION_CRITERION *items,
+    BACSTAC_PROPERTY_COUNT nItemCount
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPCInfo (
+    BACSTAC_READ_CON_INFO *destRPCInfo,
+    const BACSTAC_READ_CON_INFO *sourceRPCInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ * listOfReadAccessResults is passed in as a raw buffer. On the output
+ * it is formatted as an array of BACSTAC_READ_ACCESS_RESULT structures.
+ * Use access routines to retrieve these values.
+ *
+ * If pointer to the buffer in side the listOfReadAccessResults field is NULL,
+ * resultListCount will still contain correct value on return, which allows
+ * application to find out how many objects of interest is in the device in
+ * query, or calculate required buffer size (for data types having fixed size).
+ *
+ *  typedef struct tagBACSTAC_RPC_RESULT {
+ *      BACSTAC_BUFFER listOfReadAccessResults;    // optional
+ *      BACSTAC_OBJECT_COUNT resultListCount;
+ *  } BACSTAC_RPC_RESULT, *PBACSTAC_RPC_RESULT;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRPCResult (
+    BACSTAC_RPC_RESULT *rpcResult,
+    void *buffer,   /* optional */
+    BACSTAC_VALUE_SIZE size     /* is ignored if buffer==NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_COUNT BACstac_api BACstacGetRPCResultCount (
+    const BACSTAC_RPC_RESULT *rpcResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_READ_ACCESS_RESULT *
+BACstac_api BACstacGetRPCResultItemPtr (
+    const BACSTAC_RPC_RESULT *rpcResult,
+    BACSTAC_PROPERTY_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRPCResult (
+    BACSTAC_RPC_RESULT *destRpcResult,
+    const BACSTAC_RPC_RESULT *srcRpcResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRPCResult (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_RPC_RESULT *result
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_PRIVATE_TRANSFER_INFO
+ *{
+ *    BACSTAC_UI16       nVendorID;
+ *    BACSTAC_UINT       nServiceNumber;
+ *    BACSTAC_BOOLEAN    fParametersPresent;
+ *    BACSTAC_BUFFER     parameters;
+ *    BACSTAC_VALUE_SIZE nByteCount;
+ *} BACSTAC_PRIVATE_TRANSFER_INFO, *PBACSTAC_PRIVATE_TRANSFER_INFO;
+ */
+
+
+/* Parameters==NULL will be encoded as an empty, not as absent, parameter */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPTInfo (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo,
+    BACSTAC_UI16 nVendorID,
+    BACSTAC_UINT nServiceNumber,
+    void *parameters,       /* optional */
+    BACSTAC_VALUE_SIZE size /* 0 if parameters==NULL; For an input buffer this parameters */
+                            /* designates size of the data in bytes; for an output buffer */
+                            /* it designates size of the buffer in bytes. */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetPTInfoVendorID (
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPTInfoVendorID (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo,
+    BACSTAC_UI16 nVendorID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UINT BACstac_api BACstacGetPTInfoServiceNumber (
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPTInfoServiceNumber (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo,
+    BACSTAC_UINT ServiceNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacArePTInfoParametersPresent (
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+/* Returns NULL if not present */
+BACSTACAPI void *BACstac_api BACstacGetPTInfoParametersPtr (
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+typedef enum {
+    PT_PARAM_SIZE_BUFFER,   /* size of the buffer (in bytes) */
+    PT_PARAM_SIZE_ACTUAL,   /* size of parameters contained by the PT-Ack */
+    PT_PARAM_SIZE_RETURNED  /* size of parameters available (the smallest of */
+                            /*      the SIZE_BUFFER and SIZE_ACTUAL) */
+} BACSTAC_PT_PARAM_SIZE;
+
+/* Returns 0 if parameters are not present */
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetPTInfoParametersSize (
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo,
+    BACSTAC_PT_PARAM_SIZE sizeOfInterest
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPTInfoParameters (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo,
+    void *parameters,
+    BACSTAC_VALUE_SIZE size  /* For an input buffer this parameters designates size of the */
+                             /* data in bytes; for an output buffer it designates size of */
+                             /* the buffer in bytes. */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemovePTInfoParameters (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacClonePTInfo (
+    BACSTAC_PRIVATE_TRANSFER_INFO *pDestPTInfo,
+    const BACSTAC_PRIVATE_TRANSFER_INFO *pSourcePTInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreePTInfo (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_PRIVATE_TRANSFER_INFO *pPTInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_TEXT_MESSAGE_INFO
+ *  {
+ *      BACSTAC_OBJECT_ID         initDevice;
+ *      BACSTAC_BOOLEAN           fMessageClassPresent;
+ *      BACSTAC_MESSAGE_CLASS     messageClass;
+ *      BACSTAC_MESSAGE_PRIORITY  eMessagePriority;
+ *      BACSTAC_CHAR_STRING       message;
+ *  } BACSTAC_TEXT_MESSAGE_INFO, *PBACSTAC_TEXT_MESSAGE_INFO;
+ */
+
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfoStr (
+    BACSTAC_TEXT_MESSAGE_INFO *msgClass,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_CHAR_STRING *message
+) BACSTAC_NOTHROW;
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfoUTF8 (
+    BACSTAC_TEXT_MESSAGE_INFO *msgClass,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacInitMsgInfoUTF8 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfo (
+    BACSTAC_TEXT_MESSAGE_INFO *msgClass,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfoJISX0208 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacInitMsgInfoJISC6226 BACstacInitMsgInfoJISX0208
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfoUCS4 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_UCS4_CHAR *message
+) BACSTAC_NOTHROW;
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfoUCS2 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_UCS2_CHAR *message
+) BACSTAC_NOTHROW;
+
+/* Message class is not present, priority set to NORMAL */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitMsgInfo88591 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_OBJECT_ID *sourceDevice,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+/* source device */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyMsgInfoDevice (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_OBJECT_ID *sourceDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetMsgInfoDevicePtr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+/* priority */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoPriority (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    BACSTAC_MESSAGE_PRIORITY priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MESSAGE_PRIORITY BACstac_api BACstacGetMsgInfoPriority (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+/* type */
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetMsgInfoCharacterSet (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+
+/* message */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessageStr (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR_STRING *message
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetMsgInfoMessageStrPtr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessageUTF8 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoMessageUTF8Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoMessageUTF8 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoMessage (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetMsgInfoMessageUTF8Ptr */
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoMessagePtr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessageJISX0208 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoMessageJISX0208 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoMessageJISX0208 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacCloneMsgInfoMessageJISC6226 BACstacCloneMsgInfoMessageJISX0208
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoMessageJISX0208Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacGetMsgInfoMessageJISC6226Ptr BACstacGetMsgInfoMessageJISX0208Ptr
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessageUCS4 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS4_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoMessageUCS4 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoMessageUCS4 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS4_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetMsgInfoMessageUCS4Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessageUCS2 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS2_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoMessageUCS2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoMessageUCS2 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS2_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetMsgInfoMessageUCS2Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoMessage88591 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoMessage88591 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoMessage88591 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *message
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoMessage88591Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+/* class */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsMsgInfoClassPresent (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_MESSAGE_CLASS_TYPE BACstac_api BACstacGetMsgInfoClassType (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoNumericClassValue (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    BACSTAC_UNSIGNED classValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetMsgInfoNumericClassValue (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetMsgInfoClassCharacterSet (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassStringStr (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR_STRING *classString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetMsgInfoClassStringStrPtr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassStringUTF8 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoClassStringUTF8 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoClassString (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoClassStringUTF8 (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacGetMsgInfoClassStringUTF8 instead */
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoClassStringPtr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoClassStringJISX0208Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacGetMsgInfoClassStringJISC6226Ptr BACstacGetMsgInfoClassStringJISX0208Ptr
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassStringJISX0208 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoClassStringJISX0208 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoClassStringJISX0208 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+/* for backward compatibility only */
+#define BACstacCloneMsgInfoClassStringJISC6226 BACstacCloneMsgInfoClassStringJISX0208
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetMsgInfoClassStringUCS4Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassStringUCS4 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS4_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoClassStringUCS4 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoClassStringUCS4 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS4_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetMsgInfoClassStringUCS2Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassStringUCS2 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS2_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoClassStringUCS2 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoClassStringUCS2 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_UCS2_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR * BACstac_api BACstacGetMsgInfoClassString88591Ptr (
+    const BACSTAC_TEXT_MESSAGE_INFO *messageInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetMsgInfoClassString88591 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetMsgInfoClassString88591 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfoClassString88591 (
+    BACSTAC_TEXT_MESSAGE_INFO *messageInfo,
+    const BACSTAC_CHAR *classString
+) BACSTAC_NOTHROW;
+
+/* Clone */
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneMsgInfo (
+    BACSTAC_TEXT_MESSAGE_INFO *destMessageInfo,
+    const BACSTAC_TEXT_MESSAGE_INFO *srcMessageInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_OBJECT_SPECIFIER
+ *  {
+ *      BACSTAC_CREATE_OBJECT_TYPE    tag;
+ *      union {
+ *          BACSTAC_OBJECT_TYPE type;
+ *          BACSTAC_OBJECT_ID   objectID;
+ *      } objectSpec;
+ *  } BACSTAC_OBJECT_SPECIFIER, *PBACSTAC_OBJECT_SPECIFIER;
+ */
+
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitObjectSpecType (
+    BACSTAC_OBJECT_SPECIFIER *objSpec,
+    BACSTAC_OBJECT_TYPE objType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitObjectSpecID (
+    BACSTAC_OBJECT_SPECIFIER *objSpec,
+    const BACSTAC_OBJECT_ID *objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CREATE_OBJECT_TYPE BACstac_api BACstacGetObjectSpecType (
+    const BACSTAC_OBJECT_SPECIFIER *objSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_TYPE BACstac_api BACstacGetObjectSpecObjType (
+    const BACSTAC_OBJECT_SPECIFIER *objSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetObjectSpecObjIDPtr (
+    const BACSTAC_OBJECT_SPECIFIER *objSpec
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyObjectSpec (
+    BACSTAC_OBJECT_SPECIFIER *srcObjSpec,
+    const BACSTAC_OBJECT_SPECIFIER *destObjSpec
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_CREATE_OBJECT_INFO
+ *  {
+ *      BACSTAC_OBJECT_SPECIFIER objectSpecifier;
+ *      // can't just use NULL for the pValues field - need to distinguish
+ *      // "empty list" and "no list present" cases
+ *      BACSTAC_BOOLEAN          fValuesPresent;
+ *      BACSTAC_PROPERTY_VALUE   *pValues;
+ *      BACSTAC_PROPERTY_COUNT   nValuesCount;
+ *  } BACSTAC_CREATE_OBJECT_INFO, *PBACSTAC_CREATE_OBJECT_INFO;
+ */
+
+
+/* Clones pValues pointer */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCreateObjInfoType (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    BACSTAC_OBJECT_TYPE objType,
+    const BACSTAC_PROPERTY_VALUE *pValues,  /* optional */
+    BACSTAC_PROPERTY_COUNT nValuesCount
+) BACSTAC_NOTHROW;
+
+/* Clones pValues pointer */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCreateObjInfoID (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    const BACSTAC_OBJECT_ID *objectID,
+    const BACSTAC_PROPERTY_VALUE *pValues,  /* optional */
+    BACSTAC_PROPERTY_COUNT nValuesCount
+) BACSTAC_NOTHROW;
+
+/* Clones pValues pointer */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCreateObjInfoSpec (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    const BACSTAC_OBJECT_SPECIFIER *objSpec,
+    const BACSTAC_PROPERTY_VALUE *pValues,  /* optional */
+    BACSTAC_PROPERTY_COUNT nValuesCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCreateObjInfoSpec (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    const BACSTAC_OBJECT_SPECIFIER *objSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_SPECIFIER * BACstac_api
+BACstacGetCreateObjInfoSpecPtr (
+    const BACSTAC_CREATE_OBJECT_INFO *objInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacAreCreateObjInfoValuesPresent (
+    const BACSTAC_CREATE_OBJECT_INFO *objInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCreateObjInfoValues (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    const BACSTAC_PROPERTY_VALUE *pValues,  /* optional */
+    BACSTAC_PROPERTY_COUNT nValuesCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_COUNT BACstac_api BACstacGetCreateObjInfoValueCount (
+    const BACSTAC_CREATE_OBJECT_INFO *objInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_VALUE *
+BACstac_api BACstacGetCreateObjInfoValuePtr (
+    const BACSTAC_CREATE_OBJECT_INFO *objInfo,
+    BACSTAC_PROPERTY_COUNT valueIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRemoveCreateObjInfoValues (
+    BACSTAC_CREATE_OBJECT_INFO *objInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCreateObjInfo (
+    BACSTAC_CREATE_OBJECT_INFO *destObjInfo,
+    const BACSTAC_CREATE_OBJECT_INFO *srcObjInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct
+ *  {
+ *      BACSTAC_VALUE_SIZE nLength;
+ *      BACSTAC_BYTE       *rawData;
+ *  } BACSTAC_RAW_ASN1_VALUE, *PBACSTAC_RAW_ASN1_VALUE;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRawASN1 (
+    BACSTAC_RAW_ASN1_VALUE *asn1Value,
+    const BACSTAC_BYTE *asnData,
+    BACSTAC_VALUE_SIZE asnLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetRawASN1DataLength (
+    const BACSTAC_RAW_ASN1_VALUE *asn1Value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetRawASN1DataPtr (
+    const BACSTAC_RAW_ASN1_VALUE *asn1Value
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRawASN1 (
+    BACSTAC_RAW_ASN1_VALUE *destAsn1Value,
+    const BACSTAC_RAW_ASN1_VALUE *srcAsn1Value
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_EVENT_PARAMETER2
+ */
+
+
+/* Initialize EVENT_PARAMETER2 to EVENT_TYPE_CHANGE_OF_BITSTRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COBitString (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_BIT_STRING *pBitMask,
+    const BACSTAC_BIT_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* Initialize EVENT_PARAMETER2 to EVENT_TYPE_CHANGE_OF_STATE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COState (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_PROPERTY_STATES *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COVBitString (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_BIT_STRING *pBitMask
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COVIncrement (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_REAL propIncrement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2CmdFailure (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_DEV_OBJ_PROP_REF *pFeedbackProperty
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2FloatingLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_DEV_OBJ_PROP_REF *pSetpoint,
+    BACSTAC_REAL lowDiffLimit,
+    BACSTAC_REAL highDiffLimit,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2OutOfRange (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_REAL lowLimit,
+    BACSTAC_REAL highLimit,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2BufferReady (  /* deprecated by Add-135-2001b */
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI32 notifyThreshold,
+    BACSTAC_UI32 prevNotifyCount
+) BACSTAC_NOTHROW;
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2BufferReady2 ( /* Add-135-2001b */
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI32 notifyThreshold,
+    BACSTAC_UI32 prevNotifyCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COLifeSafety (  /* Add-135c */
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_LIFE_SAFETY_STATE *pLifeSafetyAlarmValues,
+    BACSTAC_ELEMENT_COUNT safetyAlarmValueCount,
+    const BACSTAC_LIFE_SAFETY_STATE *pAlarmValues,
+    BACSTAC_ELEMENT_COUNT alarmValueCount,
+    const BACSTAC_DEV_OBJ_PROP_REF *pModePropertyReference
+) BACSTAC_NOTHROW;
+
+/* Add-135-2001a Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamNull (
+    BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamReal (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamUnsigned (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamBoolean (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamInteger (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamDouble (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_DOUBLE doubleValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamOctetString (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamCharString (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_CHAR_STRING *pCharString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamBitString (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_BIT_STRING *pBitString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamEnumerated (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamDate (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_DATE *pDateValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamTime (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_TIME *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamObjID (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_OBJECT_ID *pObjectIDValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2ExtParamReference (
+    BACSTAC_EP_E_PARAMETER *pExtParam,
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetEP2ExtParamTag (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2ExtParamReal (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2ExtParamUnsigned (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetEP2ExtParamBoolean (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetEP2ExtParamInteger (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetEP2ExtParamDouble (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api
+BACstacGetEP2ExtParamOctetStringPtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api
+BACstacGetEP2ExtParamCharStringPtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api
+BACstacGetEP2ExtParamBitStringPtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetEP2ExtParamEnumerated (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api
+BACstacGetEP2ExtParamDatePtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api
+BACstacGetEP2ExtParamTimePtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetEP2ExtParamObjIDPtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF * BACstac_api
+BACstacGetEP2ExtParamReferencePtr (
+    const BACSTAC_EP_E_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2Extended (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI16 vendorID,
+    BACSTAC_UNSIGNED extendedEventType,
+    const BACSTAC_EP_E_PARAMETER *pParameters,
+    BACSTAC_ELEMENT_COUNT parametersCount
+) BACSTAC_NOTHROW;
+/* Add-135-2001a End */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2UnsignedRange ( /* Add-135-2001c-4 */
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_UNSIGNED lowLimit,
+    BACSTAC_UNSIGNED highLimit
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2AccessEvent ( /* Add-135-2008j-7 */
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_ACCESS_EVENT *pAccessEvents,
+    BACSTAC_ELEMENT_COUNT accessEventsCount,
+    const BACSTAC_DEV_OBJ_PROP_REF *pAccessEventTimeRef
+) BACSTAC_NOTHROW;
+
+/* Add-135-2008w Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2DoubleOutOfRange (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_DOUBLE lowLimit,
+    BACSTAC_DOUBLE highLimit,
+    BACSTAC_DOUBLE deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2SignedOutOfRange (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_INTEGER lowLimit,
+    BACSTAC_INTEGER highLimit,
+    BACSTAC_UNSIGNED deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2UnsignedOutOfRange (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_UNSIGNED lowLimit,
+    BACSTAC_UNSIGNED highLimit,
+    BACSTAC_UNSIGNED deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COCharString (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_CHAR_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+/* Add-135-2008w End */
+
+/* Add-135-2008p Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COStatusFlags (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    const BACSTAC_BIT_STRING *pSelectedFlags
+) BACSTAC_NOTHROW;
+/* Add-135-2008p End */
+
+/* Add-135-2010af Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2None (
+    BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2010af End */
+
+/* Add-135-2012aw-2 Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2CODiscreteValue (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay
+) BACSTAC_NOTHROW;
+/* Add-135-2012aw-2 End */
+
+/* Add-135-2012ay-1 Begin */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEP2COTimer (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED timeDelay,
+    BACSTAC_TIMER_STATE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount,
+    const BACSTAC_DEV_OBJ_PROP_REF *updateTimeRef
+) BACSTAC_NOTHROW;
+/* Add-135-2012ay-1 End */
+
+BACSTACAPI BACSTAC_EVENT_TYPE BACstac_api BACstacGetEP2Tag (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2TimeDelay (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED param
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2TimeDelay (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to
+ * EVENT_TYPE_CHANGE_OF_BITSTRING or
+ * EVENT_TYPE_CHANGE_OF_VALUE:EP_COV_CRITERIA_BITMASK
+ */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2BitMask (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_BIT_STRING *pBitMask
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to
+ * EVENT_TYPE_CHANGE_OF_BITSTRING or
+ * EVENT_TYPE_CHANGE_OF_VALUE:EP_COV_CRITERIA_BITMASK
+ */
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetEP2BitMaskPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_BITSTRING */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2BitStrings (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_BIT_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_BITSTRING */
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetEP2BitStrPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_STATE */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2PropStates (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_PROPERTY_STATES *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_STATE */
+BACSTACAPI BACSTAC_PROPERTY_STATES *BACstac_api BACstacGetEP2PropStatesPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_BITSTRING or
+  EVENT_TYPE_CHANGE_OF_STATE or EVENT_TYPE_CHANGE_OF_CHARSTRING or
+  EVENT_TYPE_CHANGE_OF_TIMER
+ */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEP2Count (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_VALUE */
+BACSTACAPI BACSTAC_EP_COV_CRITERIA_TYPE BACstac_api BACstacGetEP2COVTag (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:EP_COV_CRITERIA_INCREMENT*/
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2PropIncrement (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to
+  EVENT_TYPE_CHANGE_OF_VALUE:EP_COV_CRITERIA_INCREMENT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2PropIncrement (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2FeedbackProp (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_COMMAND_FAILURE */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *
+BACstac_api BACstacGetEP2FeedbackPropPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2Setpoint (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF * BACstac_api BACstacGetEP2SetpointPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2LowDiffLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2LowDiffLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2HighDiffLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2HighDiffLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2LowLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2LowLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2HighLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2HighLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT or
+    EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2Deadband (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_REAL param
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_FLOATING_LIMIT or
+    EVENT_TYPE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEP2Deadband (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_BUFFER_READY or EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2NotifyThreshold (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI32 notifyThreshold
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_BUFFER_READY or EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetEP2NotifyThreshold (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_BUFFER_READY or EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2PrevNotifyCount (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI32 prevNotifyCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_BUFFER_READY or EVENT_TYPE_BUFFER_READY2 */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetEP2PrevNotifyCount (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* Add-135c Begin */
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2SafetyAlarm (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_LIFE_SAFETY_STATE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_STATE *BACstac_api BACstacGetEP2SafetyAlarmPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEP2SafetyAlarmCount (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2Alarm (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_LIFE_SAFETY_STATE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_STATE *BACstac_api BACstacGetEP2AlarmPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEP2AlarmCount (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2ModePropRef (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_LIFE_SAFETY */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF * BACstac_api BACstacGetEP2ModePropRefPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135c End */
+
+/* Add-135-2001a Begin */
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2ExtVendorID (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetEP2ExtVendorID (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2ExtEventType (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED extendedEventType
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2ExtEventType (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2ExtParameters (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_EP_E_PARAMETER *pParameters,
+    BACSTAC_ELEMENT_COUNT parametersCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_EP_E_PARAMETER *BACstac_api BACstacGetEP2ExtParameters (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_EXTENDED */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEP2ExtParamCount (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2001a End */
+
+
+/* Add-135-2001c-4 Begin */
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UrangeLowLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2UrangeLowLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UrangeHighLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED param
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2UrangeHighLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2001c-4 End */
+
+
+/* Add-135-2008j-7 Begin */
+/*assumes that EP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2AccessEvents (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_ACCESS_EVENT *pAccessEvents,
+    BACSTAC_ELEMENT_COUNT accessEventsCount
+) BACSTAC_NOTHROW;
+
+
+/*assumes that EP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_ACCESS_EVENT *BACstac_api BACstacGetEP2AccessEventPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT index
+) BACSTAC_NOTHROW;
+
+
+/*assumes that EP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEP2AccessEventsCount (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+
+/*assumes that EP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2AccessEventTimeRef (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *pAccessEventTimeRef
+) BACSTAC_NOTHROW;
+
+
+/*assumes that EP has been initialized to EVENT_TYPE_ACCESS_EVENT */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api
+BACstacGetEP2AccessEventTimeRefPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2008j-7 End */
+
+/* Add-135-2008w Begin */
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2DoubleLowLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_DOUBLE lowLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetEP2DoubleLowLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2DoubleHighLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_DOUBLE highLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetEP2DoubleHighLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2DoubleDeadband (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_DOUBLE deadband
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_DOUBLE_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetEP2DoubleDeadband (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2SignedLowLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_INTEGER lowLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetEP2SignedLowLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2SignedHighLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_INTEGER highLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetEP2SignedHighLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE or
+ * EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UnsignedDeadband (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED deadband
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_SIGNED_OUT_OF_RANGE or
+ * EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2UnsignedDeadband (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UnsignedLowLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED lowLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2UnsignedLowLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UnsignedHighLimit (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_UNSIGNED highLimit
+) BACSTAC_NOTHROW;
+
+/*assumes that EP has been initialized to EVENT_TYPE_UNSIGNED_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEP2UnsignedHighLimit (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2CharStrings (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_CHAR_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_CHARSTRING */
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetEP2CharStrPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT index
+) BACSTAC_NOTHROW;
+/* Add-135-2008w End */
+
+/* Add-135-2008p Begin */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2SelectedFlags (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_BIT_STRING *pSelectedFlags
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetEP2SelectedFlagsPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2008p End */
+
+/* Add-135-2012ay-1 Begin */
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_TIMER */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2AlarmValues (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_TIMER_STATE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_TIMER */
+BACSTACAPI BACSTAC_TIMER_STATE *BACstac_api BACstacGetEP2AlarmValuesPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter,
+    BACSTAC_ELEMENT_COUNT index
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_TIMER */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEP2UpdateTimeRef (
+    BACSTAC_EVENT_PARAMETER2 *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *pUpdateTimeRef
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to EVENT_TYPE_CHANGE_OF_TIMER */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api BACstacGetEP2UpdateTimeRefPtr (
+    const BACSTAC_EVENT_PARAMETER2 *pParameter
+) BACSTAC_NOTHROW;
+/* Add-135-2012ay-1 End */
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEP2 (
+    BACSTAC_EVENT_PARAMETER2 *pDestParameter,
+    const BACSTAC_EVENT_PARAMETER2 *pSrcParameter
+) BACSTAC_NOTHROW;
+
+
+
+
+/*
+ *  #define COV_SUB_INCREMENT_PRESENT       0x1
+ *
+ *  typedef struct tagBACSTAC_COV_SUBSCRIPTION {
+ *      BACSTAC_UINT                mask;
+ *      BACSTAC_RECIPIENT_PROCESS   recipient;
+ *      BACSTAC_OBJ_PROP_REF  monitoredProperty;
+ *      BACSTAC_BOOLEAN     issueConfirmedNotifications;
+ *      BACSTAC_UNSIGNED    timeRemaining;  // BACSTAC_INFINITE_LIFETIME  if indefinite
+ *      BACSTAC_REAL        covIncrement;   // optional
+ *  } BACSTAC_COV_SUBSCRIPTION, *PBACSTAC_COV_SUBSCRIPTION;
+ */
+
+
+/* Initializes covIncrement as not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVSubs (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    const BACSTAC_RECIPIENT_PROCESS *recipient,
+    const BACSTAC_OBJ_PROP_REF *monitoredProp,
+    BACSTAC_BOOLEAN confirmed,
+    BACSTAC_UNSIGNED remainingSecs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT_PROCESS *
+BACstac_api BACstacGetCOVSubsRecipientPtr (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVSubsRecipient (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    const BACSTAC_RECIPIENT_PROCESS *recipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJ_PROP_REF *BACstac_api
+BACstacGetCOVSubsMonitoredPropPtr (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVSubsMonitoredProp (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    const BACSTAC_OBJ_PROP_REF *monitoredProp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetCOVSubsConfFlag (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVSubsConfFlag (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    BACSTAC_BOOLEAN confirmed
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVSubsTimeRemaining (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVSubsTimeRemaining (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    BACSTAC_UNSIGNED remainingSecs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVSubsIncrementPresent (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetCOVSubsIncrement (
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVSubsIncrement (
+    BACSTAC_COV_SUBSCRIPTION *subscription,
+    BACSTAC_REAL increment
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVSubs (
+    BACSTAC_COV_SUBSCRIPTION *destSubscription,
+    const BACSTAC_COV_SUBSCRIPTION *srcSubscription
+) BACSTAC_NOTHROW;
+
+/* "In-Contents" */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsCOVSubs (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_RECIPIENT_PROCESS *recipient,
+    const BACSTAC_OBJ_PROP_REF *monitoredProp,
+    BACSTAC_BOOLEAN confirmed,
+    BACSTAC_UNSIGNED remainingSecs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_SUBSCRIPTION *BACstac_api BACstacGetContentsCOVSubsPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsCOVSubs (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_COV_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+/* Time Stamp in Contents access routines */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsTimeStampTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_TIME *pTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsTimeStampSeqNumber (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    BACSTAC_UI16 seqNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitInContentsTimeStampDateTime (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetContentsTimeStampPtr (
+    const BACSTAC_PROPERTY_CONTENTS *pContents
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyContentsTimeStamp (
+    BACSTAC_PROPERTY_CONTENTS *pContents,
+    const BACSTAC_TIME_STAMP *pSrcStamp
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ *  #define COVP_INFO_CONF_FLAG_PRESENT     0x1
+ *  #define COVP_INFO_LIFETIME_PRESENT      0x2
+ *  #define COVP_INFO_INCREMENT_PRESENT     0x4
+ *
+ *  According to Errata-9-7-99:29 service request shall be interpreted
+ *  as follows:
+ *
+ *           field                                is present
+ * ----------------------------------------------------------------------------
+ * lifetime                          yes        no          no          yes
+ * issueConfirmedNotifications       yes        yes         no          no
+ * ----------------------------------------------------------------------------
+ * request meaning                  subs.   lifetime=0  cancellation   invalid
+ *
+ *  typedef struct tagBACSTAC_SUBSCRIBE_COVP_INFO
+ *  {
+ *      BACSTAC_UINT                    mask;
+ *      BACSTAC_UI32                    processID;
+ *      BACSTAC_OBJECT_ID               monitoredObjectID;
+ *      BACSTAC_BOOLEAN                 issueConfirmedNotifications;
+ *      BACSTAC_UNSIGNED                lifetime;   // BACSTAC_INFINITE_LIFETIME for indefinite
+ *      BACSTAC_PROP_REF      monitoredProperty;
+ *      BACSTAC_REAL                    covIncrement;   // optional
+ *  } BACSTAC_SUBSCRIBE_COVP_INFO, *PBACSTAC_SUBSCRIBE_COVP_INFO;
+ */
+
+
+/* Initializes covIncrement as not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVPSubscription (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *monitoredObj,
+    BACSTAC_BOOLEAN confirmed,
+    BACSTAC_UNSIGNED lifetime,   /* BACSTAC_INFINITE_LIFETIME for indefinite */
+    const BACSTAC_PROP_REF *monitoredProp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVPCancellation (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_UI32 processID,
+    const BACSTAC_OBJECT_ID *monitoredObj,
+    const BACSTAC_PROP_REF *monitoredProp
+) BACSTAC_NOTHROW;
+
+/* Return FALSE if neither Lifetime nor ConfFlag is present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVPInfoSubscription (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetCOVPInfoProcessID (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVPInfoProcessID (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetCOVPInfoObjectIDPtr (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVPInfoObjectID (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVPInfoConfFlagPresent (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetCOVPInfoConfFlag (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVPInfoConfFlag (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_BOOLEAN issueConfirmedNotifications
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVPInfoLifetimePresent (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVPInfoLifetime (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVPInfoLifetime (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_UNSIGNED lifetime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF *
+BACstac_api BACstacGetCOVPInfoMonitoredPropPtr (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVPInfoMonitoredProp (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    const BACSTAC_PROP_REF *monitoredProp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVPInfoIncrementPresent (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetCOVPInfoIncrement (
+    const BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVPInfoIncrement (
+    BACSTAC_SUBSCRIBE_COVP_INFO *covpInfo,
+    BACSTAC_REAL increment
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVPInfo (
+    BACSTAC_SUBSCRIBE_COVP_INFO *destInfo,
+    const BACSTAC_SUBSCRIBE_COVP_INFO *srcInfo
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_EVENT_SUMMARY
+ *  {
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_EVENT_STATE eventState;
+ *      BACSTAC_BIT_STRING  ackedTransitions;    // BACSTAC_EVENT_TRANSITION_BITS
+ *      BACSTAC_TIME_STAMP  eventStamps[3];
+ *      BACSTAC_NOTIFY_TYPE notifyType;
+ *      BACSTAC_BIT_STRING  eventEnable;        // BACSTAC_EVENT_TRANSITION_BITS
+ *      BACSTAC_UNSIGNED    eventPriorities[3];
+ *  } BACSTAC_EVENT_SUMMARY, *PBACSTAC_EVENT_SUMMARY;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventSumm (
+    BACSTAC_EVENT_SUMMARY *summary,
+    const BACSTAC_OBJECT_ID *objectID,
+    BACSTAC_EVENT_STATE eventState,
+    const BACSTAC_BIT_STRING *ackedTransitions, /* BACSTAC_EVENT_TRANSITION_BITS */
+    const BACSTAC_TIME_STAMP *stamps,           /* array[3] */
+    BACSTAC_NOTIFY_TYPE notifyType,
+    const BACSTAC_BIT_STRING *eventEnable,      /* BACSTAC_EVENT_TRANSITION_BITS */
+    const BACSTAC_UNSIGNED *priorities          /* array[3] */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetEventSummObjectIDPtr (
+    const BACSTAC_EVENT_SUMMARY *summary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventSummObjectID (
+    BACSTAC_EVENT_SUMMARY *summary,
+    const BACSTAC_OBJECT_ID *objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetEventSummState (
+    const BACSTAC_EVENT_SUMMARY *summary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventSummState (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_EVENT_STATE eventState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetEventSummAckedTransPtr (
+    const BACSTAC_EVENT_SUMMARY *summary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventSummAckedTrans (
+    BACSTAC_EVENT_SUMMARY *summary,
+    const BACSTAC_BIT_STRING *ackedTransitions  /* BACSTAC_EVENT_TRANSITION_BITS */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacTestEventSummAckedTransBit (
+    const BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT bitIndex   /* BACSTAC_EVENT_TRANSITION_BITS */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventSummAckedTransBit (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT bitIndex,  /* BACSTAC_EVENT_TRANSITION_BITS */
+    BACSTAC_BOOLEAN bitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP *BACstac_api BACstacGetEventSummStampPtr (
+    const BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT arrayIndex      /* 0..2 */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventSummStamp (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT arrayIndex,     /* 0..2 */
+    const BACSTAC_TIME_STAMP *stamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NOTIFY_TYPE BACstac_api BACstacGetEventSummNotifyType (
+    const BACSTAC_EVENT_SUMMARY *summary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventSummNotifyType (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_NOTIFY_TYPE notifyType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetEventSummEnablePtr (
+    const BACSTAC_EVENT_SUMMARY *summary
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventSummEnable (
+    BACSTAC_EVENT_SUMMARY *summary,
+    const BACSTAC_BIT_STRING *eventEnable   /* BACSTAC_EVENT_TRANSITION_BITS */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacTestEventSummEnableBit (
+    const BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT bitIndex   /* BACSTAC_EVENT_TRANSITION_BITS */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventSummEnableBit (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT bitIndex,  /* BACSTAC_EVENT_TRANSITION_BITS */
+    BACSTAC_BOOLEAN bitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetEventSummPriority (
+    const BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT arrayIndex      /* 0..2 */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventSummPriority (
+    BACSTAC_EVENT_SUMMARY *summary,
+    BACSTAC_UINT arrayIndex,     /* 0..2 */
+    BACSTAC_UNSIGNED priority
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventSumm (
+    BACSTAC_EVENT_SUMMARY *destSummary,
+    const BACSTAC_EVENT_SUMMARY *srcSummary
+) BACSTAC_NOTHROW;
+
+
+ /*
+  * typedef struct tagBACSTAC_EVENT_INFO
+  * {
+  *     BACSTAC_EVENT_SUMMARY               *pSummaries;    // optional
+  *     BACSTAC_ELEMENT_COUNT               bufferCount;
+  *     BACSTAC_ELEMENT_COUNT               summaryCount;
+  *     BACSTAC_BOOLEAN                     moreEvents;
+  * } BACSTAC_EVENT_INFO, *PBACSTAC_EVENT_INFO;
+  */
+
+
+/* Sets actual count to 0, and the 'more' flag to FALSE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventInfoAck (
+    BACSTAC_EVENT_INFO *eventInfo,
+    BACSTAC_EVENT_SUMMARY *summBuf,
+    BACSTAC_ELEMENT_COUNT summBufCount
+) BACSTAC_NOTHROW;
+
+/* Sets buffer to NULL, actual count to 0, and the 'more' flag to FALSE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventInfoAckNoBuffer  (
+    BACSTAC_EVENT_INFO *eventInfo
+) BACSTAC_NOTHROW;
+
+typedef enum {
+    EVENT_INFO_COUNT_BUFFER,    /* size of the buffer (in items) */
+    EVENT_INFO_COUNT_ACTUAL,    /* number of items contained by the packet*/
+    EVENT_INFO_COUNT_RETURNED   /* number of items available (the smallest of
+                                   the COUNT_BUFFER and COUNT_ACTUAL) */
+} BACSTAC_EVENT_INFO_COUNT;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetEventInfoAckCount (
+    const BACSTAC_EVENT_INFO *eventInfo,
+    BACSTAC_EVENT_INFO_COUNT type
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventInfoAckActualCount (
+    BACSTAC_EVENT_INFO *eventInfo,
+    BACSTAC_ELEMENT_COUNT summaryCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_SUMMARY *BACstac_api BACstacGetEventInfoAckSummaryPtr (
+    BACSTAC_EVENT_INFO *eventInfo,
+    BACSTAC_ELEMENT_COUNT summaryIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetEventInfoAckMoreFlag (
+    const BACSTAC_EVENT_INFO *eventInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventInfoAckMoreFlag (
+    BACSTAC_EVENT_INFO *eventInfo,
+    BACSTAC_BOOLEAN moreEvents
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneEventInfoAck (
+    BACSTAC_EVENT_INFO *destEventInfo,
+    const BACSTAC_EVENT_INFO *srcEventInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeEventInfoAck (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_EVENT_INFO *eventInfo
+) BACSTAC_NOTHROW;
+
+/*
+ *  #define COVP_EVENT_INFO_LAST_RCV_PRESENT        0x1
+ *
+ *  typedef struct tagBACSTAC_EVENT_INFO_INFO
+ *  {
+ *      BACSTAC_UINT        mask;
+ *      BACSTAC_OBJECT_ID   lastReceived;
+ *  } BACSTAC_EVENT_INFO_INFO, *PBACSTAC_EVENT_INFO_INFO;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEII (
+    BACSTAC_EVENT_INFO_INFO *eventInfoInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEIILastReceived (
+    BACSTAC_EVENT_INFO_INFO *eventInfoInfo,
+    BACSTAC_OBJECT_ID *lastReceived
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsEIILastReceivedPresent (
+    const BACSTAC_EVENT_INFO_INFO *eventInfoInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetEIILastReceivedPtr (
+    const BACSTAC_EVENT_INFO_INFO *eventInfoInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEII (
+    BACSTAC_EVENT_INFO_INFO *destEventInfoInfo,
+    const BACSTAC_EVENT_INFO_INFO *srcEventInfoInfo
+) BACSTAC_NOTHROW;
+
+
+/* Add-135c Begin */
+
+/*  typedef struct tagBACSTAC_DEV_OBJ_REF
+ *  {
+ *      BACSTAC_OBJECT_ID   objectID;
+ *      BACSTAC_BOOLEAN     fDevicePresent;
+ *      BACSTAC_OBJECT_ID   deviceID;       / ignored if !fDevicePresent /
+ *  } BACSTAC_DEV_OBJ_REF, *PBACSTAC_DEV_OBJ_REF;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDevObjReference (
+    BACSTAC_DEV_OBJ_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjReferenceObjID (
+    BACSTAC_DEV_OBJ_REF *pReference,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetDevObjReferenceObjIDPtr (
+    const BACSTAC_DEV_OBJ_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsDevObjReferenceDevPresent (
+    const BACSTAC_DEV_OBJ_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *
+BACstac_api BACstacGetDevObjReferenceDevPtr (
+    const BACSTAC_DEV_OBJ_REF *pReference
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjReferenceDevice (
+    BACSTAC_DEV_OBJ_REF *pReference,
+    BACSTAC_OBJECT_ID *pDevice
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyDevObjReference (
+    BACSTAC_DEV_OBJ_REF *pDestReference,
+    const BACSTAC_DEV_OBJ_REF *pSrcReference
+) BACSTAC_NOTHROW;
+
+
+
+
+
+
+ /*  #define LIFE_SAFETY_OBJECT_ID_PRESENT        0x1
+ *
+ *  typedef struct tagBACSTAC_LIFE_SAFETY_INFO
+ *  {
+ *      BACSTAC_UINT                    mask;
+ *      BACSTAC_UI32                    processID;
+ *      BACSTAC_CHAR_STRING             requestingSource;
+ *      BACSTAC_LIFE_SAFETY_OPERATION   eRequest;
+ *      BACSTAC_OBJECT_ID               objectID;           / optional /
+ *  } BACSTAC_LIFE_SAFETY_INFO, *PBACSTAC_LIFE_SAFETY_INFO;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLSIStr (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UI32 processID,
+    const BACSTAC_CHAR_STRING *pRequestingSource,
+    BACSTAC_LIFE_SAFETY_OPERATION eRequest,
+    const BACSTAC_OBJECT_ID *pObjectID           /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLSI (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UI32 processID,
+    const BACSTAC_CHAR *pRequestingSource,
+    BACSTAC_LIFE_SAFETY_OPERATION eRequest,
+    const BACSTAC_OBJECT_ID *pObjectID           /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSICharacterSet (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_STRING_TYPE characterSet
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetLSIProcessID (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIProcessID (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_STRING_TYPE BACstac_api BACstacGetLSICharacterSet (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING *BACstac_api BACstacGetLSIReqSourceStrPtr (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR *BACstac_api BACstacGetLSIReqSourcePtr (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS2_CHAR * BACstac_api BACstacGetLSIReqSourceUCS2Ptr (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UCS4_CHAR * BACstac_api BACstacGetLSIReqSourceUCS4Ptr (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIReqSourceStr (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    const BACSTAC_CHAR_STRING *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIReqSourceUTF8 (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIReqSourceUCS2 (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UCS2_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIReqSourceUCS4 (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UCS4_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetLSIReqSourceUTF8 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLSIReqSource (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetLSIReqSourceUCS2 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLSIReqSourceUCS2 (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UCS2_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* use BACstacSetLSIReqSourceUCS4 instead */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLSIReqSourceUCS4 (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_UCS4_CHAR *pRequestingSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFE_SAFETY_OPERATION BACstac_api BACstacGetLSIRequest (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIRequest (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_LIFE_SAFETY_OPERATION eRequest
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsLSIObjectIDPresent (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetLSIObjectID (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSIObjectID (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* Use BACstacGetLSIObjectID */
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api BACstacGetLSIObjectIDPtr (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* Use BACstacSetLSIObjectID */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyLSIObjectID (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    const BACSTAC_OBJECT_ID *pObjectID
+) BACSTAC_NOTHROW;
+
+/* Add-135c End */
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_LIFE_SAFETY_OPERATION BACstac_api BACstacGetRequest (
+    const BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRequest (
+    BACSTAC_LIFE_SAFETY_INFO *pLifeSafetyInfo,
+    BACSTAC_LIFE_SAFETY_OPERATION eRequest
+) BACSTAC_NOTHROW;
+
+/* Add-135-2001c-4 Begin */
+
+/*
+ *  typedef struct tagBACSTAC_ACCUMULATOR_RECORD
+ *  {
+ *      BACSTAC_DATE_TIME           timestamp;
+ *      BACSTAC_UNSIGNED            presentValue;
+ *      BACSTAC_UNSIGNED            accumulatedValue;
+ *      BACSTAC_ACCUMULATOR_STATUS  accumulatorStatus;
+ *  } BACSTAC_ACCUMULATOR_RECORD, *PBACSTAC_ACCUMULATOR_RECORD;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAccumulatorRecord (
+    BACSTAC_ACCUMULATOR_RECORD *pAccRecord,
+    const BACSTAC_DATE_TIME *pTimestamp,
+    BACSTAC_UNSIGNED presentValue,
+    BACSTAC_UNSIGNED accumulatedValue,
+    BACSTAC_ACCUMULATOR_STATUS accumulatorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAccRecTimestamp (
+    BACSTAC_ACCUMULATOR_RECORD *pAccRecord,
+    const BACSTAC_DATE_TIME *pDateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetAccRecTimestampPtr (
+    const BACSTAC_ACCUMULATOR_RECORD *pAccRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccRecPresentValue (
+    BACSTAC_ACCUMULATOR_RECORD *pAccRecord,
+    BACSTAC_UNSIGNED presentValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetAccRecPresentValue (
+    const BACSTAC_ACCUMULATOR_RECORD *pAccRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccRecAccumulatedValue (
+    BACSTAC_ACCUMULATOR_RECORD *pAccRecord,
+    BACSTAC_UNSIGNED accumulatedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetAccRecAccumulatedValue (
+    const BACSTAC_ACCUMULATOR_RECORD *pAccRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccRecAccumulatorStatus (
+    BACSTAC_ACCUMULATOR_RECORD *pAccRecord,
+    BACSTAC_ACCUMULATOR_STATUS accumulatorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACCUMULATOR_STATUS BACstac_api BACstacGetAccRecAccumulatorStatus (
+    const BACSTAC_ACCUMULATOR_RECORD *pAccRecord
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAccumulatorRecord (
+    BACSTAC_ACCUMULATOR_RECORD *pDestAccRecord,
+    const BACSTAC_ACCUMULATOR_RECORD *pSrcAccRecord
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_PRESCALE
+ * {
+ *     BACSTAC_UNSIGNED            multiplier;
+ *     BACSTAC_UNSIGNED            moduloDivide;
+ * } BACSTAC_PRESCALE, *PBACSTAC_PRESCALE;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPrescale (
+    BACSTAC_PRESCALE *pPrescale,
+    BACSTAC_UNSIGNED multiplier,
+    BACSTAC_UNSIGNED moduloDivide
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPrescaleMultiplier (
+    BACSTAC_PRESCALE *pPrescale,
+    BACSTAC_UNSIGNED multiplier
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetPrescaleMultiplier (
+    const BACSTAC_PRESCALE *pPrescale
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPrescaleModuloDivide (
+    BACSTAC_PRESCALE *pPrescale,
+    BACSTAC_UNSIGNED moduloDivide
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetPrescaleModuloDivide (
+    const BACSTAC_PRESCALE *pPrescale
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPrescale (
+    BACSTAC_PRESCALE *pDestPrescale,
+    const BACSTAC_PRESCALE *pSrcPrescale
+) BACSTAC_NOTHROW;
+
+
+/*
+ *  typedef struct tagBACSTAC_SCALE
+ *  {
+ *      BACSTAC_DATA_TYPE   tag;
+ *      union {
+ *          BACSTAC_REAL        floatScale; /= tag:DATA_TYPE_REAL /
+ *          BACSTAC_INTEGER     integerScale; /= tag:DATA_TYPE_INTEGER /
+ *      } value;
+ *  } BACSTAC_SCALE, *PBACSTAC_SCALE;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitScaleReal (
+    BACSTAC_SCALE *pScale,
+    BACSTAC_REAL floatScale
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitScaleInt (
+    BACSTAC_SCALE *pScale,
+    BACSTAC_INTEGER integerScale
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetScaleType (
+    const BACSTAC_SCALE *pScale
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetScaleFloatScale (
+    const BACSTAC_SCALE *pScale
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetScaleIntegerScale (
+    const BACSTAC_SCALE *pScale
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyScale (
+    BACSTAC_SCALE *pDestScale,
+    const BACSTAC_SCALE *pSrcScale
+) BACSTAC_NOTHROW;
+
+/* Add-135-2001c-4 End */
+
+/* Add-135-2004e Begin */
+/*
+ *  typedef struct tagBACSTAC_SHED_LEVEL
+ *  {
+ *      BACSTAC_SHED_LEVEL_TYPE    tag;
+ *      union
+ *      {
+ *          BACSTAC_UNSIGNED percent;
+ *          BACSTAC_UNSIGNED level;
+ *          BACSTAC_REAL     amount;
+ *      } level;
+ *  } BACSTAC_SHED_LEVEL, *PBACSTAC_SHED_LEVEL;
+ */
+
+/* This function initializes a Shed_Level structure to the given percent
+ * of Full Duty to which the device is to attempt to reduce its load. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitShedLevelPercent (
+    BACSTAC_SHED_LEVEL *pShedLevel,
+    BACSTAC_UNSIGNED percent
+) BACSTAC_NOTHROW;
+
+/* Initialize a Shed_Level structure to the given level of of load shedding. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitShedLevelLevel (
+    BACSTAC_SHED_LEVEL *pShedLevel,
+    BACSTAC_UNSIGNED level
+) BACSTAC_NOTHROW;
+
+/* Initialize a Shed_Level structure to the given amount, in kilowatts,
+ * by which to reduce power usage. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitShedLevelAmount (
+    BACSTAC_SHED_LEVEL *pShedLevel,
+    BACSTAC_REAL amount
+) BACSTAC_NOTHROW;
+
+/* Get the type of a Shed_Level value, which can be either LEVEL, PERCENT,
+ * or AMOUNT. Load Control objects are required to support the LEVEL
+ * choice, support for other choices is optional. */
+BACSTACAPI BACSTAC_SHED_LEVEL_TYPE BACstac_api BACstacGetShedLevelType (
+    const BACSTAC_SHED_LEVEL *pShedLevel
+) BACSTAC_NOTHROW;
+
+/* Get value of Shed_Level, which has the PERCENT type */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetShedLevelPercent (
+    const BACSTAC_SHED_LEVEL *pShedLevel
+) BACSTAC_NOTHROW;
+
+/* Get value of Shed_Level, which has the LEVEL type */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetShedLevelLevel (
+    const BACSTAC_SHED_LEVEL *pShedLevel
+) BACSTAC_NOTHROW;
+
+/* Get value of Shed_Level, which has the AMOUNT type */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetShedLevelAmount (
+    const BACSTAC_SHED_LEVEL *pShedLevel
+) BACSTAC_NOTHROW;
+
+/* Copy the Shed_Level data structure pointed by pSrcShedLevel
+ * to the other pointed by pDestShedLevel. */
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyShedLevel (
+    BACSTAC_SHED_LEVEL *pDestShedLevel,
+    const BACSTAC_SHED_LEVEL *pSrcShedLevel
+) BACSTAC_NOTHROW;
+
+/* Add-135-2004e End */
+
+/*
+ * typedef struct tagBACSTAC_VT_SESSION
+ * {
+ *     BACSTAC_UI8     localVtSessionID;
+ *     BACSTAC_UI8     remoteVtSessionID;
+ *     BACSTAC_ADDRESS remoteVtAddress;
+ * } BACSTAC_VT_SESSION, *PBACSTAC_VT_SESSION;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitVtSession (
+    BACSTAC_VT_SESSION *pVtSession,
+    BACSTAC_UI8 localVtSessionID,
+    BACSTAC_UI8 remoteVtSessionID,
+    const BACSTAC_ADDRESS *pRemoteVtAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetVTSLocalVtSessionID (
+    BACSTAC_VT_SESSION *pVtSession,
+    BACSTAC_UI8 localVtSessionID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetVTSLocalVtSessionID (
+    const BACSTAC_VT_SESSION *pVtSession
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetVTSRemoteVtSessionID (
+    BACSTAC_VT_SESSION *pVtSession,
+    BACSTAC_UI8 remoteVtSessionID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetVTSRemoteVtSessionID (
+    const BACSTAC_VT_SESSION *pVtSession
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetVTSAddress (
+    BACSTAC_VT_SESSION *pVtSession,
+    const BACSTAC_ADDRESS *pRemoteVtAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ADDRESS *BACstac_api BACstacGetVTSAddressPtr (
+    const BACSTAC_VT_SESSION *pVtSession
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyVtSession (
+    BACSTAC_VT_SESSION *pDest,
+    const BACSTAC_VT_SESSION *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_SESSION_KEY
+ * {
+ *     BACSTAC_BYTE    sessionKey[ENCRYPTION_KEY_SIZE];
+ *     BACSTAC_ADDRESS peerAddress;
+ * } BACSTAC_SESSION_KEY, *PBACSTAC_SESSION_KEY;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSessionKey (
+    BACSTAC_SESSION_KEY *pSessionKey,
+    const BACSTAC_BYTE *pKey,
+    const BACSTAC_ADDRESS *pPeerAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKKey (
+    BACSTAC_SESSION_KEY *pSessionKey,
+    const BACSTAC_BYTE *pKey
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetSKKeyPtr (
+    const BACSTAC_SESSION_KEY *pSessionKey
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKPeerAddress (
+    BACSTAC_SESSION_KEY *pSessionKey,
+    const BACSTAC_ADDRESS *pPeerAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ADDRESS *BACstac_api BACstacGetSKPeerAddressPtr (
+    const BACSTAC_SESSION_KEY *pSessionKey
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySessionKey (
+    BACSTAC_SESSION_KEY *pDest,
+    const BACSTAC_SESSION_KEY *pSrc
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeRFResult (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_READ_FILE_RESULT *result
+) BACSTAC_NOTHROW;
+
+/*
+ *  typedef enum {
+ *      LOG_DATUM_LOG_STATUS = 0,
+ *      LOG_DATUM_NOTIFICATION = 1,
+ *      LOG_DATUM_TIME_CHANGE = 2
+ *  } BACSTAC_LOG_DATUM_TYPE;
+ *
+ *  typedef struct tagBACSTAC_EVENT_LOG_RECORD {
+ *      BACSTAC_DATE_TIME      timeStamp;
+ *      BACSTAC_LOG_DATUM_TYPE type;
+ *      union {
+ *          BACSTAC_BIT_STRING  logStatus;
+ *          BACSTAC_EVENT_NOTIF notification;
+ *          BACSTAC_REAL        timeChange;
+ *      } logDatum;
+ *  } BACSTAC_EVENT_LOG_RECORD, *PBACSTAC_EVENT_LOG_RECORD;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventLogRecordLogStatus (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventLogRecordTimeChange (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventLogRecordNotification (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_EVENT_NOTIF *pNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventLogRecordTimeStamp (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetEventLogRecordTimeStampPtr (
+    const BACSTAC_EVENT_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATUM_TYPE BACstac_api BACstacGetEventLogRecordDatumType (
+    const BACSTAC_EVENT_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventLogRecordLogStatus (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetEventLogRecordLogStatusPtr (
+    const BACSTAC_EVENT_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventLogRecordTimeChange (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetEventLogRecordTimeChange (
+    const BACSTAC_EVENT_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetEventLogRecordNotification (
+    BACSTAC_EVENT_LOG_RECORD *pRecord,
+    const BACSTAC_EVENT_NOTIF *pNotification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_NOTIF *BACstac_api BACstacGetEventLogRecordNotificationPtr (
+    const BACSTAC_EVENT_LOG_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneEventLogRecord (
+    BACSTAC_EVENT_LOG_RECORD *pDestRecord,
+    const BACSTAC_EVENT_LOG_RECORD *pSrcRecord
+) BACSTAC_NOTHROW;
+
+/*
+ *  typedef enum {
+ *      LOG_DATA_LOG_STATUS = 0,
+ *      LOG_DATA_LOG_DATA = 1,
+ *      LOG_DATA_TIME_CHANGE = 2
+ *      BACSTAC_OTHER_ENUM(LOG_DATA_TYPE)
+ *  } BACSTAC_LOG_DATA_TYPE;
+ *
+ *  typedef struct tagBACSTAC_LOG_MULTI_RECORD {
+ *      BACSTAC_DATE_TIME timeStamp;
+ *      BACSTAC_LOG_DATA_TYPE type;
+ *      union {
+ *          BACSTAC_BIT_STRING    logStatus;
+ *          BACSTAC_LOG_DATA_LIST logData;
+ *          BACSTAC_REAL          timeChange;
+ *      } logData;
+ *  } BACSTAC_LOG_MULTI_RECORD, *PBACSTAC_LOG_MULTI_RECORD;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogMultiRecordLogStatus (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogMultiRecordTimeChange (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogMultiRecordLogData (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp,
+    const BACSTAC_LOG_DATA_LIST *pLogData
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogMultiRecordTimeStamp (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    const BACSTAC_DATE_TIME *pTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME *BACstac_api BACstacGetLogMultiRecordTimeStampPtr (
+    const BACSTAC_LOG_MULTI_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATA_TYPE BACstac_api BACstacGetLogMultiRecordDataType (
+    const BACSTAC_LOG_MULTI_RECORD *pRecord);
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogMultiRecordLogStatus (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    BACSTAC_BIT_STRING *pLogStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetLogMultiRecordLogStatusPtr (
+    const BACSTAC_LOG_MULTI_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogMultiRecordTimeChange (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLogMultiRecordTimeChange (
+    const BACSTAC_LOG_MULTI_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogMultiRecordLogData (
+    BACSTAC_LOG_MULTI_RECORD *pRecord,
+    const BACSTAC_LOG_DATA_LIST *pLogData
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATA_LIST *BACstac_api BACstacGetLogMultiRecordLogDataPtr (
+    const BACSTAC_LOG_MULTI_RECORD *pRecord
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLogMultiRecord (
+    BACSTAC_LOG_MULTI_RECORD *pDestRecord,
+    const BACSTAC_LOG_MULTI_RECORD *pSrcRecord
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_LOG_DATA_LIST {
+ *     BACSTAC_ELEMENT_COUNT nCount;
+ *     BACSTAC_LOG_DATA_ITEM *pItems;
+ * } BACSTAC_LOG_DATA_LIST, *PBACSTAC_LOG_DATA_LIST;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogData (
+    BACSTAC_LOG_DATA_LIST *pLogData
+) BACSTAC_NOTHROW;
+
+/* pItems may be NULL if nCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLogDataItems (
+    BACSTAC_LOG_DATA_LIST *pLogData,
+    const BACSTAC_LOG_DATA_ITEM *pItems,
+    BACSTAC_ELEMENT_COUNT nCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATA_ITEM * BACstac_api BACstacGetLogDataItemPtr (
+    const BACSTAC_LOG_DATA_LIST *pLogData,
+    BACSTAC_ELEMENT_COUNT index
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetLogDataCount (
+    const BACSTAC_LOG_DATA_LIST *pLogData
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLogData (
+    BACSTAC_LOG_DATA_LIST *pDestLogData,
+    const BACSTAC_LOG_DATA_LIST *pSrcLogData
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef enum {
+ *     LOG_DATA_ITEM_BOOL = 0,
+ *     LOG_DATA_ITEM_REAL = 1,
+ *     LOG_DATA_ITEM_ENUM = 2,
+ *     LOG_DATA_ITEM_UNSIGNED = 3,
+ *     LOG_DATA_ITEM_INTEGER = 4,
+ *     LOG_DATA_ITEM_BIT_STRING = 5,
+ *     LOG_DATA_ITEM_NULL = 6,
+ *     LOG_DATA_ITEM_FAILURE = 7,
+ *     LOG_DATA_ITEM_ANY_VALUE = 8
+ *     BACSTAC_OTHER_ENUM(LOG_DATA_ITEM_TYPE)
+ * } BACSTAC_LOG_DATA_ITEM_TYPE;
+ *
+ * typedef struct tagBACSTAC_LOG_DATA_ITEM {
+ *     BACSTAC_LOG_DATA_ITEM_TYPE type;
+ *     union {
+ *         BACSTAC_BOOLEAN           boolValue;
+ *         BACSTAC_REAL              realValue;
+ *         BACSTAC_ENUM              enumValue;
+ *         BACSTAC_UNSIGNED          unsignedValue;
+ *         BACSTAC_INTEGER           integerValue;
+ *         BACSTAC_BIT_STRING        bitStringValue;
+ *         BACSTAC_ERROR_TYPE        error;
+ *         BACSTAC_PROPERTY_CONTENTS anyValue;
+ *     } item;
+ * } BACSTAC_LOG_DATA_ITEM, *PBACSTAC_LOG_DATA_ITEM;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemBool (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemReal (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemEnum (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemUnsigned (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemInteger (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemBitString (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    const BACSTAC_BIT_STRING *pBitStringValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemError (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    const BACSTAC_ERROR_TYPE *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLogDataItemAnyValue (
+    BACSTAC_LOG_DATA_ITEM *pLogDataItem,
+    const BACSTAC_PROPERTY_CONTENTS *pAnyValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATA_ITEM_TYPE BACstac_api BACstacGetLogDataItemType (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetLogDataItemBool (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLogDataItemReal (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetLogDataItemEnum (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetLogDataItemUnsigned (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetLogDataItemInteger (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetLogDataItemBitStringPtr (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_TYPE * BACstac_api BACstacGetLogDataItemErrorPtr (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS * BACstac_api BACstacGetLogDataItemAnyValuePtr (
+    const BACSTAC_LOG_DATA_ITEM *pLogDataItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLogDataItem (
+    BACSTAC_LOG_DATA_ITEM *pDestLogDataItem,
+    const BACSTAC_LOG_DATA_ITEM *pSrcLogDataItem
+) BACSTAC_NOTHROW;
+
+/*
+ *  typedef struct tagBACSTAC_AUTHN_POLICY {
+ *      BACSTAC_AUTHN_POLICY_ITEM *pPolicyItems;
+ *      BACSTAC_ELEMENT_COUNT                 policyCount;
+ *      BACSTAC_UNSIGNED                      timeout;
+ *      BACSTAC_BOOLEAN                       orderEnforced;
+ *  } BACSTAC_AUTHN_POLICY, *PBACSTAC_AUTHN_POLICY;
+ *
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuthnPolicy (
+    BACSTAC_AUTHN_POLICY *pPolicy,
+    BACSTAC_ELEMENT_COUNT policyCount,
+    const BACSTAC_AUTHN_POLICY_ITEM *pPolicyItems,
+    BACSTAC_BOOLEAN orderEnforced
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnPolicyItems (
+    BACSTAC_AUTHN_POLICY *pPolicy,
+    const BACSTAC_AUTHN_POLICY_ITEM *pItems,
+    BACSTAC_ELEMENT_COUNT nCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetAuthnPolicyCount (
+    const BACSTAC_AUTHN_POLICY *pPolicy
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUTHN_POLICY_ITEM * BACstac_api BACstacGetAuthnPolicyItems (
+    const BACSTAC_AUTHN_POLICY *pPolicy
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnPolicyOrderEnforced (
+    BACSTAC_AUTHN_POLICY *pPolicy,
+    BACSTAC_BOOLEAN orderEnforced
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetAuthnPolicyOrderEnforced (
+    const BACSTAC_AUTHN_POLICY *pPolicy
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnPolicyTimeout (
+    BACSTAC_AUTHN_POLICY *pPolicy,
+    BACSTAC_UNSIGNED timeout
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetAuthnPolicyTimeout (
+    const BACSTAC_AUTHN_POLICY *pPolicy
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAuthnPolicy (
+    BACSTAC_AUTHN_POLICY *pDest,
+    const BACSTAC_AUTHN_POLICY *pSrc
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_AUTHN_POLICY_ITEM {
+ *     BACSTAC_DEV_OBJ_REF credDataInput;
+ *     BACSTAC_UNSIGNED    index;
+ * } BACSTAC_AUTHN_POLICY_ITEM, *PBACSTAC_AUTHN_POLICY_ITEM;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuthnPolicyItem (
+    BACSTAC_AUTHN_POLICY_ITEM *pPolicyItem,
+    const BACSTAC_DEV_OBJ_REF *pCredDataInput,
+    BACSTAC_UNSIGNED index
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnPolicyItemCredDataInput (
+    BACSTAC_AUTHN_POLICY_ITEM *pPolicyItem,
+    const BACSTAC_DEV_OBJ_REF *pCredDataInput
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_REF * BACstac_api BACstacGetAuthnPolicyItemCredDataInputPtr (
+    const BACSTAC_AUTHN_POLICY_ITEM *pPolicyItem
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnPolicyItemIndex (
+    BACSTAC_AUTHN_POLICY_ITEM *pPolicyItem,
+    BACSTAC_UNSIGNED index
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetAuthnPolicyItemIndex (
+    const BACSTAC_AUTHN_POLICY_ITEM *pPolicyItem
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAuthnPolicyItem (
+    BACSTAC_AUTHN_POLICY_ITEM *pDest,
+    const BACSTAC_AUTHN_POLICY_ITEM *pSrc
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_AUTHN_FACTOR {
+ *     BACSTAC_AUTHN_FACTOR_TYPE formatType;
+ *     BACSTAC_UNSIGNED         formatClass;
+ *     BACSTAC_OCTET_STRING     value;
+ * } BACSTAC_AUTHN_FACTOR, *PBACSTAC_AUTHN_FACTOR;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuthnFactor (
+    BACSTAC_AUTHN_FACTOR *pFactor,
+    BACSTAC_AUTHN_FACTOR_TYPE formatType,
+    BACSTAC_UNSIGNED formatClass,
+    const BACSTAC_OCTET_STRING *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuthnFactorData (
+    BACSTAC_AUTHN_FACTOR *pFactor,
+    BACSTAC_AUTHN_FACTOR_TYPE formatType,
+    BACSTAC_UNSIGNED formatClass,
+    const void *pOctets,
+    BACSTAC_VALUE_SIZE octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorFormatType (
+    BACSTAC_AUTHN_FACTOR *pFactor,
+    BACSTAC_AUTHN_FACTOR_TYPE formatType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUTHN_FACTOR_TYPE BACstac_api BACstacGetAuthnFactorFormatType (
+    const BACSTAC_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorFormatClass (
+    BACSTAC_AUTHN_FACTOR *pFactor,
+    BACSTAC_UNSIGNED formatClass
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetAuthnFactorFormatClass (
+    const BACSTAC_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorValueData (
+    BACSTAC_AUTHN_FACTOR *pFactor,
+    const void *pOctets,
+    BACSTAC_VALUE_SIZE octetCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI void * BACstac_api BACstacGetAuthnFactorValueData (
+    const BACSTAC_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetAuthnFactorValueSize (
+    const BACSTAC_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAuthnFactor (
+    BACSTAC_AUTHN_FACTOR *pDest,
+    const BACSTAC_AUTHN_FACTOR *pScr
+) BACSTAC_NOTHROW;
+
+
+/*
+ * #define BACSTAC_AR_TIME_RANGE    0x01
+ * #define BACSTAC_AR_LOCATION      0x02
+ *
+ * typedef struct tagBACSTAC_ACCESS_RULE {
+ *     BACSTAC_UINT                    mask;
+ *     BACSTAC_AR_TIME_RANGE_SPECIFIER timeRangeSpecifier;
+ *     BACSTAC_DEV_OBJ_PROP_REF        timeRange;  / optional / /= mask:BACSTAC_AR_TIME_RANGE /
+ *     BACSTAC_AR_LOCATION_SPECIFIER   locationSpecifier;
+ *     BACSTAC_DEV_OBJ_REF             location;   / optional / /= mask:BACSTAC_AR_LOCATION   /
+ *     BACSTAC_BOOLEAN                 enable;
+ * } BACSTAC_ACCESS_RULE, *PBACSTAC_ACCESS_RULE;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAccessRule (
+    BACSTAC_ACCESS_RULE *pRule,
+    BACSTAC_AR_TIME_RANGE_SPECIFIER timeRangeSpecifier,
+    const BACSTAC_DEV_OBJ_PROP_REF *pTimeRange,  /* or NULL */
+    BACSTAC_AR_LOCATION_SPECIFIER locationSpecifier,
+    const BACSTAC_DEV_OBJ_REF *pLocation,        /* or NULL */
+    BACSTAC_BOOLEAN enable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccessRuleTimeRange (
+    BACSTAC_ACCESS_RULE *pRule,
+    const BACSTAC_DEV_OBJ_PROP_REF *pTimeRange  /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AR_TIME_RANGE_SPECIFIER BACstac_api BACstacGetAccessRuleTimeRangeSpecifier (
+    const BACSTAC_ACCESS_RULE *pRule
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF * BACstac_api BACstacGetAccessRuleTimeRangePtr (
+    const BACSTAC_ACCESS_RULE *pRule
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccessRuleLocation (
+    BACSTAC_ACCESS_RULE *pRule,
+    const BACSTAC_DEV_OBJ_REF *pLocation  /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AR_LOCATION_SPECIFIER BACstac_api BACstacGetAccessRuleLocationSpecifier (
+    const BACSTAC_ACCESS_RULE *pRule
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_REF * BACstac_api BACstacGetAccessRuleLocationPtr (
+    const BACSTAC_ACCESS_RULE *pRule
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccessRuleEnable (
+    BACSTAC_ACCESS_RULE *pRule,
+    BACSTAC_BOOLEAN enable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetAccessRuleEnable (
+    const BACSTAC_ACCESS_RULE *pRule
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAccessRule (
+    BACSTAC_ACCESS_RULE *pDest,
+    const BACSTAC_ACCESS_RULE *pScr
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_ACCESS_RIGHTS {
+ *     BACSTAC_DEV_OBJ_REF rights;
+ *     BACSTAC_BOOLEAN     enable;
+ * } BACSTAC_ACCESS_RIGHTS, *PBACSTAC_ACCESS_RIGHTS;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAccessRights (
+    BACSTAC_ACCESS_RIGHTS *pRights,
+    const BACSTAC_DEV_OBJ_REF *pAARitghts,
+    BACSTAC_BOOLEAN enable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccessRightsRights (
+    BACSTAC_ACCESS_RIGHTS *pRights,
+    const BACSTAC_DEV_OBJ_REF *pAARights
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_REF * BACstac_api BACstacGetAccessRightsRightsPtr (
+    const BACSTAC_ACCESS_RIGHTS *pRights
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAccessRightsEnable (
+    BACSTAC_ACCESS_RIGHTS *pRights,
+    BACSTAC_BOOLEAN enable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetAccessRightsEnable (
+    const BACSTAC_ACCESS_RIGHTS *pRights
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAccessRights (
+    BACSTAC_ACCESS_RIGHTS *pDest,
+    const BACSTAC_ACCESS_RIGHTS *pScr
+) BACSTAC_NOTHROW;
+
+
+/*
+ * #define BACSTAC_AFF_VENDOR_ID       0x01
+ * #define BACSTAC_AFF_VENDOR_FORMAT   0x02
+ *
+ * typedef struct tagBACSTAC_AUTHN_FACTOR_FORMAT {
+ *     BACSTAC_UINT              mask;
+ *     BACSTAC_AUTHN_FACTOR_TYPE formatType;
+ *     BACSTAC_UI16              vendorID;     / optional / /= mask:BACSTAC_AFF_VENDOR_ID /
+ *     BACSTAC_UI16              vendorFormat; / optional / /= mask:BACSTAC_AFF_VENDOR_FORMAT /
+ * } BACSTAC_AUTHN_FACTOR_FORMAT, *PBACSTAC_AUTHN_FACTOR_FORMAT;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuthnFactorFormat (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat,
+    BACSTAC_AUTHN_FACTOR_TYPE formatType
+) BACSTAC_NOTHROW;
+
+/* NOTE: BACstacSetAuthnFactorFormatFrmType is misspelled name. Don't use it! */
+#define BACstacSetAuthnFactorFormatFrmType BACstacSetAuthnFactorFormatFormatType
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorFormatFormatType (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat,
+    BACSTAC_AUTHN_FACTOR_TYPE formatType
+) BACSTAC_NOTHROW;
+
+#define BACstacGetAuthnFactorFormatFrmType BACstacGetAuthnFactorFormatFormatType
+/* NOTE: BACstacGetAuthnFactorFormatFrmType is misspelled name. Don't use it! */
+BACSTACAPI BACSTAC_AUTHN_FACTOR_TYPE BACstac_api BACstacGetAuthnFactorFormatFormatType (
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAuthnFactorFormatVendorIDPresent (
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorFormatVendorID (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetAuthnFactorFormatVendorID (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetAuthnFactorFormatVendorID (
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsAuthnFactorFormatVendorFormatPresent (
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAuthnFactorFormatVendorFormat (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat,
+    BACSTAC_UI16 vendorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetAuthnFactorFormatVendorFormat (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetAuthnFactorFormatVendorFormat (
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pFactorFormat
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyAuthnFactorFormat (
+    BACSTAC_AUTHN_FACTOR_FORMAT *pDest,
+    const BACSTAC_AUTHN_FACTOR_FORMAT *pScr
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_CRED_AUTHN_FACTOR {
+ *     BACSTAC_FACTOR_DISABLE disable;
+ *     BACSTAC_AUTHN_FACTOR   authnFactor;
+ * } BACSTAC_CRED_AUTHN_FACTOR, *PBACSTAC_CRED_AUTHN_FACTOR;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCAF (
+    BACSTAC_CRED_AUTHN_FACTOR *pFactor,
+    BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE disable,
+    const BACSTAC_AUTHN_FACTOR *pAuthnFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCAFDisable (
+    BACSTAC_CRED_AUTHN_FACTOR *pFactor,
+    BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE disable
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE BACstac_api BACstacGetCAFDisable (
+    const BACSTAC_CRED_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCAFAuthnFactor (
+    BACSTAC_CRED_AUTHN_FACTOR *pFactor,
+    const BACSTAC_AUTHN_FACTOR *pAuthnFactor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUTHN_FACTOR * BACstac_api BACstacGetCAFAuthnFactorPtr (
+    const BACSTAC_CRED_AUTHN_FACTOR *pFactor
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCAF (
+    BACSTAC_CRED_AUTHN_FACTOR *pDest,
+    const BACSTAC_CRED_AUTHN_FACTOR *pScr
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_PROP_ACCESS_RESULT {
+ *     BACSTAC_OBJECT_ID   objectID;
+ *     BACSTAC_PROPERTY_ID propID;
+ *     BACSTAC_ARRAY_INDEX index;      / or VOID /
+ *     BACSTAC_OBJECT_ID   deviceID;   / ignored if !fDevicePresent /
+ *     BACSTAC_BOOLEAN     fDevicePresent;
+ *     BACSTAC_BOOLEAN     status;
+ *     union {
+ *        BACSTAC_PROPERTY_CONTENTS value;      / valid if status == BACSTAC_TRUE /
+ *        BACSTAC_ERROR_TYPE        error;      / valid if status == BACSTAC_FALSE /
+ *     } accessResult;
+ * } BACSTAC_PROP_ACCESS_RESULT, *PBACSTAC_PROP_ACCESS_RESULT;
+ */
+
+/* set status to FALSE, error to (PROPERTY, VALUE_NOT_INITIALIZED) */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPARDef (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_DEV_OBJ_PROP_REF *pPropRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPARToValue (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_ARRAY_INDEX index,
+    const BACSTAC_OBJECT_ID *pDevID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPARToError (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_OBJECT_ID *pObjID,
+    BACSTAC_PROPERTY_ID propID,
+    BACSTAC_ARRAY_INDEX index,
+    const BACSTAC_OBJECT_ID *pDevID,
+    const BACSTAC_ERROR_TYPE *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPARObjID (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_OBJECT_ID *pObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetPARObjIDPtr (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacPARSetPropID (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetPARPropID (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacPARSetIndex (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    BACSTAC_ARRAY_INDEX index
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetPARIndex (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPARDevID (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_OBJECT_ID *pDevID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetPARDevIDPtr (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPARValue (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetPARValuePtr (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPARError (
+    BACSTAC_PROP_ACCESS_RESULT *pAccResult,
+    const BACSTAC_ERROR_TYPE *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_TYPE *BACstac_api BACstacGetPARErrorPtr (
+    const BACSTAC_PROP_ACCESS_RESULT *pAccResult
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacClonePAR (
+    BACSTAC_PROP_ACCESS_RESULT *pDestAccResult,
+    const BACSTAC_PROP_ACCESS_RESULT *pSrcAccResult
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_GLOBAL_GROUP_UCOV_NOTIF
+ * {
+ *     BACSTAC_UI32               processID;           / Subscriber Process Identifier              /
+ *     BACSTAC_OBJECT_ID          initDeviceID;        / Initiating Device Identifier               /
+ *     BACSTAC_OBJECT_ID          monitoredObjectID;   / Monitored Object Identifier                /
+ *     BACSTAC_UNSIGNED           timeRemaining;       / Time Remaining, in seconds                 /
+ *     BACSTAC_BIT_STRING         membStatusFlags;     / The value of Member_Status_Flags           /
+ *     BACSTAC_ELEMENT_COUNT      valueCount;          / The number of elements of the values array /
+ *     BACSTAC_PROP_ACCESS_RESULT *values; / Elements of Present_Value property         /
+ * } BACSTAC_GLOBAL_GROUP_UCOV_NOTIF;
+ */
+
+/* set processID and timeRemaining to 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitGlobalGroupUCOVNotif (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN,
+    const BACSTAC_OBJECT_ID *pInitDeviceID,
+    const BACSTAC_OBJECT_ID *pMonitoredObjectID,
+    const BACSTAC_BIT_STRING *pMembStatusFlags,
+    BACSTAC_ELEMENT_COUNT valueCount,
+    const BACSTAC_PROP_ACCESS_RESULT *pValues
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyGGUCOVNMonitoredObjID (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN,
+    const BACSTAC_OBJECT_ID *pMonitoredObjID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetGGUCOVNMonitoredObjIDPtr (
+    const BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyGGUCOVNInitDevID (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN,
+    const BACSTAC_OBJECT_ID *pInitDevID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID *BACstac_api BACstacGetGGUCOVNInitDevIDPtr (
+    const BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGGUCOVNFlags (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN,
+    const BACSTAC_BIT_STRING *pFlags
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING *BACstac_api BACstacGetGGUCOVNFlagsPtr (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGGUCOVNValues (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN,
+    BACSTAC_ELEMENT_COUNT valueCount,
+    const BACSTAC_PROP_ACCESS_RESULT *pValues
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetGGUCOVNValueCount (
+    const BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_ACCESS_RESULT *BACstac_api BACstacGetGGUCOVNValuesPtr (
+    const BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneGGUCOVN (
+    BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pDestGlobalGroupUCOVN,
+    const BACSTAC_GLOBAL_GROUP_UCOV_NOTIF *pSrcGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_GLOBAL_GROUP_UCOV_NOTIF_RESULT
+ * {
+ *     BACSTAC_ELEMENT_COUNT requestCount;
+ *     BACSTAC_ELEMENT_COUNT failureCount;
+ *     BACSTAC_ELEMENT_COUNT valueTooLongCount;
+ *     BACSTAC_ELEMENT_COUNT firstValueTooLong;
+ * } BACSTAC_GLOBAL_GROUP_UCOV_RESULT;
+ */
+
+/* set to requestCount, failureCount, valueTooLongCount and firstValueTooLong to 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitGlobalGroupUCOVR (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGlobalGroupUCOVRRequestCount (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult,
+    BACSTAC_ELEMENT_COUNT requestCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetGlobalGroupUCOVRRequestCount (
+    const BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGlobalGroupUCOVRFailureCount (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult,
+    BACSTAC_ELEMENT_COUNT failureCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetGlobalGroupUCOVRFailureCount (
+    const BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGlobalGroupUCOVRValueTooLongCount (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult,
+    BACSTAC_ELEMENT_COUNT valueTooLongCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetGlobalGroupUCOVRValueTooLongCount (
+    const BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGlobalGroupUCOVRFirstValueTooLong (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult,
+    BACSTAC_ELEMENT_COUNT firstValueTooLong
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetGlobalGroupUCOVRFirstValueTooLong (
+    const BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pGlobalGroupUCOVResult
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneGlobalGroupUCOVR (
+    BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pDestGlobalGroupUCOVN,
+    const BACSTAC_GLOBAL_GROUP_UCOV_RESULT *pSrcGlobalGroupUCOVN
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_FAULT_PARAMETER
+ */
+
+
+/* Initialize FAULT_PARAMETER to FAULT_NONE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPNone (
+    BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_CHARACTERSTRING */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPCharString (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_CHAR_STRING *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamNull (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamReal (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_REAL realValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamUnsigned (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_UNSIGNED unsignedValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamBoolean (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_BOOLEAN boolValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamInteger (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_INTEGER integerValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamDouble (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_DOUBLE doubleValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamOctetString (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_OCTET_STRING *pOctetString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamCharString (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_CHAR_STRING *pCharString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamBitString (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_BIT_STRING *pBitString
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamEnumerated (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    BACSTAC_ENUM enumValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamDate (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_DATE *pDateValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamTime (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_TIME *pTimeValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamObjID (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_OBJECT_ID *pObjectIDValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtParamReference (
+    BACSTAC_FAULT_EXT_PARAMETER *pExtParam,
+    const BACSTAC_DEV_OBJ_PROP_REF *pReference
+) BACSTAC_NOTHROW;
+
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetFPExtParamTag (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetFPExtParamReal (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetFPExtParamUnsigned (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetFPExtParamBoolean (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetFPExtParamInteger (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetFPExtParamDouble (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api
+BACstacGetFPExtParamOctetStringPtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api
+BACstacGetFPExtParamCharStringPtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api
+BACstacGetFPExtParamBitStringPtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetFPExtParamEnumerated (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF * BACstac_api
+BACstacGetFPExtParamReferencePtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api
+BACstacGetFPExtParamDatePtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api
+BACstacGetFPExtParamTimePtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID * BACstac_api
+BACstacGetFPExtParamObjIDPtr (
+    const BACSTAC_FAULT_EXT_PARAMETER *pExtParam
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyFPExtParam(
+    BACSTAC_FAULT_EXT_PARAMETER *pDestExtParam,
+    const BACSTAC_FAULT_EXT_PARAMETER *pSrcExtParam
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPExtended (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UI16 vendorID,
+    BACSTAC_UNSIGNED extendedFaultType,
+    const BACSTAC_FAULT_EXT_PARAMETER *pParameters,
+    BACSTAC_ELEMENT_COUNT parametersCount
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPLifeSafety (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_LIFE_SAFETY_STATE *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount,
+    const BACSTAC_DEV_OBJ_PROP_REF *pModePropReference
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_STATE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPState (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_PROPERTY_STATES *pValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_STATUS_FLAGS */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPStatusFlags (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *pStatusFlags
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_LISTED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPListed (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *pListed
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPOutOfRangeReal (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_REAL min,
+    BACSTAC_REAL max
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPOutOfRangeUnsigned (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UNSIGNED min,
+    BACSTAC_UNSIGNED max
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPOutOfRangeDouble (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_DOUBLE min,
+    BACSTAC_DOUBLE max
+) BACSTAC_NOTHROW;
+
+/* Initialize FAULT_PARAMETER to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFPOutOfRangeInteger (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_INTEGER min,
+    BACSTAC_INTEGER max
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FAULT_TYPE BACstac_api BACstacGetFPTag (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+
+/* assumes that EP has been initialized to FAULT_CHARACTERSTRING or
+ * FAULT_EXTENDED or FAULT_LIFE_SAFETY or FAULT_STATE
+ */
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetFPFaultCount (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_CHARACTERSTRING */
+BACSTACAPI BACSTAC_CHAR_STRING *BACstac_api BACstacGetFPCharStrFVPtr (
+    const BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPExtVendorID (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UI16 vendorID
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetFPExtVendorID (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPExtEventType (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UNSIGNED extendedEventType
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetFPExtEventType (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that EP has been initialized to FAULT_TYPE_EXTENDED */
+/* pValues may be NULL if valueCount is 0 */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPExtParameters (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_FAULT_EXT_PARAMETER *pParameters,
+    BACSTAC_ELEMENT_COUNT parametersCount
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_EXTENDED */
+BACSTACAPI BACSTAC_FAULT_EXT_PARAMETER *BACstac_api BACstacGetFPExtendedFVPtr (
+    const BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPLifeSafetyFV (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_LIFE_SAFETY_STATE *pFaultValues,
+    BACSTAC_ELEMENT_COUNT valueCount
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_LIFE_SAFETY */
+BACSTACAPI BACSTAC_LIFE_SAFETY_STATE BACstac_api BACstacGetFPLifeSafetyFV (
+    const BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_LIFE_SAFETY */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPLifeSafetyModePropRef (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    const BACSTAC_DEV_OBJ_PROP_REF *pModePropRef
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_LIFE_SAFETY */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api BACstacGetFPLifeSafetyModePropRef (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_STATE */
+BACSTACAPI BACSTAC_PROPERTY_STATES *BACstac_api BACstacGetFPStateFVPtr (
+    const BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_ELEMENT_COUNT arrayIndex
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_STATUS_FLAGS */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api BACstacGetFPStatusFlagsPtr (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_LISTED */
+BACSTACAPI BACSTAC_DEV_OBJ_PROP_REF *BACstac_api BACstacGetFPListedPtr (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetFPMinTag (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMinValueReal (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_REAL real
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetFPMinValueReal (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMinValueUnsigned (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UNSIGNED nUnsigned
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetFPMinValueUnsigned (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMinValueDouble (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_DOUBLE fDouble
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetFPMinValueDouble (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMinValueInteger (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_INTEGER integer
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetFPMinValueInteger (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetFPMaxTag (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMaxValueReal (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_REAL real
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetFPMaxValueReal (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMaxValueUnsigned (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_UNSIGNED nUnsigned
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetFPMaxValueUnsigned (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMaxValueDouble (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_DOUBLE fDouble
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetFPMaxValueDouble (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFPMaxValueInteger (
+    BACSTAC_FAULT_PARAMETER *pParameter,
+    BACSTAC_INTEGER integer
+) BACSTAC_NOTHROW;
+
+/* assumes that FP has been initialized to FAULT_OUT_OF_RANGE */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetFPMaxValueInteger (
+    const BACSTAC_FAULT_PARAMETER *pParameter
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyFP (
+    BACSTAC_FAULT_PARAMETER *pDestParam,
+    const BACSTAC_FAULT_PARAMETER *pSrcParam
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * BACSTAC_EVENT_NOTIF_SUBS
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitEventNotifSubs (
+    BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs,
+    const BACSTAC_RECIPIENT *pRecipient,
+    BACSTAC_UI32 processID,
+    BACSTAC_BOOLEAN issueConfirmedNotifications,
+    BACSTAC_UNSIGNED timeRemaining
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyENSubsRecipient (
+    BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs,
+    const BACSTAC_RECIPIENT *pRecipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT * BACstac_api BACstacGetENSubsRecipientPtr (
+    const BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetENSubsProcessID (
+    BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetENSubsProcessID (
+    const BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetENSubsIssueConfNotif (
+    BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs,
+    BACSTAC_BOOLEAN issueConfirmedNotifications
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetENSubsIssueConfNotif (
+    const BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetENSubsTimeRemaining (
+    BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs,
+    BACSTAC_UNSIGNED timeRemaining
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetENSubsTimeRemaining (
+    const BACSTAC_EVENT_NOTIF_SUBS *pEventNotifSubs
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyEventNotifSubs (
+    BACSTAC_EVENT_NOTIF_SUBS *pDestEventNotifSubs,
+    const BACSTAC_EVENT_NOTIF_SUBS *pSrcEventNotifSubs
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_PORT_PERMISSION
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitPortPermission (
+    BACSTAC_PORT_PERMISSION *pPortPermission,
+    BACSTAC_UI8 portID,
+    BACSTAC_BOOLEAN enabled
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPortPermissionPort (
+    BACSTAC_PORT_PERMISSION *pPortPermission,
+    BACSTAC_UI8 portID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetPortPermissionPort (
+    const BACSTAC_PORT_PERMISSION *pPortPermission
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetPortPermissionEnabled (
+    BACSTAC_PORT_PERMISSION *pPortPermission,
+    BACSTAC_BOOLEAN enabled
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetPortPermissionEnabled (
+    const BACSTAC_PORT_PERMISSION *pPortPermission
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyPortPermission (
+    BACSTAC_PORT_PERMISSION *pDestPP,
+    const BACSTAC_PORT_PERMISSION *pSrcPP
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_PROC_ID_SELECTION
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitProcSelNull (
+    BACSTAC_PROC_ID_SELECTION *pProcSel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitProcSelProcID  (
+    BACSTAC_PROC_ID_SELECTION *pProcSel,
+    BACSTAC_UNSIGNED procID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetProcSelType (
+    const BACSTAC_PROC_ID_SELECTION *pProcSel
+) BACSTAC_NOTHROW;
+
+/* assumes that pProcSel has been initialized to ProcessID */
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetProcSelProcID (
+    const BACSTAC_PROC_ID_SELECTION *pProcSel
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyProcSel (
+    BACSTAC_PROC_ID_SELECTION *pDestProcSel,
+    const BACSTAC_PROC_ID_SELECTION *pSrcProcSel
+) BACSTAC_NOTHROW;
+
+/*
+ * BACSTAC_HOST_ADDRESS
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitHostAddressNull (
+    BACSTAC_HOST_ADDRESS *pHostAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitHostAddressIpAddress (
+    BACSTAC_HOST_ADDRESS *pHostAddress,
+    const BACSTAC_BYTE *pIpAddress,
+    BACSTAC_BYTE addressLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitHostAddressName (
+    BACSTAC_HOST_ADDRESS *pHostAddress,
+    const BACSTAC_CHAR_STRING *pName
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOST_ADDR_TYPE BACstac_api BACstacGetHostAddressType (
+    const BACSTAC_HOST_ADDRESS *pHostAddress
+) BACSTAC_NOTHROW;
+
+/* assumes that hostAddrws has been initialized to IP_ADDRESS */
+BACSTACAPI BACSTAC_BYTE * BACstac_api BACstacGetHostAddressIpAddressPtr (
+    const BACSTAC_HOST_ADDRESS *pHostAddress
+) BACSTAC_NOTHROW;
+
+/* assumes that hostAddrws has been initialized to IP_ADDRESS */
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetHostAddressIpAddressLength (
+    const BACSTAC_HOST_ADDRESS *pHostAddress
+) BACSTAC_NOTHROW;
+
+/* assumes that hostAddrws has been initialized to NAME */
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetHostAddressNamePtr (
+    const BACSTAC_HOST_ADDRESS *pHostAddress
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneHostAddress (
+    BACSTAC_HOST_ADDRESS *pDest,
+    const BACSTAC_HOST_ADDRESS *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_HOST_NPORT
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitHostNPort (
+    BACSTAC_HOST_NPORT *pHostNPort,
+    const BACSTAC_HOST_ADDRESS *pHost,
+    BACSTAC_UI16 port
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHostNPortHost (
+    BACSTAC_HOST_NPORT *pHostNPort,
+    const BACSTAC_HOST_ADDRESS *pHost
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHostNPortPort (
+    BACSTAC_HOST_NPORT *pHostNPort,
+    BACSTAC_UI16 port
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOST_ADDRESS *BACstac_api BACstacGetHostNPortHostPtr (
+    const BACSTAC_HOST_NPORT *pHostNPort
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetHostNPortPort (
+    const BACSTAC_HOST_NPORT *pHostNPort
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneHostNPort (
+    BACSTAC_HOST_NPORT *pDest,
+    const BACSTAC_HOST_NPORT *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_BDT_ENTRY
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitBDTEntry (
+    BACSTAC_BDT_ENTRY *pBDTEntry,
+    const BACSTAC_HOST_NPORT *pBbmdAddress,
+    const BACSTAC_BYTE *pBroadcastMask          /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetBDTEntryAddress (
+    BACSTAC_BDT_ENTRY *pBDTEntry,
+    const BACSTAC_HOST_NPORT *pBbmdAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetBDTEntryMask (
+    BACSTAC_BDT_ENTRY *pBDTEntry,
+    const BACSTAC_BYTE *pBroadcastMask          /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_HOST_NPORT *BACstac_api BACstacGetBDTEntryAddressPtr (
+    const BACSTAC_BDT_ENTRY *pBDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetBDTEntryMaskPtr (
+    const BACSTAC_BDT_ENTRY *pBDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneBDTEntry (
+    BACSTAC_BDT_ENTRY *pDest,
+    const BACSTAC_BDT_ENTRY *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_FDT_ENTRY
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitFDTEntry (
+    BACSTAC_FDT_ENTRY *pFDTEntry,
+    const BACSTAC_BYTE *pBIpAddress,
+    BACSTAC_BYTE addressLength,
+    BACSTAC_UI16 timeToLive,
+    BACSTAC_UI16 remainingTimeToLive
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFDTEntryAddress (
+    BACSTAC_FDT_ENTRY *pFDTEntry,
+    const BACSTAC_BYTE *pBIpAddress,
+    BACSTAC_BYTE addressLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFDTEntryLiveTime (
+    BACSTAC_FDT_ENTRY *pFDTEntry,
+    BACSTAC_UI16 timeToLive
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetFDTEntryRemainingTime (
+    BACSTAC_FDT_ENTRY *pFDTEntry,
+    BACSTAC_UI16 remainingTimeToLive
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetFDTEntryAddressPtr (
+    const BACSTAC_FDT_ENTRY *pFDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetFDTEntryAddressLength (
+    const BACSTAC_FDT_ENTRY *pFDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetFDTEntryLiveTime (
+    const BACSTAC_FDT_ENTRY *pFDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetFDTEntryRemainingTime (
+    const BACSTAC_FDT_ENTRY *pFDTEntry
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneFDTEntry (
+    BACSTAC_FDT_ENTRY *pDest,
+    const BACSTAC_FDT_ENTRY *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_VMAC_ENTRY
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitVMACEntry (
+    BACSTAC_VMAC_ENTRY *pVMACEntry,
+    const BACSTAC_BYTE *pVirtualAddress,
+    BACSTAC_BYTE vaLength,
+    const BACSTAC_BYTE *pNativeAddress,
+    BACSTAC_BYTE naLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetVMACEntryVirtualAddr (
+    BACSTAC_VMAC_ENTRY *pVMACEntry,
+    const BACSTAC_BYTE *pVirtualAddress,
+    BACSTAC_BYTE vaLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetVMACEntryNativeAddr (
+    BACSTAC_VMAC_ENTRY *pVMACEntry,
+    const BACSTAC_BYTE *pNativeAddress,
+    BACSTAC_BYTE naLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetVMACEntryVirtualAddrPtr (
+    const BACSTAC_VMAC_ENTRY *pVMACEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetVMACEntryVirtualAddrLength (
+    const BACSTAC_VMAC_ENTRY *pVMACEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetVMACEntryNativeAddrPtr (
+    const BACSTAC_VMAC_ENTRY *pVMACEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetVMACEntryNativeAddrLength (
+    const BACSTAC_VMAC_ENTRY *pVMACEntry
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneVMACEntry (
+    BACSTAC_VMAC_ENTRY *pDest,
+    const BACSTAC_VMAC_ENTRY *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_ROUTER_ENTRY
+ */
+
+
+/* Sets fIndexPresent to FALSE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitRouterEntry (
+    BACSTAC_ROUTER_ENTRY *pRouterEntry,
+    BACSTAC_UI16 netNumber,
+    const BACSTAC_BYTE *pAddress,
+    BACSTAC_BYTE addressLength,
+    BACSTAC_RE_STATUS status
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRouterEntryNetNumber (
+    BACSTAC_ROUTER_ENTRY *pRouterEntry,
+    BACSTAC_UI16 netNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRouterEntryAddress (
+    BACSTAC_ROUTER_ENTRY *pRouterEntry,
+    const BACSTAC_BYTE *pAddress,
+    BACSTAC_BYTE addressLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRouterEntryStatus (
+    BACSTAC_ROUTER_ENTRY *pRouterEntry,
+    BACSTAC_RE_STATUS status
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetRouterEntryIndex (
+    BACSTAC_ROUTER_ENTRY *pRouterEntry,
+    BACSTAC_BOOLEAN fIndexPresent,
+    BACSTAC_UI8 performanceIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetRouterEntryNetNumber (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE *BACstac_api BACstacGetRouterEntryAddressPtr (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetRouterEntryAddressLength (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RE_STATUS BACstac_api BACstacGetRouterEntryStatus (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacRouterEntryContainsIndex (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetRouterEntryIndex (
+    const BACSTAC_ROUTER_ENTRY *pRouterEntry
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneRouterEntry (
+    BACSTAC_ROUTER_ENTRY *pDest,
+    const BACSTAC_ROUTER_ENTRY *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_VALUE_SOURCE
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitValueSourceNone (
+    BACSTAC_VALUE_SOURCE *pValueSource
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitValueSourceObject (
+    BACSTAC_VALUE_SOURCE *pValueSource,
+    const BACSTAC_DEV_OBJ_REF *pObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitValueSourceAddress (
+    BACSTAC_VALUE_SOURCE *pValueSource,
+    const BACSTAC_ADDRESS *pAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SOURCE_TYPE BACstac_api BACstacGetValueSourceTag (
+    const BACSTAC_VALUE_SOURCE *pValueSource
+) BACSTAC_NOTHROW;
+
+/* Assumes that ValueSource has been initialized to VALUE_SOURCE_OBJECT */
+BACSTACAPI BACSTAC_DEV_OBJ_REF * BACstac_api BACstacGetValueSourceObjectPtr (
+    const BACSTAC_VALUE_SOURCE *pValueSource
+) BACSTAC_NOTHROW;
+
+/* Assumes that ValueSource has been initialized to VALUE_SOURCE_ADDRESS */
+BACSTACAPI BACSTAC_ADDRESS * BACstac_api BACstacGetValueSourceAddressPtr (
+    const BACSTAC_VALUE_SOURCE *pValueSource
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyValueSource (
+    BACSTAC_VALUE_SOURCE *pDest,
+    const BACSTAC_VALUE_SOURCE *pScr
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_LANDING_CALL
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLandingCall (
+    BACSTAC_LANDING_CALL *pLandingCall,
+    BACSTAC_FLOOR_NUMBER floorNumber,
+    BACSTAC_LIFT_CAR_DIR direction
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLandingCallFloorNumber (
+    BACSTAC_LANDING_CALL *pLandingCall,
+    BACSTAC_FLOOR_NUMBER floorNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLandingCallDirection (
+    BACSTAC_LANDING_CALL *pLandingCall,
+    BACSTAC_LIFT_CAR_DIR direction
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FLOOR_NUMBER BACstac_api BACstacGetLandingCallFloorNumber (
+    const BACSTAC_LANDING_CALL *pLandingCall
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFT_CAR_DIR BACstac_api BACstacGetLandingCallDirection (
+    const BACSTAC_LANDING_CALL *pLandingCall
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLandingCall (
+    BACSTAC_LANDING_CALL *pDest,
+    const BACSTAC_LANDING_CALL *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_ASSIGNED_LANDING_CALLS
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAssignedLandingCalls (
+    BACSTAC_ASSIGNED_LANDING_CALLS *pAssignedCalls,
+    const BACSTAC_LANDING_CALL *pLandingCalls,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LANDING_CALL * BACstac_api BACstacGetALCLandingCallsPtr (
+    const BACSTAC_ASSIGNED_LANDING_CALLS *pAssignedCalls
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetALCCount (
+    const BACSTAC_ASSIGNED_LANDING_CALLS *pAssignedCalls
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneAssignedLandingCalls (
+    BACSTAC_ASSIGNED_LANDING_CALLS *pDest,
+    const BACSTAC_ASSIGNED_LANDING_CALLS *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_LANDING_CALL_STATUS
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLCSByDirection (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    BACSTAC_FLOOR_NUMBER floorNumber,
+    BACSTAC_LIFT_CAR_DIR direction
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLCSByDestination (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    BACSTAC_FLOOR_NUMBER floorNumber,
+    BACSTAC_FLOOR_NUMBER destination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCSFloorNumber (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    BACSTAC_FLOOR_NUMBER floorNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCSDirection (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    BACSTAC_LIFT_CAR_DIR direction
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCSDestination (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    BACSTAC_FLOOR_NUMBER destination
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyLCSFloorText (
+    BACSTAC_LANDING_CALL_STATUS *pLCStatus,
+    const BACSTAC_CHAR_STRING *pFloorText
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FLOOR_NUMBER BACstac_api BACstacGetLCSFloorNumber (
+    const BACSTAC_LANDING_CALL_STATUS *pLCStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LC_COMMAND_TYPE BACstac_api BACstacGetLCSCommandType (
+    const BACSTAC_LANDING_CALL_STATUS *pLCStatus
+) BACSTAC_NOTHROW;
+
+/* assumes that LANDING_CALL_STATUS has been initialized by direction */
+BACSTACAPI BACSTAC_LIFT_CAR_DIR BACstac_api BACstacGetLCSDirection (
+    const BACSTAC_LANDING_CALL_STATUS *pLCStatus
+) BACSTAC_NOTHROW;
+
+/* assumes that LANDING_CALL_STATUS has been initialized by destination */
+BACSTACAPI BACSTAC_FLOOR_NUMBER BACstac_api BACstacGetLCSDestination (
+    const BACSTAC_LANDING_CALL_STATUS *pLCStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetLCSFloorTextPtr (
+    const BACSTAC_LANDING_CALL_STATUS *pLCStatus
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLandingCallStatus (
+    BACSTAC_LANDING_CALL_STATUS *pDest,
+    const BACSTAC_LANDING_CALL_STATUS *pSrc
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * BACSTAC_LANDING_DOOR
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLandingDoor (
+    BACSTAC_LANDING_DOOR *pLandingDoor,
+    BACSTAC_FLOOR_NUMBER floorNumber,
+    BACSTAC_DOOR_STATUS doorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLandingDoorFloorNumber (
+    BACSTAC_LANDING_DOOR *pLandingDoor,
+    BACSTAC_FLOOR_NUMBER floorNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLandingDoorDoorStatus (
+    BACSTAC_LANDING_DOOR *pLandingDoor,
+    BACSTAC_DOOR_STATUS doorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FLOOR_NUMBER BACstac_api BACstacGetLandingDoorFloorNumber (
+    const BACSTAC_LANDING_DOOR *pLandingDoor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOOR_STATUS BACstac_api BACstacGetLandingDoorDoorStatus (
+    const BACSTAC_LANDING_DOOR *pLandingDoor
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLandingDoor (
+    BACSTAC_LANDING_DOOR *pDest,
+    const BACSTAC_LANDING_DOOR *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_LANDING_DOOR_STATUS
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLandingDoorStatus (
+    BACSTAC_LANDING_DOOR_STATUS *pDoorStatus,
+    const BACSTAC_LANDING_DOOR *pLandingDoors,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LANDING_DOOR * BACstac_api BACstacGetLDSLandingDoorsPtr (
+    const BACSTAC_LANDING_DOOR_STATUS *pDoorStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetLDSCount (
+    const BACSTAC_LANDING_DOOR_STATUS *pDoorStatus
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLandingDoorStatus (
+    BACSTAC_LANDING_DOOR_STATUS *pDest,
+    const BACSTAC_LANDING_DOOR_STATUS *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * BACSTAC_LIFT_CAR_CALL_LIST
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLiftCarCallList (
+    BACSTAC_LIFT_CAR_CALL_LIST *pLiftCarCallList,
+    const BACSTAC_FLOOR_NUMBER *pFloorNumbers,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_FLOOR_NUMBER * BACstac_api BACstacGetLCCLFloorNumbersPtr (
+    const BACSTAC_LIFT_CAR_CALL_LIST *pLiftCarCallList
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetLCCLCount (
+    const BACSTAC_LIFT_CAR_CALL_LIST *pLiftCarCallList
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneLiftCarCallList (
+    BACSTAC_LIFT_CAR_CALL_LIST *pDest,
+    const BACSTAC_LIFT_CAR_CALL_LIST *pSrc
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_COV_SUBSCRIPTION_SPEC
+ * {
+ *     BACSTAC_OBJECT_ID                 monitoredObjectID;
+ *     BACSTAC_COV_REFERENCE *listOfCOVRefs;
+ *     BACSTAC_ELEMENT_COUNT             count;
+ * } BACSTAC_COV_SUBSCRIPTION_SPEC, *PBACSTAC_COV_SUBSCRIPTION_SPEC;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVSubsSpec (
+    BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec,
+    BACSTAC_OBJECT_ID monitoredObjectID,
+    const BACSTAC_COV_REFERENCE *listOfCOVRefs,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetCSSObjectID (
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCSSObjectID (
+    BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec,
+    BACSTAC_OBJECT_ID monitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_REFERENCE *BACstac_api BACstacGetCSSListOfCovRefPtr (
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetCSSCount (
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCSSListOfCovRef (
+    BACSTAC_COV_SUBSCRIPTION_SPEC *pCOVSudsSpec,
+    BACSTAC_COV_REFERENCE *listOfCOVRefs,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVSubsSpec (
+    BACSTAC_COV_SUBSCRIPTION_SPEC *pDestCOVSudsSpec,
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *pSourceCOVSudsSpec
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_COV_REFERENCE
+ * {
+ *     BACSTAC_PROP_REF monitoredProperty;
+ *     BACSTAC_BOOLEAN  fCovIncrement;
+ *     BACSTAC_REAL     covIncrement;   / optional /
+ *     BACSTAC_BOOLEAN  timestamped;
+ * } BACSTAC_COV_REFERENCE, *PBACSTAC_COV_REFERENCE;
+ */
+
+/* Initializes covIncrement as not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVReference (
+    BACSTAC_COV_REFERENCE *covRef,
+    const BACSTAC_PROP_REF *monitoredProp,
+    BACSTAC_BOOLEAN timestamped
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF *BACstac_api BACstacGetCOVRefPropertyPtr (
+    const BACSTAC_COV_REFERENCE *covRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVRefProperty (
+    BACSTAC_COV_REFERENCE *covRef,
+    const BACSTAC_PROP_REF *monitoredProperty
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsCOVRefIncrementPresent (
+    const BACSTAC_COV_REFERENCE *covRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetCOVRefIncrement (
+    const BACSTAC_COV_REFERENCE *covRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVRefIncrement (
+    BACSTAC_COV_REFERENCE *covRef,
+    BACSTAC_REAL covIncrement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetCOVRefTimestamped (
+    const BACSTAC_COV_REFERENCE *covRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVRefTimestamped (
+    BACSTAC_COV_REFERENCE *covRef,
+    BACSTAC_BOOLEAN timestamped
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVReference (
+    BACSTAC_COV_REFERENCE *pDestCovRef,
+    const BACSTAC_COV_REFERENCE *pSourceCovRef
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_COV_MULTI_SUBSCRIPTION {
+ *     BACSTAC_RECIPIENT_PROCESS                 recipient;
+ *     BACSTAC_BOOLEAN                           issueConfirmedNotifications;
+ *     BACSTAC_UNSIGNED                          timeRemaining;
+ *     BACSTAC_UNSIGNED                          maxNotificationDelay;
+ *     BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec;
+ *     BACSTAC_ELEMENT_COUNT                     count;
+ * } BACSTAC_COV_MULTI_SUBSCRIPTION, *PBACSTAC_COV_MULTI_SUBSCRIPTION;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVMultiSubscription (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    const BACSTAC_RECIPIENT_PROCESS *recipient,
+    BACSTAC_BOOLEAN confirmed,
+    BACSTAC_UNSIGNED timeRemaining,
+    BACSTAC_UNSIGNED maxNotificationDelay,
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT_PROCESS *
+BACstac_api BACstacGetCOVMSRecipientPtr (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVMSRecipient (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    const BACSTAC_RECIPIENT_PROCESS *recipient
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetCOVMSConfFlag (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVMSConfFlag (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    BACSTAC_BOOLEAN confirmed
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVMSTimeRemaining (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVMSTimeRemaining (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    BACSTAC_UNSIGNED timeRemaining
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCOVMSMaxNotifDelay (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVMSMaxNotifDelay (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    BACSTAC_UNSIGNED maxNotificationDelay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_SUBSCRIPTION_SPEC *BACstac_api BACstacGetCOVMSSubsSpecPtr (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetCOVMSCount (
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *subscription
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCOVMSSubsSpec (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *subscription,
+    BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVMultiSubscription (
+    BACSTAC_COV_MULTI_SUBSCRIPTION *pDestSubs,
+    const BACSTAC_COV_MULTI_SUBSCRIPTION *pSourceSubs
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_LIGHTING_CMD {
+ *     BACSTAC_LIGHTING_OPERATION operation;
+ *     BACSTAC_REAL               targetLevel;     / OPTIONAL, if omitted < 0 /
+ *     BACSTAC_REAL               rampRate;        / OPTIONAL, if omitted < 0 /
+ *     BACSTAC_REAL               stepIncrement;   / OPTIONAL, if omitted < 0 /
+ *     BACSTAC_UNSIGNED           fadeTime;        / OPTIONAL, if omitted == 0 /
+ *     BACSTAC_PRIORITY_LEVEL     priority;        / OPTIONAL, if omitted BACSTAC_VOID_PRI /
+ * } BACSTAC_LIGHTING_CMD, *PBACSTAC_LIGHTING_CMD;
+ */
+
+/* Optional attributes are not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLightingCmd (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_LIGHTING_OPERATION operation
+) BACSTAC_NOTHROW;
+
+/* Optional attributes are not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLightingCmdToFadeTo (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_REAL targetLevel
+) BACSTAC_NOTHROW;
+
+/* Optional attributes are not present */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLightingCmdToRampTo (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_REAL targetLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_OPERATION BACstac_api BACstacGetLCOperation (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to FadeTo or RampTo */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLCTargetLevel (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to FadeTo or RampTo */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCTargetLevel (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_REAL targetLevel
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to RampTo */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLCRampRate (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to RampTo */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCRampRate (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_REAL rampRate
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to StepUp, StapDown, StapOn or StapOff */
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetLCStepIncrement (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to StepUp, StapDown, StapOn or StapOff */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCStepIncrement (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_REAL stepIncrement
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to FadeTo */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetLCFadeTime (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+/* assumes that LIGHTING_CMD has been initialized to FadeTo */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCFadeTime (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_UNSIGNED fadeTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetLCPriority (
+    const BACSTAC_LIGHTING_CMD *cmd
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLCPriority (
+    BACSTAC_LIGHTING_CMD *cmd,
+    BACSTAC_PRIORITY_LEVEL priority
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_CHANNEL_VALUE
+ * {
+ *     BACSTAC_DATA_TYPE   tag;
+ *     union {
+ *         BACSTAC_REAL         r; /= tag:DATA_TYPE_REAL /
+ *         BACSTAC_ENUM         e; /= tag:DATA_TYPE_ENUM /
+ *         BACSTAC_UNSIGNED     u; /= tag:DATA_TYPE_UNSIGNED /
+ *         BACSTAC_BOOLEAN      b; /= tag:DATA_TYPE_BOOLEAN /
+ *         BACSTAC_INTEGER      i; /= tag:DATA_TYPE_INTEGER /
+ *         BACSTAC_DOUBLE       d; /= tag:DATA_TYPE_DOUBLE /
+ *         BACSTAC_TIME         time; /= tag:DATA_TYPE_TIME /
+ *         BACSTAC_CHAR_STRING  charStr; /= tag:DATA_TYPE_ANY_CHAR_STRING /
+ *         BACSTAC_OCTET_STRING octetStr; /= tag:DATA_TYPE_OCTET_STRING /
+ *         BACSTAC_BIT_STRING   bitStr; /= tag:DATA_TYPE_BIT_STRING /
+ *         BACSTAC_DATE         date; /= tag:DATA_TYPE_DATE /
+ *         BACSTAC_OBJECT_ID    objectID; /= tag:DATA_TYPE_OBJECT_ID /
+ *         BACSTAC_LIGHTING_CMD lightingCommand; /= tag:DATA_TYPE_LIGHTING_CMD /
+ *     } value;
+ * } BACSTAC_CHANNEL_VALUE, *PBACSTAC_CHANNEL_VALUE;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVNull (
+    BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVReal (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_REAL r
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVEnum (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_ENUM e
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVUnsigned (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_UNSIGNED u
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVBoolean (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_BOOLEAN b
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVInteger (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVDouble (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_DOUBLE d
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVTime (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_TIME *time
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVCharStr (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_CHAR_STRING *charStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVOctetStr (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_OCTET_STRING *octetStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVBitStr (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_BIT_STRING *bitStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVDate (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_DATE *date
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVObjectID (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVLightingCmd (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    const BACSTAC_LIGHTING_CMD *lightingCmd
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVXYColor (   /* Add-135-2020ca */
+    BACSTAC_CHANNEL_VALUE  *channelValue,
+    const BACSTAC_XY_COLOR *xyColor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVColorCmd (  /* Add-135-2020ca */
+    BACSTAC_CHANNEL_VALUE  *channelValue,
+    const BACSTAC_COLOR_CMD *colorCmd
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetChVTag (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetChVReal (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetChVEnum (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetChVUnsigned (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetChVBoolean (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetChVInteger (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetChVDouble (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetChVTimePtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetChVCharStrPtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api BACstacGetChVOctetStrPtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetChVBitStrPtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetChVDatePtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetChVObjectID (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_CMD * BACstac_api BACstacGetChVLightingCmdPtr (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_XY_COLOR * BACstac_api BACstacGetChVXYColorPtr (       /* Add-135-2020ca */
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COLOR_CMD * BACstac_api BACstacGetChVColorCmdPtr ( /* Add-135-2020ca */
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitChVSigned (
+    BACSTAC_CHANNEL_VALUE *channelValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetChVSigned (
+    const BACSTAC_CHANNEL_VALUE *channelValue
+) BACSTAC_NOTHROW;
+
+
+                                                          /*
+ *
+ * typedef struct tagBACSTAC_SUBS_COVP_MULTI_ERROR {
+ *    BACSTAC_SUBS_COVPM_ERROR_TYPE tag;
+ *    union {
+ *       BACSTAC_ERROR_TYPE errorType;
+ *       struct tagBACSTAC_FIRST_FAILED_SUBS {
+ *          BACSTAC_OBJECT_ID  monitoredObjectID;
+ *          BACSTAC_PROP_REF   monitoredPropRef;
+ *          BACSTAC_ERROR_TYPE errorType;
+ *       } firstFailedSubs;
+ *    } error;
+ * } BACSTAC_SUBS_COVP_MULTI_ERROR, *PBACSTAC_SUBS_COVP_MULTI_ERROR;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCPMEToSimpleError (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pError,
+    const BACSTAC_ERROR_TYPE *errorType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCPMEToFirstFailed (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pError,
+    BACSTAC_OBJECT_ID monitoredObjectID,
+    const BACSTAC_PROP_REF *monitoredPropRef,
+    const BACSTAC_ERROR_TYPE *errorType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SUBS_COVP_MULTI_ERROR_TYPE BACstac_api BACstacGetSCPMEType (
+    const BACSTAC_SUBS_COVP_MULTI_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetSCPMEObjectID (
+    const BACSTAC_SUBS_COVP_MULTI_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCPMEObjectID (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pError,
+    BACSTAC_OBJECT_ID monitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF *BACstac_api BACstacGetSCPMEPropRefPtr (
+    const BACSTAC_SUBS_COVP_MULTI_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySCPMEPropRef (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pError,
+    const BACSTAC_PROP_REF *monitoredPropRef
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_TYPE *BACstac_api BACstacGetSCPMEErrorPtr (
+    const BACSTAC_SUBS_COVP_MULTI_ERROR *pError
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySCPMEError (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pError,
+    const BACSTAC_ERROR_TYPE *errorType
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySCPME (
+    BACSTAC_SUBS_COVP_MULTI_ERROR *pDestError,
+    const BACSTAC_SUBS_COVP_MULTI_ERROR *pSourceError
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * typedef struct tagBACSTAC_SUBS_COVP_MULTI_INFO
+ * {
+ *     BACSTAC_BOOLEAN                           fSubscribe;
+ *     BACSTAC_UI32                              processID;
+ *     BACSTAC_BOOLEAN                           issueConfirmedNotifications;
+ *     BACSTAC_UNSIGNED                          lifetime;             / optional / /= fSubscribe:TRUE /
+ *     BACSTAC_UNSIGNED                          maxNotificationDelay; / optional / /= fSubscribe:TRUE /
+ *     BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec;
+ *     BACSTAC_ELEMENT_COUNT                     count;
+ * } BACSTAC_SUBS_COVP_MULTI_INFO, *PBACSTAC_SUBS_COVP_MULTI_INFO;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCPMISubscription (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_UI32 processID,
+    BACSTAC_BOOLEAN issueConfirmedNotifications,
+    BACSTAC_UNSIGNED lifetime,
+    BACSTAC_UNSIGNED maxNotificationDelay,
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCPMICancellation (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_UI32 processID,
+    BACSTAC_BOOLEAN issueConfirmedNotifications,
+    const BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsSCPMISubscription (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetSCPMIProcessID (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCPMIProcessID (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetSCPMIConfFlag (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCPMIConfFlag (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_BOOLEAN issueConfirmedNotifications
+) BACSTAC_NOTHROW;
+
+/* Assumes that covpInfo has been initialized to Subscription */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetSCPMILifetime (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+/* Assumes that covpInfo has been initialized to Subscription */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCPMILifetime (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_UNSIGNED lifetime
+) BACSTAC_NOTHROW;
+
+/* Assumes that covpInfo has been initialized to Subscription */
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetSCPMIMaxNotifDelay (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+/* Assumes that covpInfo has been initialized to Subscription */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCPMIMaxNotifDelay(
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_UNSIGNED maxNotificationDelay
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_SUBSCRIPTION_SPEC *BACstac_api BACstacGetSCPMISubsSpecPtr (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetSCPMICount (
+    const BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneSCPMISubsSpec (
+    BACSTAC_SUBS_COVP_MULTI_INFO *covpInfo,
+    BACSTAC_COV_SUBSCRIPTION_SPEC *listOfCOVSubsSpec,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopySCPMI (
+    BACSTAC_SUBS_COVP_MULTI_INFO *pDestCovpInfo,
+    const BACSTAC_SUBS_COVP_MULTI_INFO *pSourceCovpInfo
+) BACSTAC_NOTHROW;
+
+
+
+
+
+/*
+ * typedef struct tagBACSTAC_COV_NOTIF_MULTI_INFO
+ * {
+ *     BACSTAC_UI32           processID;
+ *     BACSTAC_OBJECT_ID      initDeviceID;
+ *     BACSTAC_UNSIGNED       timeRemaining;
+ *     BACSTAC_BOOLEAN        fTimestampPresent;
+ *     BACSTAC_DATE_TIME      *timestamp; / optional /
+ *     BACSTAC_COV_NOTIF_ITEM *listOfCOVNotifications; /= size:count /
+ *     BACSTAC_ELEMENT_COUNT  count;
+ * } BACSTAC_COV_NOTIF_MULTI_INFO, *PBACSTAC_COV_NOTIF_MULTI_INFO;
+ */
+
+
+/* Clones 'listOfCOVNotifications' */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVNotifMultiInfo (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    BACSTAC_UI32 processID,
+    BACSTAC_OBJECT_ID initDeviceID,
+    BACSTAC_UNSIGNED timeRemaining,
+    const BACSTAC_COV_NOTIF_ITEM *listOfCOVNotifications,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetCNMIProcessID (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNMIProcessID (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetCNMIDeviceID (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNMIDeviceID (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    BACSTAC_OBJECT_ID initDeviceID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetCNMITime (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNMITime (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    BACSTAC_UNSIGNED timeRemaining
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCNMIIsTimestampPresent (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCNMIIsTimestapPresent (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetCNMITimestampfPtr (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCNMITimestamp (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    const BACSTAC_DATE_TIME *pTimestamp               /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_NOTIF_ITEM *BACstac_api BACstacGetCNMIListNotifPtr (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetCNMICount (
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+/* Clones 'listOfCOVNotifications' */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCNMIListNotif (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pCOVNotifInfo,
+    BACSTAC_COV_NOTIF_ITEM *listOfCOVNotifications,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotifMultiInfo (
+    BACSTAC_COV_NOTIF_MULTI_INFO *pDestCOVNotifInfo,
+    const BACSTAC_COV_NOTIF_MULTI_INFO *pSourceCOVNotifInfo
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_COV_NOTIF_ITEM {
+ *     BACSTAC_OBJECT_ID            monitoredObjectID;
+ *     BACSTAC_COV_NOTIF_PROP_VALUE *listOfValues; /= size:count /
+ *     BACSTAC_ELEMENT_COUNT        count;
+ * } BACSTAC_COV_NOTIF_ITEM, *PBACSTAC_COV_NOTIF_ITEM;
+ */
+
+/* Clones 'listOfValues' */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVNotifItem (
+    BACSTAC_COV_NOTIF_ITEM *pCOVNotif,
+    BACSTAC_OBJECT_ID monitoredObjectID,
+    const BACSTAC_COV_NOTIF_PROP_VALUE *listOfValues,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetCOVNIObjectID (
+    const BACSTAC_COV_NOTIF_ITEM *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCOVNIObjectID (
+    BACSTAC_COV_NOTIF_ITEM *pCOVNotif,
+    BACSTAC_OBJECT_ID monitoredObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COV_NOTIF_PROP_VALUE *BACstac_api BACstacGetCOVNIListOfValuesPtr (
+    const BACSTAC_COV_NOTIF_ITEM *pCOVNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetCOVNICount (
+    const BACSTAC_COV_NOTIF_ITEM *pCOVNotif
+) BACSTAC_NOTHROW;
+
+/* Clones 'listOfValues' */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCOVNIListOfValues (
+    BACSTAC_COV_NOTIF_ITEM *pCOVNotif,
+    BACSTAC_COV_NOTIF_PROP_VALUE *listOfValues,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotifItem (
+    BACSTAC_COV_NOTIF_ITEM *pDestCOVNotif,
+    const BACSTAC_COV_NOTIF_ITEM *pSourceCOVNotif
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_COV_NOTIF_PROP_VALUE {
+ *     BACSTAC_PROPERTY_ID       propID;
+ *     BACSTAC_ARRAY_INDEX       index;          / | VOID /
+ *     BACSTAC_PROPERTY_CONTENTS value;
+ *     BACSTAC_BOOLEAN           fTimePresent;
+ *     BACSTAC_TIME              timeOfChange;   / optional /
+ * } BACSTAC_COV_NOTIF_PROP_VALUE, *PBACSTAC_COV_NOTIF_PROP_VALUE;
+ */
+
+/* Set index to VOID, fTimePresent to FALSE, clones Value */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitCOVNotifPropValue (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue,
+    BACSTAC_PROPERTY_ID propID,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNPVPropID (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue,
+    BACSTAC_PROPERTY_ID propID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetCNPVPropID (
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNPVIndex (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue,
+    BACSTAC_ARRAY_INDEX arrayIndex
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetCNPVIndex (
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCloneCNPVValue (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue,
+    const BACSTAC_PROPERTY_CONTENTS *pValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS *BACstac_api BACstacGetCNPVValuePtr (
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCNPVIsTimePresent (
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetCNPVTime (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue,
+    const BACSTAC_TIME *pTime                  /* or NULL */
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME *BACstac_api BACstacGetCNPVTimePtr (
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacCopyCOVNotifPropValue (
+    BACSTAC_COV_NOTIF_PROP_VALUE *pDestCNPValue,
+    const BACSTAC_COV_NOTIF_PROP_VALUE *pSourceCNPValue
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_GROUP_CHANNEL_VALUE {
+ *     BACSTAC_U16            channel;
+ *     BACSTAC_PRIORITY_LEVEL priority;        / OPTIONAL, if omitted BACSTAC_VOID_PRI /
+ *     BACSTAC_CHANNEL_VALUE  value;
+ * } BACSTAC_GROUP_CHANNEL_VALUE, *PBACSTAC_GROUP_CHANNEL_VALUE;
+ */
+
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitGroupChannelValue (
+    BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue,
+    BACSTAC_UI16 channel,
+    const BACSTAC_CHANNEL_VALUE *value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetGCVChannel (
+    const BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGCVChannel (
+    BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue,
+    BACSTAC_UI16 channel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetGCVPriority (
+    const BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetGCVPriority (
+    BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue,
+    BACSTAC_PRIORITY_LEVEL priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHANNEL_VALUE * BACstac_api BACstacGetGCVValuePtr (
+    const BACSTAC_GROUP_CHANNEL_VALUE *pGroupChannelValue
+) BACSTAC_NOTHROW;
+
+
+
+
+
+
+/*
+ * typedef struct tagBACSTAC_WRITE_GROUP_INFO {
+ *     BACSTAC_UI32                groupNumber;
+ *     BACSTAC_PRIORITY_LEVEL      priority;
+ *     BACSTAC_GROUP_CHANNEL_VALUE *changeList;
+ *     BACSTAC_ELEMENT_COUNT       count;
+ *     BACSTAC_BOOLEAN             fInhibitDelayPresent;
+ *     BACSTAC_BOOLEAN             inhibitDelay; / OPTIONAL /
+ * } BACSTAC_WRITE_GROUP_INFO, *PBACSTAC_WRITE_GROUP_INFO;
+ */
+
+
+/* Clones 'changeList' */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWriteGroupInfo (
+    BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo,
+    BACSTAC_UI32 groupNumber,
+    BACSTAC_PRIORITY_LEVEL priority,
+    BACSTAC_GROUP_CHANNEL_VALUE *changeList,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetWGIGroupNumber (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWGIGroupNumber (
+    BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo,
+    BACSTAC_UI32 groupNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetWGIPriority (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWGIPriority (
+    BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo,
+    BACSTAC_PRIORITY_LEVEL priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_GROUP_CHANNEL_VALUE * BACstac_api BACstacGetWGIChangeListPtr (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetWGICount (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWGIChangeList (
+    BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo,
+    BACSTAC_GROUP_CHANNEL_VALUE *changeList,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsWGIInhibitDelayPresent (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetWGIInhibitDelay (
+    const BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetWGIInhibitDelay (
+    BACSTAC_WRITE_GROUP_INFO *pWriteGroupInfo,
+    BACSTAC_BOOLEAN inhibitDelay
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * typedef struct tagBACSTAC_OPT_REAL
+ * {
+ *     BACSTAC_BOOLEAN fPresent;
+ *     BACSTAC_REAL    r;
+ * } BACSTAC_OPT_REAL;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptRealToNull (
+    BACSTAC_OPT_REAL *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptReal (
+    BACSTAC_OPT_REAL *pOptVal,
+    BACSTAC_REAL value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsOptRealNull (
+    const BACSTAC_OPT_REAL *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetOptReal (
+    const BACSTAC_OPT_REAL *pOptVal
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_OPT_BINARY_PV
+ * {
+ *     BACSTAC_BOOLEAN      fPresent;
+ *     BACSTAC_BINARY_PV    e;
+ * } BACSTAC_OPT_BINARY_PV;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptBinaryPVToNull (
+    BACSTAC_OPT_BINARY_PV *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptBinaryPV (
+    BACSTAC_OPT_BINARY_PV *pOptVal,
+    BACSTAC_BINARY_PV value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsOptBinaryPVNull (
+    const BACSTAC_OPT_BINARY_PV *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BINARY_PV BACstac_api BACstacGetOptBinaryPV (
+    const BACSTAC_OPT_BINARY_PV *pOptVal
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_OPT_UNSIGNED
+ * {
+ *     BACSTAC_BOOLEAN     fPresent;
+ *     BACSTAC_UNSIGNED    u;
+ * } BACSTAC_OPT_UNSIGNED;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptUnsignedToNull (
+    BACSTAC_OPT_UNSIGNED *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOptUnsigned (
+    BACSTAC_OPT_UNSIGNED *pOptVal,
+    BACSTAC_UNSIGNED value
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsOptUnsignedNull (
+    const BACSTAC_OPT_UNSIGNED *pOptVal
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetOptUnsigned (
+    const BACSTAC_OPT_UNSIGNED *pOptVal
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_NET_SECURITY_POLICY {
+ *     BACSTAC_UI8             portID;
+ *     BACSTAC_SECURITY_POLICY securityLevel;
+ * } BACSTAC_NET_SECURITY_POLICY;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNetSecurityPolicy (
+    BACSTAC_NET_SECURITY_POLICY *policy,
+    BACSTAC_UI8 portID,
+    BACSTAC_SECURITY_POLICY securityLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNSPPortID (
+    BACSTAC_NET_SECURITY_POLICY *policy,
+    BACSTAC_UI8 portID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetNSPPortID (
+    const BACSTAC_NET_SECURITY_POLICY *policy
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNSPSecurityLevel (
+    BACSTAC_NET_SECURITY_POLICY *policy,
+    BACSTAC_SECURITY_POLICY securityLevel
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SECURITY_POLICY BACstac_api BACstacGetNSPSecurityLevel (
+    const BACSTAC_NET_SECURITY_POLICY *policy
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_KEY_ID {
+ *     BACSTAC_UI8 algorithm;
+ *     BACSTAC_UI8 keyID;
+ * } BACSTAC_KEY_ID;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitKeyID (
+    BACSTAC_KEY_ID *key,
+    BACSTAC_UI8 algorithm,
+    BACSTAC_UI8 keyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetKIAlgorithm (
+    BACSTAC_KEY_ID *key,
+    BACSTAC_UI8 algorithm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetKIAlgorithm (
+    const BACSTAC_KEY_ID *key
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetKIKeyID (
+    BACSTAC_KEY_ID *key,
+    BACSTAC_UI8 keyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetKIKeyID (
+    const BACSTAC_KEY_ID *key
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_SECURITY_KEY_SET {
+ *     BACSTAC_UI8                keyRevision;
+ *     BACSTAC_DATE_TIME          activationTime;
+ *     BACSTAC_DATE_TIME          expirationTime;
+ *     BACSTAC_KEY_ID *keyIds;
+ *     BACSTAC_ELEMENT_COUNT      count;
+ * } BACSTAC_SECURITY_KEY_SET;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSecurityKeySet (
+    BACSTAC_SECURITY_KEY_SET *keySet,
+    BACSTAC_UI8 keyRevision,
+    BACSTAC_DATE_TIME *activationTime,
+    BACSTAC_DATE_TIME *expirationTime,
+    BACSTAC_KEY_ID *keyIds,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKSKeyRevision (
+    BACSTAC_SECURITY_KEY_SET *keySet,
+    BACSTAC_UI8 keyRevision
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetSKSKeyRevision (
+    const BACSTAC_SECURITY_KEY_SET *keySet
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKSActivationTime (
+    BACSTAC_SECURITY_KEY_SET *keySet,
+    BACSTAC_DATE_TIME *activationTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetSKSActivationTimePtr (
+    const BACSTAC_SECURITY_KEY_SET *keySet
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKSExpirationTime (
+    BACSTAC_SECURITY_KEY_SET *keySet,
+    BACSTAC_DATE_TIME *expirationTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetSKSExpirationTimePtr (
+    const BACSTAC_SECURITY_KEY_SET *keySet
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSKSKeyIds (
+    BACSTAC_SECURITY_KEY_SET *keySet,
+    BACSTAC_KEY_ID *keyIds,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_KEY_ID * BACstac_api BACstacGetSKSKeyIdsPtr (
+    const BACSTAC_SECURITY_KEY_SET *keySet
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetSKSCount (
+    const BACSTAC_SECURITY_KEY_SET *keySet
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_TS_CHANGE_VALUE
+ * {    BACSTAC_TSC_VALUE_TYPE   tag;
+ *     union {
+ *         BACSTAC_BOOLEAN        b; /= tag:DATA_TYPE_BOOLEAN /
+ *         BACSTAC_UNSIGNED       u; /= tag:DATA_TYPE_UNSIGNED /
+ *         BACSTAC_INTEGER        i; /= tag:DATA_TYPE_INTEGER /
+ *         BACSTAC_REAL           r; /= tag:DATA_TYPE_REAL /
+ *         BACSTAC_DOUBLE         d; /= tag:DATA_TYPE_DOUBLE /
+ *         BACSTAC_ENUM           e; /= tag:DATA_TYPE_ENUM /
+ *         BACSTAC_OCTET_STRING   octetStr; /= tag:DATA_TYPE_OCTET_STRING /
+ *         BACSTAC_CHAR_STRING    charStr; /= tag:DATA_TYPE_ANY_CHAR_STRING /
+ *         BACSTAC_BIT_STRING     bitStr; /= tag:DATA_TYPE_BIT_STRING /
+ *         BACSTAC_DATE           date; /= tag:DATA_TYPE_DATE /
+ *         BACSTAC_TIME           time; /= tag:DATA_TYPE_TIME /
+ *         BACSTAC_OBJECT_ID      objectID; /= tag:DATA_TYPE_OBJECT_ID /
+ *         BACSTAC_RAW_ASN1_VALUE constructed;  /= tag:DATA_TYPE_EXTENDED /
+ *         BACSTAC_DATE_TIME      dateTime; /= tag:DATA_TYPE_DATE_TIME /
+ *         BACSTAC_LIGHTING_CMD   lightingCommand; /= tag:DATA_TYPE_LIGHTING_CMD /
+ *     } value;
+ * } BACSTAC_TS_CHANGE_VALUE, *PBACSTAC_TS_CHANGE_VALUE;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVNull (
+    BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVBoolean (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_BOOLEAN b
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVUnsigned (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_UNSIGNED u
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVInteger (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVReal (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_REAL r
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVDouble (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_DOUBLE d
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVEnum (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_ENUM e
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVCharStr (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_CHAR_STRING *charStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVOctetStr (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_OCTET_STRING *octetStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVBitStr (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_BIT_STRING *bitStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVDate (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_DATE *date
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVTime (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_TIME *time
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVObjectID (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVNoValue (
+    BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVConstructed (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_RAW_ASN1_VALUE *constructed
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVDateTime (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_DATE_TIME *dateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVLightingCmd (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    const BACSTAC_LIGHTING_CMD *lightingCmd
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TSC_VALUE_TYPE BACstac_api BACstacGetTSChVTag (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetTSChVBoolean (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetTSChVUnsigned (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetTSChVInteger (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetTSChVReal (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetTSChVDouble (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetTSChVEnum (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetTSChVCharStrPtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api BACstacGetTSChVOctetStrPtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetTSChVBitStrPtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetTSChVDatePtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetTSChVTimePtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetTSChVObjectID (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RAW_ASN1_VALUE * BACstac_api BACstacGetTSChVConstructedPtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetTSChVDateTimePtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIGHTING_CMD * BACstac_api BACstacGetTSChVLightingCmdPtr (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitTSChVSigned (
+    BACSTAC_TS_CHANGE_VALUE *tschValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetTSChVSigned (
+    const BACSTAC_TS_CHANGE_VALUE *tschValue
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_NAME_VALUE
+ * {
+ *     BACSTAC_DATA_TYPE   tag;
+ *     BACSTAC_CHAR_STRING name;
+ *     union {
+ *         BACSTAC_BOOLEAN        b; /= tag:DATA_TYPE_BOOLEAN /
+ *         BACSTAC_UNSIGNED       u; /= tag:DATA_TYPE_UNSIGNED /
+ *         BACSTAC_INTEGER        i; /= tag:DATA_TYPE_INTEGER /
+ *         BACSTAC_REAL           r; /= tag:DATA_TYPE_REAL /
+ *         BACSTAC_DOUBLE         d; /= tag:DATA_TYPE_DOUBLE /
+ *         BACSTAC_ENUM           e; /= tag:DATA_TYPE_ENUM /
+ *         BACSTAC_OCTET_STRING   octetStr; /= tag:DATA_TYPE_OCTET_STRING /
+ *         BACSTAC_CHAR_STRING    charStr; /= tag:DATA_TYPE_ANY_CHAR_STRING /
+ *         BACSTAC_BIT_STRING     bitStr; /= tag:DATA_TYPE_BIT_STRING /
+ *         BACSTAC_DATE           date; /= tag:DATA_TYPE_DATE /
+ *         BACSTAC_TIME           time; /= tag:DATA_TYPE_TIME /
+ *         BACSTAC_OBJECT_ID      objectID; /= tag:DATA_TYPE_OBJECT_ID /
+ *         BACSTAC_DATE_TIME      dateTime; /= tag:DATA_TYPE_DATE_TIME /
+ *     } value;
+ * } BACSTAC_NAME_VALUE, *PBACSTAC_NAME_VALUE;
+ */
+
+/* sets tag to NAME_VALUE_TYPE_NO_VALUE */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNameValue (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_CHAR_STRING *name
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVName (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_CHAR_STRING *name
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVNoValue (
+    BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVNull (
+    BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVBoolean (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_BOOLEAN b
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVUnsigned (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_UNSIGNED u
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVInteger (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVReal (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_REAL r
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVDouble (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_DOUBLE d
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVEnum (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_ENUM e
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVOctetString (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_OCTET_STRING *octetStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVBitString (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_BIT_STRING *bitStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVCharString (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_CHAR_STRING *charStr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVDate (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_DATE *date
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVTime (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_TIME *time
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVObjectID (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVDateTime (
+    BACSTAC_NAME_VALUE *nameValue,
+    const BACSTAC_DATE_TIME *dateTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetNVNamePtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NAME_VALUE_TYPE BACstac_api BACstacGetNVTag (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetNVBoolean (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetNVUnsigned (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNVInteger (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetNVReal (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DOUBLE BACstac_api BACstacGetNVDouble (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ENUM BACstac_api BACstacGetNVEnum (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OCTET_STRING * BACstac_api BACstacGetNVOctetStrPtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetNVCharStrPtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetNVBitStrPtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE * BACstac_api BACstacGetNVDatePtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME * BACstac_api BACstacGetNVTimePtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetNVObjectID (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME *  BACstac_api BACstacGetNVDateTimePtr (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetNVSigned (
+    BACSTAC_NAME_VALUE *nameValue,
+    BACSTAC_INTEGER i
+) BACSTAC_NOTHROW;
+
+BACSTAC_DEPRECATED /* for backward compatibility only */
+BACSTACAPI BACSTAC_INTEGER BACstac_api BACstacGetNVSigned (
+    const BACSTAC_NAME_VALUE *nameValue
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_NAME_VALUE_COLLECTION
+ * {
+ *     BACSTAC_NAME_VALUE *members;
+ *     BACSTAC_ELEMENT_COUNT          count;
+ * } BACSTAC_NAME_VALUE_COLLECTION, *PBACSTAC_NAME_VALUE_COLLECTION;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitNameValueCollection (
+    BACSTAC_NAME_VALUE_COLLECTION *collection,
+    const BACSTAC_NAME_VALUE *members,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_NAME_VALUE * BACstac_api BACstacGetNVCMembersPtr (
+    const BACSTAC_NAME_VALUE_COLLECTION *collection
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetNVCCount (
+    const BACSTAC_NAME_VALUE_COLLECTION *collection
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_HEALTH
+ * {
+ *     BACSTAC_DATE_TIME   timestamp;
+ *     BACSTAC_ERROR_TYPE  result;
+ *     BACSTAC_BOOLEAN     propPresent;
+ *     BACSTAC_PROPERTY_ID property; / OPTIONAL /
+ *     BACSTAC_CHAR_STRING details;  / OPTIONAL /
+ * } BACSTAC_HEALTH, *PBACSTAC_HEALTH;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitHealth (
+    BACSTAC_HEALTH *health,
+    const BACSTAC_DATE_TIME *timestamp,
+    const BACSTAC_ERROR_TYPE *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHealthTimestamp (
+    BACSTAC_HEALTH *health,
+    const BACSTAC_DATE_TIME *timestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHealthResult (
+    BACSTAC_HEALTH *health,
+    const BACSTAC_ERROR_TYPE *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHealthProperty (
+    BACSTAC_HEALTH *health,
+    BACSTAC_PROPERTY_ID property
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetHealthProperty (
+    BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetHealthDetails (
+    BACSTAC_HEALTH *health,
+    const BACSTAC_CHAR_STRING *details
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetHealthDetails (
+    BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetHealthTimestampPtr (
+    const BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_ERROR_TYPE * BACstac_api BACstacGetHealthResultPtr (
+    const BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsHealthPropertyPresent (
+    const BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetHealthProperty (
+    const BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+#define BACstacIsHealthDetails(health) \
+    (BACstacGetHealthDetailsPtr(health) != NULL)
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetHealthDetailsPtr (
+    const BACSTAC_HEALTH *health
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_SC_DIRECT_CONNECTION
+ * {
+ *     BACSTAC_UINT             mask;
+ *     BACSTAC_CHAR_STRING      uri;
+ *     BACSTAC_SC_CONNECT_STATE connectionState;
+ *     BACSTAC_DATE_TIME        connectTimestamp;
+ *     BACSTAC_DATE_TIME        disconnectTimestamp;
+ *     BACSTAC_HOST_NPORT       peerAddress;                      / optional / /= mask:BACSTAC_SCDC_PEER_ADDRESS  /
+ *     BACSTAC_BYTE             peerVmac[BACSTAC_SC_VMAC_SIZE];   / optional / /= mask:BACSTAC_SCDC_PEER_VMAC     /
+ *     BACSTAC_BYTE             peerUuid[BACSTAC_SC_UUID_SIZE];   / optional / /= mask:BACSTAC_SCDC_PEER_UUID     /
+ *     BACSTAC_ERROR_TYPE       error;                            / optional / /= mask:BACSTAC_SCDC_ERROR         /
+ *     BACSTAC_CHAR_STRING      errorDetails;                     / optional / /= mask:BACSTAC_SCDC_ERROR_DETAILS /
+ * } BACSTAC_SC_DIRECT_CONNECTION, *PBACSTAC_SC_DIRECT_CONNECTION;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCDC (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_CHAR_STRING *uri,
+    BACSTAC_SC_CONNECT_STATE connectionState,
+    const BACSTAC_DATE_TIME *connectTimestamp,
+    const BACSTAC_DATE_TIME *disconnectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCUri (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_CHAR_STRING *uri
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCConnectionState (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    BACSTAC_SC_CONNECT_STATE connectionState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCConnectTimestamp (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_DATE_TIME *connectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCDisconnectTimestamp (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_DATE_TIME *disconnectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCPeerAddress (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_HOST_NPORT *peerAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCDCPeerAddress (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCPeerVmac (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_BYTE *peerVmac
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCDCPeerVmac (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCPeerUuid (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_BYTE *peerUuid
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCDCPeerUuid (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCError (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_ERROR_TYPE *error
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCDCError (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCDCErrorDetails (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc,
+    const BACSTAC_CHAR_STRING *errorDetails
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCDCErrorDetails (
+    BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetSCDCUriPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SC_CONNECT_STATE BACstac_api BACstacGetSCDCConnectionState (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCDCConnectTimestampPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCDCDisconnectTimestampPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_HOST_NPORT * BACstac_api BACstacGetSCDCPeerAddressPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCDCPeerAddressPresent(scdc) \
+    (BACstacGetSCDCPeerAddressPtr(scdc) != NULL)
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCDCPeerVmacPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCDCPeerVmacPtrPresent(scdc) \
+    (BACstacGetSCDCPeerVmacPtr(scdc) != NULL)
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCDCPeerUuidPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCDCPeerUuidPresent(scdc) \
+    (BACstacGetSCDCPeerUuidPtr(scdc) != NULL)
+
+BACSTACAPI const BACSTAC_ERROR_TYPE * BACstac_api BACstacGetSCDCErrorPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCDCErrorPresent(scdc) \
+    (BACstacGetSCDCErrorPtr(scdc) != NULL)
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetSCDCErrorDetailsPtr (
+    const BACSTAC_SC_DIRECT_CONNECTION *scdc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCDCErrorDetailsPresent(scdc) \
+    (BACstacGetSCDCErrorDetailsPtr(scdc) != NULL)
+
+/*
+ * typedef struct tagBACSTAC_SC_HUB_CONNECTION
+ * {
+ *     BACSTAC_UINT             mask;
+ *     BACSTAC_SC_CONNECT_STATE connectionState;
+ *     BACSTAC_DATE_TIME        connectTimestamp;
+ *     BACSTAC_DATE_TIME        disconnectTimestamp;
+ *     BACSTAC_ERROR_TYPE       error;                            / optional / /= mask:BACSTAC_SCHC_ERROR         /
+ *     BACSTAC_CHAR_STRING      errorDetails;                     / optional / /= mask:BACSTAC_SCHC_ERROR_DETAILS /
+ * } BACSTAC_SC_HUB_CONNECTION, *PBACSTAC_SC_HUB_CONNECTION;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCHC (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    BACSTAC_SC_CONNECT_STATE connectionState,
+    const BACSTAC_DATE_TIME *connectTimestamp,
+    const BACSTAC_DATE_TIME *disconnectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHCConnectionState (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    BACSTAC_SC_CONNECT_STATE connectionState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHCConnectTimestamp (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    const BACSTAC_DATE_TIME *connectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHCDisconnectTimestamp (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    const BACSTAC_DATE_TIME *disconnectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHCError (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    const BACSTAC_ERROR_TYPE *error
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCHCError (
+    BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHCErrorDetails (
+    BACSTAC_SC_HUB_CONNECTION *schc,
+    const BACSTAC_CHAR_STRING *errorDetails
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCHCErrorDetails (
+    BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SC_CONNECT_STATE BACstac_api BACstacGetSCHCConnectionState (
+    const BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCHCConnectTimestampPtr (
+    const BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCHCDisconnectTimestampPtr (
+    const BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_ERROR_TYPE * BACstac_api BACstacGetSCHCErrorPtr (
+    const BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCHCErrorPresent(schc) \
+    (BACstacGetSCHCErrorPtr(schc) != NULL)
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetSCHCErrorDetailsPtr (
+    const BACSTAC_SC_HUB_CONNECTION *schc
+) BACSTAC_NOTHROW;
+#define BACstacIsSCHCErrorDetailsPresent(schc) \
+    (BACstacGetSCHCErrorDetailsPtr(schc) != NULL)
+
+/*
+ * typedef struct tagBACSTAC_SC_FAILED_CONN_REQ
+ * {    BACSTAC_UINT        mask;
+ *     BACSTAC_DATE_TIME   timestamp;
+ *     BACSTAC_HOST_NPORT  peerAddress;
+ *     BACSTAC_BYTE        peerVmac[BACSTAC_SC_VMAC_SIZE];   / optional / /= mask:BACSTAC_SCFCR_PEER_VMAC     /
+ *     BACSTAC_BYTE        peerUuid[BACSTAC_SC_UUID_SIZE];   / optional / /= mask:BACSTAC_SCFCR_PEER_UUID     /
+ *     BACSTAC_ERROR_TYPE  error;
+ *     BACSTAC_CHAR_STRING errorDetails;                     / optional / /= mask:BACSTAC_SCFCR_ERROR_DETAILS /
+ * } BACSTAC_SC_FAILED_CONN_REQ, *PBACSTAC_SC_FAILED_CONN_REQ;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCFCR (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_DATE_TIME *timestamp,
+    const BACSTAC_HOST_NPORT *peerAddress,
+    const BACSTAC_ERROR_TYPE *error
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRTimestamp (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_DATE_TIME *timestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRPeerAddress (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_HOST_NPORT *peerAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRPeerVmac (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_BYTE *peerVmac
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCFCRPeerVmac (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRPeerUuid (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_BYTE *peerUuid
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCFCRPeerUuid (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRError (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_ERROR_TYPE *error
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCFCRErrorDetails (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr,
+    const BACSTAC_CHAR_STRING *errorDetails
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCFCRErrorDetails (
+    BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCFCRTimestampPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_HOST_NPORT * BACstac_api BACstacGetSCFCRPeerAddressPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCFCRPeerVmacPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+#define BACstacIsSCFCRPeerVmacPtrPresent(scfcr) \
+    (BACstacGetSCFCRPeerVmacPtr(scfcr) != NULL)
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCFCRPeerUuidPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+#define BACstacIsSCFCRPeerUuidPresent(scfcr) \
+    (BACstacGetSCFCRPeerUuidPtr(scfcr) != NULL)
+
+BACSTACAPI const BACSTAC_ERROR_TYPE * BACstac_api BACstacGetSCFCRErrorPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+#define BACstacIsSCFCRErrorPresent(scfcr) \
+    (BACstacGetSCFCRErrorPtr(scfcr) != NULL)
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetSCFCRErrorDetailsPtr (
+    const BACSTAC_SC_FAILED_CONN_REQ *scfcr
+) BACSTAC_NOTHROW;
+#define BACstacIsSCFCRErrorDetailsPresent(scfcr) \
+    (BACstacGetSCFCRErrorDetailsPtr(scfcr) != NULL)
+/*
+ * typedef struct tagBACSTAC_SC_HUB_FUNC_CONN
+ * {    BACSTAC_UINT            mask;
+ *     BACSTAC_SC_CONNECT_STATE connectionState;
+ *     BACSTAC_DATE_TIME        connectTimestamp;
+ *     BACSTAC_DATE_TIME        disconnectTimestamp;
+ *     BACSTAC_HOST_NPORT       peerAddress;
+ *     BACSTAC_BYTE             peerVmac[BACSTAC_SC_VMAC_SIZE];
+ *     BACSTAC_BYTE             peerUuid[BACSTAC_SC_UUID_SIZE];
+ *     BACSTAC_ERROR_TYPE       error;                            / optional / /= mask:BACSTAC_SCHFC_ERROR         /
+ *     BACSTAC_CHAR_STRING      errorDetails;                     / optional / /= mask:BACSTAC_SCHFC_ERROR_DETAILS /
+ * } BACSTAC_SC_HUB_FUNC_CONN, *PBACSTAC_SC_HUB_FUNC_CONN;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitSCHFC (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    BACSTAC_SC_CONNECT_STATE connectionState,
+    const BACSTAC_DATE_TIME *connectTimestamp,
+    const BACSTAC_DATE_TIME *disconnectTimestamp,
+    const BACSTAC_HOST_NPORT *peerAddress,
+    const BACSTAC_BYTE *peerVmac,
+    const BACSTAC_BYTE *peerUuid
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCConnectionState (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    BACSTAC_SC_CONNECT_STATE connectionState
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCConnectTimestamp (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_DATE_TIME *connectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCDisconnectTimestamp (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_DATE_TIME *disconnectTimestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCPeerAddress (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_HOST_NPORT *peerAddress
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCPeerVmac (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_BYTE *peerVmac
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCPeerUuid (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_BYTE *peerUuid
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCError (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_ERROR_TYPE *error
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCHFCError (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSCHFCErrorDetails (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc,
+    const BACSTAC_CHAR_STRING *errorDetails
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetSCHFCErrorDetails (
+    BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SC_CONNECT_STATE BACstac_api BACstacGetSCHFCConnectionState (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCHFCConnectTimestampPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetSCHFCDisconnectTimestampPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_HOST_NPORT * BACstac_api BACstacGetSCHFCPeerAddressPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCHFCPeerVmacPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetSCHFCPeerUuidPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_ERROR_TYPE * BACstac_api BACstacGetSCHFCErrorPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetSCHFCErrorDetailsPtr (
+    const BACSTAC_SC_HUB_FUNC_CONN *schfc
+) BACSTAC_NOTHROW;
+/*
+ * typedef struct tagBACSTAC_OBJECT_SELECTOR
+ * {
+ *     BACSTAC_DATA_TYPE tag;
+ *     union {
+ *         BACSTAC_OBJECT_ID   objectID;      /= tag:DATA_TYPE_OBJECT_ID /
+ *         BACSTAC_OBJECT_TYPE objectType;  /= tag:DATA_TYPE_ENUM /
+ *     } selector;
+ * } BACSTAC_OBJECT_SELECTOR, *PBACSTAC_OBJECT_SELECTOR;
+*/
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOSNull (
+    BACSTAC_OBJECT_SELECTOR *objSelector
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOSObjectID (
+    BACSTAC_OBJECT_SELECTOR *objSelector,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOSObjectType (
+    BACSTAC_OBJECT_SELECTOR *objSelector,
+    BACSTAC_OBJECT_TYPE objectType
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATA_TYPE BACstac_api BACstacGetOSTag (
+    const BACSTAC_OBJECT_SELECTOR *objSelector
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetOSObjectID (
+    const BACSTAC_OBJECT_SELECTOR *objSelector
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_TYPE BACstac_api BACstacGetOSObjectType (
+    const BACSTAC_OBJECT_SELECTOR *objSelector
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_OPT_PRI_FILTER
+ * {
+ *     BACSTAC_BOOLEAN    fPresent;
+ *     BACSTAC_BIT_STRING filter;
+ * } BACSTAC_OPT_PRI_FILTER;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOPFNull (
+    BACSTAC_OPT_PRI_FILTER *optFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitOPFFilter (
+    BACSTAC_OPT_PRI_FILTER *optFilter,
+    const BACSTAC_BIT_STRING *filter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsOPFNull (
+    const BACSTAC_OPT_PRI_FILTER *optFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetOPFFilterPtr (
+    const BACSTAC_OPT_PRI_FILTER *optFilter
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_AUDIT_NOTIF
+ * {   BACSTAC_UINT              mask;
+ *     BACSTAC_TIME_STAMP        sourceTimeStamp;  / optional / /= mask:BACSTAC_AN_SRC_TIME_STAMP /
+ *     BACSTAC_TIME_STAMP        targetTimeStamp;  / optional / /= mask:BACSTAC_AN_TARGET_TIME_STAMP /
+ *     BACSTAC_RECIPIENT         sourceDevice;
+ *     BACSTAC_OBJECT_ID         sourceObjectID;   / optional / /= mask:BACSTAC_AN_SRC_OBJECT_ID /
+ *     BACSTAC_AUDIT_OPERATION   operation;
+ *     BACSTAC_CHAR_STRING       sourceComment;    / optional / /= mask:BACSTAC_AN_SRC_COMMENT /
+ *     BACSTAC_CHAR_STRING       targetComment;    / optional / /= mask:BACSTAC_AN_TARGET_COMMENT /
+ *     BACSTAC_UI8               invokeID;         / optional / /= mask:BACSTAC_AN_INVOKE_ID /
+ *     BACSTAC_UI16              sourceUserID;     / optional / /= mask:BACSTAC_AN_SRC_INVOKE_ID /
+ *     BACSTAC_UI8               sourceUserRole;   / optional / /= mask:BACSTAC_AN_SRC_INVOKE_ROLE /
+ *     BACSTAC_RECIPIENT         targetDevice;
+ *     BACSTAC_OBJECT_ID         targetObject;     / optional / /= mask:BACSTAC_AN_TARGET_OBJ /
+ *     BACSTAC_PROP_REF          targetProperty;   / optional / /= mask:BACSTAC_AN_TARGET_PROP /
+ *     BACSTAC_PRIORITY_LEVEL    targetPriority;   / | VOID /
+ *     BACSTAC_PROPERTY_CONTENTS targetValue;      / optional / /= mask:BACSTAC_AN_TARGET_VALUE /
+ *     BACSTAC_PROPERTY_CONTENTS currentValue;     / optional / /= mask:BACSTAC_AN_CURRENT_VALUE /
+ *     BACSTAC_ERROR_TYPE        result;           / optional / /= mask:BACSTAC_AN_ERROR /
+ * } BACSTAC_AUDIT_NOTIF, *PBACSTAC_AUDIT_NOTIF;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuditNotif (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_RECIPIENT *sourceDevice,
+    BACSTAC_AUDIT_OPERATION operation,
+    const BACSTAC_RECIPIENT *targetDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcTimeStamp (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_TIME_STAMP *sourceTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetTimeStamp (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_TIME_STAMP *targetTimeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcDevice (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_RECIPIENT *sourceDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcObject (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_OBJECT_ID sourceObjectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetANSrcObject (
+    BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANOperation (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_AUDIT_OPERATION operation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcComment (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_CHAR_STRING *sourceComment
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetComment (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_CHAR_STRING *targetComment
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANInvokeID (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_UI8 invokeID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetANInvokeID (
+    BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcUserID (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_UI16 sourceUserID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetANSrcUserID (
+    BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANSrcUserRole (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_UI8 sourceUserRole
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetANSrcUserRole (
+    BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetDevice (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_RECIPIENT *targetDevice
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetObject (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_OBJECT_ID targetObject
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacUnsetANTargetObject (
+    BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetProperty (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_PROP_REF *targetProperty
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetPriority (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    BACSTAC_PRIORITY_LEVEL targetPriority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANTargetValue (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_PROPERTY_CONTENTS *targetValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANCurrentValue (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_PROPERTY_CONTENTS *currentValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetANResult (
+    BACSTAC_AUDIT_NOTIF *auditNotif,
+    const BACSTAC_ERROR_TYPE *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetANSrcTimeStampPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetANTargetTimeStampPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT * BACstac_api BACstacGetANSrcDevicePtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsANSrcObjectPresent (
+    const BACSTAC_AUDIT_NOTIF *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetANSrcObject (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_OPERATION BACstac_api BACstacGetANOperation (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetANSrcCommentPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_CHAR_STRING * BACstac_api BACstacGetANTargetCommentPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsANInvokeIDPresent (
+     const BACSTAC_AUDIT_NOTIF *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetANInvokeID (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsANSrcUserIDPresent (
+    const BACSTAC_AUDIT_NOTIF *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetANSrcUserID (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsANSrcUserRolePresent (
+    const BACSTAC_AUDIT_NOTIF *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI8 BACstac_api BACstacGetANSrcUserRole (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_RECIPIENT * BACstac_api BACstacGetANTargetDevicePtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsANTargetObjectPresent (
+    const BACSTAC_AUDIT_NOTIF *pCNPValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetANTargetObject (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROP_REF * BACstac_api BACstacGetANTargetPropertyPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetANTargetPriority (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS * BACstac_api BACstacGetANTargetValuePtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_CONTENTS * BACstac_api BACstacGetANCurrentValuePtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ERROR_TYPE * BACstac_api BACstacGetANResultPtr (
+    const BACSTAC_AUDIT_NOTIF *auditNotif
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_AUDIT_LOG_RECORD
+ * {
+ *     BACSTAC_LOG_DATUM_TYPE tag;
+ *     BACSTAC_DATE_TIME      timestamp;
+ *     union {
+ *         BACSTAC_BIT_STRING  logStatus;
+ *         BACSTAC_AUDIT_NOTIF auditNotification;
+ *         BACSTAC_REAL        timeChange;
+ *     } logDatum;
+ * } BACSTAC_AUDIT_LOG_RECORD, *PBACSTAC_AUDIT_LOG_RECORD;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALRStatus (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_DATE_TIME *timestamp,
+    const BACSTAC_BIT_STRING *logStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALRNotification (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_DATE_TIME *timestamp,
+    const BACSTAC_AUDIT_NOTIF *notification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALRTimeChange (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_DATE_TIME *timestamp,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRTimestamp (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_DATE_TIME *timestamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRLogStatus (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_BIT_STRING *logStatus
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRNotification (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    const BACSTAC_AUDIT_NOTIF *notification
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRTimeChange (
+    BACSTAC_AUDIT_LOG_RECORD *logRecord,
+    BACSTAC_REAL timeChange
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LOG_DATUM_TYPE BACstac_api BACstacGetALRTag (
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_DATE_TIME * BACstac_api BACstacGetALRTimestampPtr (
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetALRStatusPtr (
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_NOTIF * BACstac_api BACstacGetALRNotificationPtr (
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetALRTimeChange (
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_ACK_ALARM_INFO_TV
+ * {
+ *    BACSTAC_EVENT_STATE eventStateAck;
+ *    BACSTAC_TIME_STAMP  timeStamp;
+ * } BACSTAC_ACK_ALARM_INFO_TV, *PBACSTAC_ACK_ALARM_INFO_TV;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAAI (
+    BACSTAC_ACK_ALARM_INFO_TV *info,
+    BACSTAC_EVENT_STATE eventStateAck,
+    const BACSTAC_TIME_STAMP *timeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAAIByAckAlarm (
+    BACSTAC_ACK_ALARM_INFO_TV *info,
+    const BACSTAC_ACK_ALARM_INFO *ackAlarmInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAAIEventState (
+    BACSTAC_ACK_ALARM_INFO_TV *info,
+    BACSTAC_EVENT_STATE eventStateAck
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetAAITimeStamp (
+    BACSTAC_ACK_ALARM_INFO_TV *info,
+    const BACSTAC_TIME_STAMP *timeStamp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_EVENT_STATE BACstac_api BACstacGetAAIEventState (
+    const BACSTAC_ACK_ALARM_INFO_TV *info
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_TIME_STAMP * BACstac_api BACstacGetAAITimeStampPtr (
+    const BACSTAC_ACK_ALARM_INFO_TV *info
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_LIFE_SAFETY_INFO_TV
+ * {
+ *    BACSTAC_UI32                  processID;
+ *    BACSTAC_LIFE_SAFETY_OPERATION request;
+ * } BACSTAC_LIFE_SAFETY_INFO_TV, *PBACSTAC_LIFE_SAFETY_INFO_TV;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLSOI (
+    BACSTAC_LIFE_SAFETY_INFO_TV *info,
+    BACSTAC_UI32 processID,
+    BACSTAC_LIFE_SAFETY_OPERATION request
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitLSOIByLifeSafe (
+    BACSTAC_LIFE_SAFETY_INFO_TV *info,
+    const BACSTAC_LIFE_SAFETY_INFO *lifeSafetyInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSOIProcessID (
+    BACSTAC_LIFE_SAFETY_INFO_TV *info,
+    BACSTAC_UI32 processID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetLSOIRequest (
+    BACSTAC_LIFE_SAFETY_INFO_TV *info,
+    BACSTAC_LIFE_SAFETY_OPERATION request
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI32 BACstac_api BACstacGetLSOIProcessID (
+    const BACSTAC_LIFE_SAFETY_INFO_TV *info
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_LIFE_SAFETY_OPERATION BACstac_api BACstacGetLSOIRequest (
+    const BACSTAC_LIFE_SAFETY_INFO_TV *info
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagAUDIT_NOTIF_INFO {
+ *     BACSTAC_AUDIT_NOTIF *notifications;
+ *     BACSTAC_ELEMENT_COUNT           count;
+ * } BACSTAC_AUDIT_NOTIF_INFO, *PBACSTAC_AUDIT_NOTIF_INFO;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitAuditNotifInfo (
+    BACSTAC_AUDIT_NOTIF_INFO *pRequest,
+    BACSTAC_AUDIT_NOTIF *notifications,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_NOTIF * BACstac_api BACstacGetANINotifPtr (
+    const BACSTAC_AUDIT_NOTIF_INFO *pRequest
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetANINotifCount (
+    const BACSTAC_AUDIT_NOTIF_INFO *pRequest
+) BACSTAC_NOTHROW;
+
+
+
+/*
+ * typedef struct tagBACSTAC_AUDIT_LOG_QUERY_PARAM
+ * {
+ *    BACSTAC_QUERY_PARAM_TYPE tag;
+ *       union {         struct {
+ *             BACSTAC_UINT            mask;
+ *             BACSTAC_OBJECT_ID       deviceID;
+ *             BACSTAC_ADDRESS         address;
+ *             BACSTAC_OBJECT_ID       objectID;
+ *             BACSTAC_PROPERTY_ID     propertyID;
+ *             BACSTAC_ARRAY_INDEX     index;          / | VOID /
+ *             BACSTAC_PRIORITY_LEVEL  priority;       / | VOID /
+ *             BACSTAC_BIT_STRING      operations;
+ *             BACSTAC_SUCCESS_FILTER  resultFilter;
+ *          } target;              /= tag:BACSTAC_ALQP_BY_TARGET /
+ *          struct {
+ *             BACSTAC_UINT            mask;
+ *             BACSTAC_OBJECT_ID       deviceID;
+ *             BACSTAC_ADDRESS         address;
+ *             BACSTAC_OBJECT_ID       objectID;
+ *             BACSTAC_BIT_STRING      operations;
+ *             BACSTAC_SUCCESS_FILTER  resultFilter;
+ *          } source;              /= tag:BACSTAC_ALQP_BY_SOURCE /
+ *       } query;
+ * } BACSTAC_AUDIT_LOG_QUERY_PARAM, *PBACSTAC_AUDIT_LOG_QUERY_PARAM;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALQPByTarget (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_OBJECT_ID deviceID,
+    BACSTAC_SUCCESS_FILTER resultFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALQPBySource (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_OBJECT_ID deviceID,
+    BACSTAC_SUCCESS_FILTER resultFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPDeviceID (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_OBJECT_ID deviceID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPAddress (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    const BACSTAC_ADDRESS *address
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPObjectID (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_OBJECT_ID objectID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPPropertyID (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_PROPERTY_ID propertyID
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPIndex (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_ARRAY_INDEX index
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPPriority (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_PRIORITY_LEVEL  priority
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPOperations (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    const BACSTAC_BIT_STRING *operations
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQPResultFilter (
+    BACSTAC_AUDIT_LOG_QUERY_PARAM *p,
+    BACSTAC_SUCCESS_FILTER resultFilter
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ARRAY_INDEX BACstac_api BACstacGetALQPIndex (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_QUERY_PARAM_TYPE BACstac_api BACstacGetALQPType (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetALQPDeviceID (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ADDRESS * BACstac_api BACstacGetALQPAddresPtr (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetALQPObjectID (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PROPERTY_ID BACstac_api BACstacGetALQPPropertyID (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_PRIORITY_LEVEL BACstac_api BACstacGetALQPPriority (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetALQPOperationsPtr (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_SUCCESS_FILTER BACstac_api BACstacGetALQPResultFilter (
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *p
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagBACSTAC_AUDIT_LOG_QUERY_INFO
+ * {
+ *     BACSTAC_OBJECT_ID       auditLog;
+ *     BACSTAC_AUDIT_LOG_QUERY_PARAM parameters;
+ *     BACSTAC_UI64            startAtSeqNumber; / | BACSTAC_INVALID_SEQ_NUM /
+ *     BACSTAC_UI16            requestedCount;
+ * } BACSTAC_AUDIT_LOG_QUERY_INFO, *PBACSTAC_AUDIT_LOG_QUERY_INFO;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALQI (
+    BACSTAC_AUDIT_LOG_QUERY_INFO *p,
+    BACSTAC_OBJECT_ID auditLog,
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *parameters,
+    BACSTAC_UI16 requestedCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQIAuditLog (
+    BACSTAC_AUDIT_LOG_QUERY_INFO *p,
+    BACSTAC_OBJECT_ID auditLog
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQIParameters (
+    BACSTAC_AUDIT_LOG_QUERY_INFO *p,
+    const BACSTAC_AUDIT_LOG_QUERY_PARAM *parameters
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQISeqNumber (
+    BACSTAC_AUDIT_LOG_QUERY_INFO *p,
+    BACSTAC_UI64 seqNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQICount (
+    BACSTAC_AUDIT_LOG_QUERY_INFO *p,
+    BACSTAC_UI16 requestedCount
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetALQIAuditLog (
+    const BACSTAC_AUDIT_LOG_QUERY_INFO *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_LOG_QUERY_PARAM * BACstac_api BACstacGetALQIParametersPtr (
+    const BACSTAC_AUDIT_LOG_QUERY_INFO *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetALQISeqNumber (
+    const BACSTAC_AUDIT_LOG_QUERY_INFO *p
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetALQICount (
+    const BACSTAC_AUDIT_LOG_QUERY_INFO *p
+) BACSTAC_NOTHROW;
+
+
+/*
+ * typedef struct tagAUDIT_LOG_RECORD_RESULT {
+ *     BACSTAC_UI64             sequenceNumber;
+ *     BACSTAC_AUDIT_LOG_RECORD logRecord;
+ * } BACSTAC_AUDIT_LOG_RECORD_RESULT, *PBACSTAC_AUDIT_LOG_RECORD_RESULT;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALRR (
+    BACSTAC_AUDIT_LOG_RECORD_RESULT *result,
+    BACSTAC_UI64 sequenceNumber,
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRRSeqNumber (
+    BACSTAC_AUDIT_LOG_RECORD_RESULT *result,
+    BACSTAC_UI64 sequenceNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALRRLogRecord (
+    BACSTAC_AUDIT_LOG_RECORD_RESULT *result,
+    const BACSTAC_AUDIT_LOG_RECORD *logRecord
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI64 BACstac_api BACstacGetALRRSeqNumber (
+    const BACSTAC_AUDIT_LOG_RECORD_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_LOG_RECORD * BACstac_api BACstacGetALRRLogRecordPtr (
+    const BACSTAC_AUDIT_LOG_RECORD_RESULT *result
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagAUDIT_LOG_QUERY_RESULT {
+ *     BACSTAC_OBJECT_ID     auditLog;
+ *     BACSTAC_BUFFER        records;
+ *     BACSTAC_ELEMENT_COUNT count;
+ *     BACSTAC_BOOLEAN       noMoreItems;
+ * } BACSTAC_AUDIT_LOG_QUERY_RESULT, *PBACSTAC_AUDIT_LOG_QUERY_RESULT;
+ */
+
+/* Initialize BACSTAC_AUDIT_LOG_QUERY_RESULT to send the response */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALQR (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    BACSTAC_OBJECT_ID auditLog,
+    const BACSTAC_AUDIT_LOG_RECORD_RESULT *records,
+    BACSTAC_ELEMENT_COUNT count,
+    BACSTAC_BOOLEAN noMoreItems
+) BACSTAC_NOTHROW;
+
+/* Initialize the buffer in BACSTAC_AUDIT_LOG_QUERY_RESULT to receive
+ * the response in it. */
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitALQRBuffer (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    void *pBuffer,
+    BACSTAC_VALUE_SIZE nBufferSize
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQRAuditLog (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    BACSTAC_OBJECT_ID auditLog
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQRRecords (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    const BACSTAC_AUDIT_LOG_RECORD_RESULT *records,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQRCount (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    BACSTAC_ELEMENT_COUNT count
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetALQRNoMoreItems (
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result,
+    BACSTAC_BOOLEAN noMoreItems
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetALQRAuditLog (
+    const BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_AUDIT_LOG_RECORD_RESULT * BACstac_api BACstacGetALQRRecordsPtr (
+    const BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_VALUE_SIZE BACstac_api BACstacGetLQBufferSize (
+    const BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_ELEMENT_COUNT BACstac_api BACstacGetALQRCount (
+    const BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacGetALQRNoMoreItems (
+    const BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacFreeALQRBuffer (
+    BACSTAC_IALLOC *iAlloc,
+    BACSTAC_AUDIT_LOG_QUERY_RESULT *result
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_STAGE_LIMIT_VALUE
+ * {
+ *     BACSTAC_REAL       limit;
+ *     BACSTAC_BIT_STRING values;
+ *     BACSTAC_REAL       deadband;
+ * } BACSTAC_STAGE_LIMIT_VALUE, *PBACSTAC_STAGE_LIMIT_VALUE;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitStageLimitValue (
+    BACSTAC_STAGE_LIMIT_VALUE *pLimitValue,
+    BACSTAC_REAL limit,
+    const BACSTAC_BIT_STRING *values,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSLVLimit (
+    BACSTAC_STAGE_LIMIT_VALUE *pLimitValue,
+    BACSTAC_REAL limit
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSLVValues (
+    BACSTAC_STAGE_LIMIT_VALUE *pLimitValue,
+    const BACSTAC_BIT_STRING *values
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetSLVDeadband (
+    BACSTAC_STAGE_LIMIT_VALUE *pLimitValue,
+    BACSTAC_REAL deadband
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetSLVLimit (
+    const BACSTAC_STAGE_LIMIT_VALUE *pLimitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BIT_STRING * BACstac_api BACstacGetSLVValuesPtr (
+    const BACSTAC_STAGE_LIMIT_VALUE *pLimitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetSLVDeadband (
+    const BACSTAC_STAGE_LIMIT_VALUE *pLimitValue
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitWhoAmIInfo(
+    BACSTAC_WHO_AM_I_INFO *pInfo,
+    const BACSTAC_UI16         vendorID,
+    const BACSTAC_CHAR_STRING  *modelName,
+    const BACSTAC_CHAR_STRING  *serialNumber
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetWhoAmIInfoVendorID(
+    const BACSTAC_WHO_AM_I_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetWhoAmIInfoModelNamePtr(
+    const BACSTAC_WHO_AM_I_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetWhoAmIInfoSerialNumberPtr(
+    const BACSTAC_WHO_AM_I_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitYouAreInfo(
+    BACSTAC_YOU_ARE_INFO      *pInfo,
+    const BACSTAC_UI16        vendorID,
+    const BACSTAC_CHAR_STRING *modelName,
+    const BACSTAC_CHAR_STRING *serialNumber,
+    const BACSTAC_OBJECT_ID   *deviceID,
+    const BACSTAC_BYTE        *pDeviceMACAddress,
+    const BACSTAC_BYTE        addressLength
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsYouAreAddressPresent(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsYouAreDeviceIDPresent(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UI16 BACstac_api BACstacGetYouAreInfoVendorID(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetYouAreInfoModelNamePtr(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_CHAR_STRING * BACstac_api BACstacGetYouAreInfoSerialNumberPtr(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_OBJECT_ID BACstac_api BACstacGetYouAreInfoDeviceID(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_BYTE * BACstac_api BACstacGetYouAreInfoAddressPtr(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BYTE BACstac_api BACstacGetYouAreInfoAddressLength(
+    const BACSTAC_YOU_ARE_INFO *pInfo
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_XY_COLOR
+ * {
+ *     BACSTAC_REAL xCoordinate;
+ *     BACSTAC_REAL yCoordinate;
+ * } BACSTAC_XY_COLOR, *PBACSTAC_XY_COLOR;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitXYColor(
+    BACSTAC_XY_COLOR    *xyColor,
+    const BACSTAC_REAL  xCoordinate,
+    const BACSTAC_REAL  yCoordinate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetXYColorXCoordinate(
+    BACSTAC_XY_COLOR    *xyColor,
+    const BACSTAC_REAL  xCoordinate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetXYColorYCoordinate(
+    BACSTAC_XY_COLOR    *xyColor,
+    const BACSTAC_REAL  yCoordinate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetXYColorXCoordinate(
+    const BACSTAC_XY_COLOR    *xyColor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_REAL BACstac_api BACstacGetXYColorYCoordinate(
+    const BACSTAC_XY_COLOR    *xyColor
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_COLOR_CMD
+ * {
+ *     BACSTAC_COLOR_OPERATION  operation;
+ *     BACSTAC_XY_COLOR         targetColor;
+ *     BACSTAC_UNSIGNED         targetColorTemp;
+ *     BACSTAC_UNSIGNED         fadeTime;
+ *     BACSTAC_UNSIGNED         rampRate;
+ *     BACSTAC_UNSIGNED         stepIncrement;
+ * } BACSTAC_COLOR_CMD, *PBACSTAC_COLOR_CMD;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitColorCmd(
+    BACSTAC_COLOR_CMD              *colorCommand,
+    const BACSTAC_COLOR_OPERATION   operation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsColorCmdTargetColorPresent(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsColorCmdTargetColorTempPresent(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsColorCmdFadeTimePresent(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsColorCmdRampRatePresent(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacIsColorCmdStepIncrementPresent(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdColorOperation(
+    BACSTAC_COLOR_CMD            *colorCommand,
+    const BACSTAC_COLOR_OPERATION operation
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdTargetColor(
+    BACSTAC_COLOR_CMD      *colorCommand,
+    const BACSTAC_XY_COLOR *targerColor
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdTargerColorTemp(
+    BACSTAC_COLOR_CMD *colorCommand,
+    const BACSTAC_UNSIGNED targetColorTemp
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdFadeTime(
+    BACSTAC_COLOR_CMD *colorCommand,
+    const BACSTAC_UNSIGNED fadeTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdColorRampRate(
+    BACSTAC_COLOR_CMD *colorCommand,
+    const BACSTAC_UNSIGNED rampRate
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetColorCmdStepIncrement(
+    BACSTAC_COLOR_CMD *colorCommand,
+    const BACSTAC_UNSIGNED stepIncrement
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_COLOR_OPERATION BACstac_api BACstacGetColorCmdColorOperation(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_XY_COLOR * BACstac_api BACstacGetColorCmdTargetColor(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetColorCmdTargetColorTemp(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetColorCmdFadeTime(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetColorCmdRampRate(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_UNSIGNED BACstac_api BACstacGetColorCmdStepIncrement(
+    const BACSTAC_COLOR_CMD *colorCommand
+) BACSTAC_NOTHROW;
+
+/*
+ * typedef struct tagBACSTAC_DEV_ADDR_PROXY_TAB_ENTRY
+ * {
+ *     BACSTAC_ADDRESS   address;
+ *     BACSTAC_I_AM_INFO iAm;
+ *     BACSTAC_DATE_TIME lastIAmTime;
+ * } BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY, *PBACSTAC_DEV_ADDR_PROXY_TAB_ENTRY;
+ */
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacInitDevAddrProxyTableEntry(
+    BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry,
+    const BACSTAC_ADDRESS   *address,
+    const BACSTAC_I_AM_INFO *iAm,
+    const BACSTAC_DATE_TIME *lastIAmTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevAddrProxyTableEntryAddr(
+    BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry,
+    const BACSTAC_ADDRESS   *address
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevAddrProxyTableEntryIAm(
+    BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry,
+    const BACSTAC_I_AM_INFO *iAm
+) BACSTAC_NOTHROW;
+
+BACSTACAPI BACSTAC_BOOLEAN BACstac_api BACstacSetDevAddrProxyTableEntryLastIAmTime(
+    BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry,
+    const BACSTAC_DATE_TIME *lastIAmTime
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_ADDRESS * BACstac_api BACstacGetDevAddrProxyTableEntryAddrPtr(
+    const BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_I_AM_INFO * BACstac_api BACstacGetDevAddrProxyTableEntryIAmPtr(
+    const BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry
+) BACSTAC_NOTHROW;
+
+BACSTACAPI const BACSTAC_DATE_TIME * BACstac_api BACstacGetDevAddrProxyTableEntryLastIAmTimePtr(
+    const BACSTAC_DEV_ADDR_PROXY_TABLE_ENTRY *devAddrProxyTableEntry
+) BACSTAC_NOTHROW;
+
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+
+#endif /* BACACC_H */

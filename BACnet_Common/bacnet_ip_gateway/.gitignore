@@ -1,0 +1,19 @@
+# Test Results & Artifacts
+verification/results/
+verification/log/
+verification/scripts/log/
+
+# Build outputs
+bacnet_ip_gateway
+verification/unit/run_tests
+*.o
+current_device.tpi
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary / OS files
+.DS_Store
+*.tmp

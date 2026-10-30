@@ -1,0 +1,19 @@
+# BACstac BACnet/IP runtime configuration
+# Supported environment variable: BACSTAC_BIP_CONFIG (path to this file)
+#
+# mode options: normal | fd (foreign-device) | bbmd
+#
+# NOTE: Use actual interface IP address (e.g. 192.168.1.3), not 0.0.0.0
+#       Different systems may have different UDP socket binding behavior.
+
+# FD (Foreign Device) mode example
+mode=fd
+fd.ip=192.168.1.31
+fd.port=47808
+fd.bbmd_ip=192.168.1.31
+fd.bbmd_port=47809
+fd.ttl=1800
+# Retry Register-Foreign-Device every 3 s (BVLC-Result wait time, ms) forever (0 = infinite)
+fd.reg_timeout=3000
+fd.reg_attempts=0
+

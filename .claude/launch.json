@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "btl-validator",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-3", "tools/btl_validator.py", "--port", "5077", "--bacnet-port", "47830"],
+      "port": 5077
+    }
+  ]
+}

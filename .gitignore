@@ -17,3 +17,7 @@ tools/BTL_CDU__Report_*.xlsx
 # Python 캐시
 __pycache__/
 *.pyc
+
+# TC 검증 탭 — 런타임 생성 파일
+tools/.tc_runner.json
+tools/BTL_TC_Report_*.xlsx

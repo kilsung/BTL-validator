@@ -178,6 +178,32 @@ http://10.175.181.34:5000
 
 검증 완료 후 **Excel 리포트 생성** 버튼 → PASS/FAIL/SKIP 통계 + 상세 결과 Excel 다운로드.
 
+### 기능 설정 파일 (`tools/btl_config.json`)
+
+탭 표시/기능 활성화를 설정한다. 수정 후 브라우저 새로고침으로 반영되며 서버 재시작은 필요 없다.
+파일이 없거나 형식 오류 시 기본값(모두 `false`)을 사용한다. exe 실행 시에는 exe 옆에 둔다.
+
+| 키 | 기본값 | 설명 |
+|---|---|---|
+| `features.fd_tab` | `false` | FD 검증 탭 표시 + `/api/fd-*`, `/api/bbmd-*` API 활성화 (false 이면 403) |
+
+### 탭 6: TC 검증
+
+`BACnet_Common/bacnet_ip_gateway/verification/scripts/run_gateway_tcs.py`(SRS TC 카탈로그)를
+웹 UI에서 실행한다. 기존 `verification/run_test.sh`(WSL/Docker 대화형)의 입력 항목을 UI 옵션으로 대체하며,
+기본값은 `verification/test_config.json`, 대상 IP/Device ID는 탭 1 연결 정보, 이후에는 마지막 실행 옵션(`tools/.tc_runner.json`)을 사용한다.
+
+| 모드 | 실행 환경 | 비고 |
+|---|---|---|
+| Live (실장비) | Windows/Linux 호스트 Python 직접 실행 | WSL·Docker 불필요. 장비 구동/시뮬레이터가 필요한 TC는 BLOCKED |
+| Managed (시뮬레이션) | Windows: WSL(Ubuntu) 자동 위임 / Linux: 직접 | vport·Gateway 바이너리 누락 시 `make` 자동 빌드(옵션) |
+
+- verification 폴더는 `BTL_TC_ROOT` 환경변수 → 이 저장소 또는 상위 폴더의 `BACnet_Common` 순으로 자동 탐색 (UI에서 변경 가능)
+- **환경 점검**: 선택 모드에 필요한 TPI/PICS/설정 디렉터리, bacpypes3, WSL 툴체인, 바이너리 확인
+- 실행 중 TC별 진행 상황·콘솔 로그 실시간 표시, 완료 후 TC/단계별 결과, 실행 이력, 엑셀 리포트(`BTL_TC_Report_*.xlsx`)
+- 결과 원본은 `verification/results/<UTC 시각>/` (results.json, steps.csv, junit.xml, packet evidence)
+- SSH 암호는 파일에 저장하지 않고 환경변수 `SSH_PASS`로만 전달. Windows에서는 키 기반 인증 권장
+
 ---
 
 ## BAC0 2025.x asyncio 아키텍처

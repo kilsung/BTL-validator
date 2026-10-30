@@ -1,0 +1,66 @@
+{
+  "modbus_unit_id": 1,
+  "objects": [
+    {
+      "name": "CDUErrorState#CH01#T1Ia Temperature Sensor Check Required#CAUTION No.1201",
+      "full_address": 10553,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10553
+    },
+    {
+      "name": "CDUErrorState#CH02#T1Oa Temperature Sensor Check Required#CAUTION No.1202",
+      "full_address": 10554,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10554
+    },
+    {
+      "name": "Oper. Status",
+      "full_address": 30031,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30031
+    },
+    {
+      "name": "Secondary-side filter 1 differential pressure P2f1-P2O",
+      "full_address": 30082,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30082
+    },
+    {
+      "name": "Clear all alarms",
+      "full_address": 40002,
+      "modbus_block": "HOLDING_REGISTER",
+      "bacnet_type": "BINARY_VALUE",
+      "instance": 40002
+    },
+    {
+      "name": "Control type",
+      "full_address": 40071,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 3.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40071
+    },
+    {
+      "name": "Flow rate setpoint",
+      "full_address": 40072,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "min_value": 3.0,
+      "max_value": 90.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40072
+    },    
+    {
+      "name": "All-pump control",
+      "full_address": 40091,
+      "modbus_block": "HOLDING_REGISTER",
+      "bacnet_type": "BINARY_VALUE",
+      "instance": 40091
+    }
+  ]
+}

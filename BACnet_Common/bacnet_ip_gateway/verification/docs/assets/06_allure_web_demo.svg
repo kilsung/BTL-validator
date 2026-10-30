@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 540" width="100%" height="100%">
+  <defs>
+    <linearGradient id="browser-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e2e" />
+      <stop offset="100%" stop-color="#181825" />
+    </linearGradient>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <rect x="15" y="15" width="890" height="510" rx="12" fill="url(#browser-bg)" stroke="#313244" stroke-width="1.5" filter="url(#shadow3)"/>
+  <!-- Browser Chrome Bar -->
+  <path d="M15,27 A12,12 0 0,1 27,15 L893,15 A12,12 0 0,1 905,27 L905,58 L15,58 Z" fill="#181825"/>
+  <circle cx="38" cy="36" r="5.5" fill="#f38ba8"/>
+  <circle cx="56" cy="36" r="5.5" fill="#f9e2af"/>
+  <circle cx="74" cy="36" r="5.5" fill="#a6e3a1"/>
+  <!-- URL Bar -->
+  <rect x="130" y="24" width="660" height="25" rx="6" fill="#313244"/>
+  <text x="145" y="41" fill="#a6e3a1" font-family="monospace" font-size="11">🔒 http://localhost:5050/#/suites/TC-AVL-004</text>
+
+  <!-- Navigation Sidebar -->
+  <rect x="15" y="58" width="60" height="467" fill="#11111b"/>
+  <!-- Sidebar Icons -->
+  <circle cx="45" cy="90" r="14" fill="#89b4fa" fill-opacity="0.2"/>
+  <text x="45" y="94" fill="#89b4fa" font-family="sans-serif" font-size="14" text-anchor="middle" font-weight="bold">📊</text>
+  <text x="45" y="140" fill="#6c7086" font-family="sans-serif" font-size="14" text-anchor="middle">📁</text>
+  <text x="45" y="185" fill="#6c7086" font-family="sans-serif" font-size="14" text-anchor="middle">📈</text>
+  <text x="45" y="230" fill="#6c7086" font-family="sans-serif" font-size="14" text-anchor="middle">⏱️</text>
+
+  <!-- Left Suite Tree Panel -->
+  <rect x="75" y="58" width="320" height="467" fill="#181825" stroke="#313244" stroke-width="1"/>
+  <!-- Allure Top Stats in Left Panel -->
+  <rect x="88" y="72" width="294" height="80" rx="8" fill="#1e1e2e" stroke="#45475a"/>
+  <text x="102" y="95" fill="#cdd6f4" font-family="sans-serif" font-size="12" font-weight="bold">TOTAL TESTS: 88</text>
+  <rect x="102" y="108" width="266" height="10" rx="5" fill="#313244"/>
+  <rect x="102" y="108" width="266" height="10" rx="5" fill="#a6e3a1"/>
+  <text x="102" y="136" fill="#a6e3a1" font-family="sans-serif" font-size="12" font-weight="bold">100% PASSED (88 / 88)</text>
+  <text x="290" y="136" fill="#6c7086" font-family="sans-serif" font-size="11">0 Failed</text>
+
+  <!-- Suite List -->
+  <text x="88" y="175" fill="#89b4fa" font-family="monospace" font-size="12" font-weight="bold">▼ bacnet_ip_gateway (88)</text>
+  <text x="105" y="198" fill="#a6adc8" font-family="monospace" font-size="11.5">▶ SRS-FUN-BAC-001 (Who-Is/I-Am)</text>
+  <text x="105" y="222" fill="#a6adc8" font-family="monospace" font-size="11.5">▶ SRS-FUN-MOD-001 (Modbus Poll)</text>
+  <text x="105" y="246" fill="#a6adc8" font-family="monospace" font-size="11.5">▶ SRS-FUN-BTL-001 (EPICS Audit)</text>
+  
+  <rect x="92" y="260" width="290" height="48" rx="6" fill="#313244" stroke="#89b4fa" stroke-width="1"/>
+  <text x="105" y="278" fill="#a6e3a1" font-family="monospace" font-size="11.5" font-weight="bold">▼ SRS-NFR-AVL-001 (신뢰성)</text>
+  <text x="118" y="297" fill="#cdd6f4" font-family="monospace" font-size="11" font-weight="bold">✔ TC-AVL-004 장기 연속 운용</text>
+
+  <text x="105" y="328" fill="#a6adc8" font-family="monospace" font-size="11.5">▶ SRS-NFR-PRF-001 (처리성능)</text>
+  <text x="105" y="352" fill="#a6adc8" font-family="monospace" font-size="11.5">▶ SRS-CON-ENV-001 (빌드/거버넌스)</text>
+
+  <!-- Right Detail Evidence View -->
+  <rect x="395" y="58" width="510" height="467" fill="#1e1e2e"/>
+  <!-- TC Title Header -->
+  <rect x="410" y="72" width="75" height="22" rx="4" fill="#a6e3a1" fill-opacity="0.2"/>
+  <text x="447" y="87" fill="#a6e3a1" font-family="sans-serif" font-size="11.5" font-weight="bold" text-anchor="middle">PASSED</text>
+  <text x="495" y="88" fill="#cdd6f4" font-family="sans-serif" font-size="14" font-weight="bold">TC-AVL-004: 장기 연속 운용 신뢰성</text>
+  <text x="410" y="112" fill="#6c7086" font-family="sans-serif" font-size="11">Duration: 38.35s | Severity: Critical | Host: Docker (Managed/Live)</text>
+
+  <!-- Execution Steps Table -->
+  <rect x="410" y="125" width="480" height="220" rx="8" fill="#181825" stroke="#313244"/>
+  <text x="425" y="148" fill="#89b4fa" font-family="sans-serif" font-size="12" font-weight="bold">Execution Steps &amp; Assertions</text>
+
+  <g font-family="monospace" font-size="11">
+    <text x="425" y="174" fill="#a6e3a1">✔ STEP-01</text>
+    <text x="500" y="174" fill="#cdd6f4">프로세스 생존 (Gateway &amp; vport)</text>
+    <text x="840" y="174" fill="#a6e3a1" font-weight="bold">PASS</text>
+
+    <text x="425" y="200" fill="#a6e3a1">✔ STEP-02</text>
+    <text x="500" y="200" fill="#cdd6f4">관제점 통신 성공률 (&gt;=99.9%)</text>
+    <text x="730" y="200" fill="#b4befe">100.0% (240/240)</text>
+    <text x="840" y="200" fill="#a6e3a1" font-weight="bold">PASS</text>
+
+    <text x="425" y="226" fill="#a6e3a1">✔ STEP-03</text>
+    <text x="500" y="226" fill="#cdd6f4">메모리(RSS) 누수 억제 (&lt;5%)</text>
+    <text x="730" y="226" fill="#b4befe">+4 KB (0.1%)</text>
+    <text x="840" y="226" fill="#a6e3a1" font-weight="bold">PASS</text>
+
+    <text x="425" y="252" fill="#a6e3a1">✔ STEP-04</text>
+    <text x="500" y="252" fill="#cdd6f4">파일 디스크립터(FD) 누수 검증</text>
+    <text x="730" y="252" fill="#b4befe">증가량 0개</text>
+    <text x="840" y="252" fill="#a6e3a1" font-weight="bold">PASS</text>
+
+    <text x="425" y="278" fill="#a6e3a1">✔ STEP-05</text>
+    <text x="500" y="278" fill="#cdd6f4">네트워크 응답 RTT 지연 드리프트</text>
+    <text x="730" y="278" fill="#b4befe">&lt; 1.2 ms</text>
+    <text x="840" y="278" fill="#a6e3a1" font-weight="bold">PASS</text>
+
+    <text x="425" y="304" fill="#a6e3a1">✔ STEP-06</text>
+    <text x="500" y="304" fill="#cdd6f4">최종 신뢰성 종합 평가</text>
+    <text x="730" y="304" fill="#b4befe">무결격 합격</text>
+    <text x="840" y="304" fill="#a6e3a1" font-weight="bold">PASS</text>
+  </g>
+
+  <!-- Evidence Attachments Box -->
+  <rect x="410" y="360" width="480" height="145" rx="8" fill="#181825" stroke="#313244"/>
+  <text x="425" y="382" fill="#f9e2af" font-family="sans-serif" font-size="12" font-weight="bold">Raw Evidence Attachments (다운로드/심층 분석)</text>
+
+  <g font-family="monospace" font-size="11" fill="#cdd6f4">
+    <rect x="425" y="395" width="215" height="28" rx="4" fill="#313244"/>
+    <text x="438" y="413">📄 packet_exchanges.jsonl</text>
+    
+    <rect x="655" y="395" width="220" height="28" rx="4" fill="#313244"/>
+    <text x="668" y="413">📄 tc-avl-004_gateway.log</text>
+
+    <rect x="425" y="432" width="215" height="28" rx="4" fill="#313244"/>
+    <text x="438" y="450">📄 main_sim_transactions.log</text>
+
+    <rect x="655" y="432" width="220" height="28" rx="4" fill="#313244"/>
+    <text x="668" y="450">📊 soak_metrics.json</text>
+
+    <rect x="425" y="468" width="450" height="26" rx="4" fill="#24273a" stroke="#45475a"/>
+    <text x="438" y="485" fill="#89dceb">⬇ 클릭 시 원본 로그 및 증적을 실시간 브라우저 뷰어/다운로드 지원</text>
+  </g>
+</svg>

@@ -1,5 +1,14 @@
 """장치별 파서 레지스트리
 장치 타입 키 → {label, parse 함수} 매핑"""
+import xlrd
+import xlrd.xlsx
+
+# 관제점 파일(.xls 확장자)은 실제 xlsx 포맷. xlrd 1.2.0 은 Python 3.9+ 에서
+# 제거된 ElementTree.getiterator() 를 호출하므로 iter() 경로를 강제한다.
+if xlrd.__version__.startswith('1.'):
+    xlrd.xlsx.ensure_elementtree_imported(False, None)
+    xlrd.xlsx.Element_has_iter = True
+
 from .aircon  import parse_aircon_list
 from .cdu     import parse_cdu_list
 from .vent    import parse_vent_list

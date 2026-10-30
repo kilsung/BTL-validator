@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-l" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181825" />
+      <stop offset="100%" stop-color="#11111b" />
+    </linearGradient>
+    <filter id="sh-l" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+  <rect x="20" y="20" width="860" height="460" rx="12" fill="url(#bg-l)" stroke="#313244" stroke-width="1.5" filter="url(#sh-l)"/>
+  <path d="M20,32 A12,12 0 0,1 32,20 L868,20 A12,12 0 0,1 880,32 L880,60 L20,60 Z" fill="#1e1e2e"/>
+  <circle cx="46" cy="40" r="6" fill="#f38ba8"/><circle cx="66" cy="40" r="6" fill="#f9e2af"/><circle cx="86" cy="40" r="6" fill="#a6e3a1"/>
+  <text x="450" y="45" fill="#a6adc8" font-family="monospace" font-size="13" text-anchor="middle" font-weight="bold">terminal — Live Mode (원격 타깃 실제 장비 검증)</text>
+
+  <g font-family="'Fira Code', 'JetBrains Mono', Consolas, monospace" font-size="12.5" xml:space="preserve">
+    <text x="45" y="90" fill="#89b4fa" font-weight="bold">chulvx@kcserver:~/bacnet_ip_gateway$ <tspan fill="#f5e0dc">./verification/run_test.sh</tspan></text>
+
+    <text x="45" y="116" fill="#f9e2af">[1] 테스트 모드를 선택하십시오:</text>
+    <text x="45" y="134" fill="#6c7086">    1) Managed (PC 로컬 가상 시뮬레이션 - 전체 자동 검증) [기본값]</text>
+    <text x="45" y="152" fill="#a6e3a1" font-weight="bold">    2) Live (원격 실행 검증)</text>
+    <text x="45" y="170" fill="#89dceb">선택 (1/2, 기본: 1): <tspan fill="#f5e0dc" font-weight="bold">2</tspan></text>
+
+    <text x="45" y="196" fill="#f9e2af">[2] 테스트 스위트를 선택하십시오: <tspan fill="#cdd6f4">1 (quick)</tspan></text>
+    <text x="45" y="220" fill="#89b4fa">[3] 원격 타깃 IP 주소 [기본값: 192.168.1.31]: <tspan fill="#f5e0dc">192.168.1.31</tspan></text>
+    <text x="45" y="238" fill="#89b4fa">    타깃 BACnet UDP 포트 [기본값: 47808]: <tspan fill="#cdd6f4">[Enter]</tspan></text>
+    <text x="45" y="256" fill="#6c7086">    실기 장치 쓰기/제어(Mutation) 허용 여부 (y/N, 기본: N): <tspan fill="#a6e3a1">N (안전 조회 전용)</tspan></text>
+
+    <text x="45" y="286" fill="#89dceb">[Live] 원격 타깃(192.168.1.31:47808)과 네트워크 패킷 교환 시작...</text>
+    <text x="45" y="310" fill="#cdd6f4">[01/48] <tspan fill="#b4befe">TC-BAC-001</tspan> 원격 Who-Is 브로드캐스트 및 I-Am 수신 ..... <tspan fill="#a6e3a1" font-weight="bold">[PASS]</tspan> <tspan fill="#6c7086">(0.05s)</tspan></text>
+    <text x="45" y="328" fill="#cdd6f4">[02/48] <tspan fill="#b4befe">TC-BAC-002</tspan> 원격 실기 장비 관제점 ReadProperty 단언 .... <tspan fill="#a6e3a1" font-weight="bold">[PASS]</tspan> <tspan fill="#6c7086">(0.07s)</tspan></text>
+    <text x="45" y="346" fill="#cdd6f4">[03/48] <tspan fill="#b4befe">TC-COV-001</tspan> 실기 장비 대상 비동기 COV 이벤트 통지 수신 ... <tspan fill="#a6e3a1" font-weight="bold">[PASS]</tspan> <tspan fill="#6c7086">(0.18s)</tspan></text>
+    <text x="45" y="364" fill="#585b70">...</text>
+
+    <text x="45" y="395" fill="#a6e3a1" font-weight="bold">========================================================================</text>
+    <text x="45" y="415" fill="#a6e3a1" font-weight="bold"> [Live 결과] 원격 실물 장비 E2E 프로토콜 적합성 100% 통과 (비침습 안전 검증 완료)</text>
+  </g>
+</svg>

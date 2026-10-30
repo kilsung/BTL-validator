@@ -1,0 +1,2 @@
+# Python dependencies for BACnet verification and BBMD testing
+bacpypes3>=0.0.95

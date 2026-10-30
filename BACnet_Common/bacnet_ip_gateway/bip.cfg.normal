@@ -1,0 +1,18 @@
+# BACstac BACnet/IP runtime configuration
+# Supported environment variable: BACSTAC_BIP_CONFIG (path to this file)
+#
+# mode options: normal | fd (foreign-device) | bbmd
+#
+# NOTE: Use actual interface IP address (e.g. 192.168.1.3), not 0.0.0.0
+#       Different systems may have different UDP socket binding behavior.
+
+mode=normal
+port=47808
+
+#ip=0.0.0.0
+ip=192.168.1.31
+subnet=255.255.255.0
+
+#ip=172.22.75.45
+#subnet=255.255.240.0
+

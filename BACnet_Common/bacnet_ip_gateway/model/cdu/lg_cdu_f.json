@@ -1,0 +1,2730 @@
+{
+  "modbus_unit_id": 1,
+  "objects": [
+    {
+      "name": "CDUErrorState#CH01#T1Ia Temperature Sensor Check Required#CAUTION No.1201",
+      "full_address": 10553,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10553
+    },
+    {
+      "name": "CDUErrorState#CH02#T1Oa Temperature Sensor Check Required#CAUTION No.1202",
+      "full_address": 10554,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10554
+    },
+    {
+      "name": "CDUErrorState#CH03#T2Ia Temperature Sensor Check Required#CAUTION No.1203",
+      "full_address": 10555,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10555
+    },
+    {
+      "name": "CDUErrorState#CH04#T2Oa Temperature Sensor Check Required#CAUTION No.1204",
+      "full_address": 10556,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10556
+    },
+    {
+      "name": "CDUErrorState#CH05#T2Ob Temperature Sensor Check Required#CAUTION No.1205",
+      "full_address": 10557,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10557
+    },
+    {
+      "name": "CDUErrorState#CH06#T2Oc Temperature Sensor Check Required#CAUTION No.1206",
+      "full_address": 10558,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10558
+    },
+    {
+      "name": "CDUErrorState#CH07#T3a Temperature Sensor Check Required#CAUTION No.1207",
+      "full_address": 10559,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10559
+    },
+    {
+      "name": "CDUErrorState#CH08#T3b Temperature Sensor Check Required#CAUTION No.1208",
+      "full_address": 10560,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10560
+    },
+    {
+      "name": "CDUErrorState#CH09#RHa Humidity Sensor Check Required#CAUTION No.1209",
+      "full_address": 10561,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10561
+    },
+    {
+      "name": "CDUErrorState#CH10#RHb Humidity Sensor Check Required#CAUTION No.1210",
+      "full_address": 10562,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10562
+    },
+    {
+      "name": "CDUErrorState#CH11#P1Ia Pressure Sensor Check Required#CAUTION No.1211",
+      "full_address": 10563,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10563
+    },
+    {
+      "name": "CDUErrorState#CH12#P1f1 Pressure Sensor Check Required#CAUTION No.1212",
+      "full_address": 10564,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10564
+    },
+    {
+      "name": "CDUErrorState#CH13#P2Ia Pressure Sensor Check Required#CAUTION No.1213",
+      "full_address": 10565,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10565
+    },
+    {
+      "name": "CDUErrorState#CH14#P2Ib Pressure Sensor Check Required#CAUTION No.1214",
+      "full_address": 10566,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10566
+    },
+    {
+      "name": "CDUErrorState#CH15#P2Oa Pressure Sensor Check Required#CAUTION No.1215",
+      "full_address": 10567,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10567
+    },
+    {
+      "name": "CDUErrorState#CH16#P2f1 Pressure Sensor Check Required#CAUTION No.1216",
+      "full_address": 10568,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10568
+    },
+    {
+      "name": "CDUErrorState#CH17#P2f2 Pressure Sensor Check Required#CAUTION No.1217",
+      "full_address": 10569,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10569
+    },
+    {
+      "name": "CDUErrorState#CH18#2nd Flow Meter Sensor Inspection Required#WARNING No.1401",
+      "full_address": 10570,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10570
+    },
+    {
+      "name": "CDUErrorState#CH19#1st Flow Meter Sensor Check Required#CAUTION No.1218",
+      "full_address": 10571,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10571
+    },
+    {
+      "name": "CDUErrorState#CH20#MicroSD Card Check Required#CAUTION No.1351",
+      "full_address": 10572,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10572
+    },
+    {
+      "name": "CDUErrorState#CH21#Leak Defect/Coolant Low#WARNING No.1457",
+      "full_address": 10573,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10573
+    },
+    {
+      "name": "CDUErrorState#CH22#Leak Shutdown/Coolant Shortage#URGENT No.1603",
+      "full_address": 10574,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10574
+    },
+    {
+      "name": "CDUErrorState#CH23#P1 Inverter Inspection Required#WARNING No.1404",
+      "full_address": 10575,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10575
+    },
+    {
+      "name": "CDUErrorState#CH24#P1 Inverter Low Flow#WARNING No.1405",
+      "full_address": 10576,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10576
+    },
+    {
+      "name": "CDUErrorState#CH25#P2 Inverter Inspection Required#WARNING No.1406",
+      "full_address": 10577,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10577
+    },
+    {
+      "name": "CDUErrorState#CH26#P2 Inverter Low Flow#WARNING No.1407",
+      "full_address": 10578,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10578
+    },
+    {
+      "name": "CDUErrorState#CH27#Secondary Side Pump Shutdown#URGENT No.1601",
+      "full_address": 10579,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10579
+    },
+    {
+      "name": "CDUErrorState#CH28#Valve Inspection Required#WARNING No.1402",
+      "full_address": 10580,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10580
+    },
+    {
+      "name": "CDUErrorState#CH29#Bypass Valve Inspection Required#WARNING No.1403",
+      "full_address": 10581,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10581
+    },
+    {
+      "name": "CDUErrorState#CH30#Primary Side Water Low Level#WARNING No.1458",
+      "full_address": 10582,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10582
+    },
+    {
+      "name": "CDUErrorState#CH31#Primary Side Filter Dirty#WARNING No.1451",
+      "full_address": 10583,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10583
+    },
+    {
+      "name": "CDUErrorState#CH32#Primary Side Water Too Cold#CAUTION No.1251",
+      "full_address": 10584,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10584
+    },
+    {
+      "name": "CDUErrorState#CH33#Primary Side Water Too Hot#WARNING No.1452",
+      "full_address": 10585,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10585
+    },
+    {
+      "name": "CDUErrorState#CH34#Secondary Side Water Too Cold#WARNING No.1453",
+      "full_address": 10586,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10586
+    },
+    {
+      "name": "CDUErrorState#CH35#Secondary Side Water Too Hot#WARNING No.1454",
+      "full_address": 10587,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10587
+    },
+    {
+      "name": "CDUErrorState#CH36#Unit Water Overflow#URGENT No.1604",
+      "full_address": 10588,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10588
+    },
+    {
+      "name": "CDUErrorState#CH37#Secondary Side Diff Pressure Out of Range#CAUTION No.1252",
+      "full_address": 10589,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10589
+    },
+    {
+      "name": "CDUErrorState#CH38#CDU Emergency Power Transfer Required#CAUTION No.1352",
+      "full_address": 10590,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10590
+    },
+    {
+      "name": "CDUErrorState#CH39#Floor Water Overflow#URGENT No.1605",
+      "full_address": 10591,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10591
+    },
+    {
+      "name": "CDUErrorState#CH40#Check Water Refill Level#WARNING No.1459",
+      "full_address": 10592,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10592
+    },
+    {
+      "name": "CDUErrorState#CH41#System Low Pressure#WARNING No.1460",
+      "full_address": 10593,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10593
+    },
+    {
+      "name": "CDUErrorState#CH42#Secondary Side Over Pressure#URGENT No.1602",
+      "full_address": 10594,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10594
+    },
+    {
+      "name": "CDUErrorState#CH43#No Water Flow on Primary Side#WARNING No.1461",
+      "full_address": 10595,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10595
+    },
+    {
+      "name": "CDUErrorState#CH44#Water Level Sensor - Detected No Water#WARNING No.1455",
+      "full_address": 10596,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10596
+    },
+    {
+      "name": "CDUErrorState#CH45#Incorrect Water Sensor Status#WARNING No.1456",
+      "full_address": 10597,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10597
+    },
+    {
+      "name": "CDUErrorState#CH46#Group Control Network Inspection Required#WARNING No.1552",
+      "full_address": 10598,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10598
+    },
+    {
+      "name": "CDUErrorState#CH47#Inverter 1 Communication Inspection Required#WARNING No.1553",
+      "full_address": 10599,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10599
+    },
+    {
+      "name": "CDUErrorState#CH48#Inverter 2 Communication Inspection Required#WARNING No.1554",
+      "full_address": 10600,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10600
+    },
+    {
+      "name": "CDUErrorState#CH49#Secondary Filter 1 Dirty#CAUTION No.1253",
+      "full_address": 10601,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10601
+    },
+    {
+      "name": "CDUErrorState#CH50#Secondary Filter 2 Dirty#CAUTION No.1254",
+      "full_address": 10602,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10602
+    },
+    {
+      "name": "CDUErrorState#CH51#Secondary Side Temp T2Oa Diff Check Required#CAUTION No.1255",
+      "full_address": 10603,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10603
+    },
+    {
+      "name": "CDUErrorState#CH52#Secondary Side Temp T2Ob Diff Check Required#CAUTION No.1256",
+      "full_address": 10604,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10604
+    },
+    {
+      "name": "CDUErrorState#CH53#Secondary Side Temp T2Oc Diff Check Required#CAUTION No.1257",
+      "full_address": 10605,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10605
+    },
+    {
+      "name": "CDUErrorState#CH54#Insufficient Units for Group Control#WARNING No.1551",
+      "full_address": 10606,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10606
+    },
+    {
+      "name": "CDUErrorState#CH55#Pump Performance Limited#CAUTION No.1258",
+      "full_address": 10607,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10607
+    },
+    {
+      "name": "CDUErrorState#CH56#Dew point Temp reference is not possible#URGENT No.1606",
+      "full_address": 10608,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10608
+    },
+    {
+      "name": "CDUErrorState#CH57#Cooling valve control is not possible#URGENT No.1607",
+      "full_address": 10609,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10609
+    },
+    {
+      "name": "CDUErrorState#CH58#Secondary overpress cannot be determined#URGENT No.1608",
+      "full_address": 10610,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10610
+    },
+    {
+      "name": "CDUErrorState#CH59#Load response is not possible#URGENT No.1609",
+      "full_address": 10611,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10611
+    },
+    {
+      "name": "CDUErrorState#CH60#Flow rate control is not possible#URGENT No.1610",
+      "full_address": 10612,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10612
+    },
+    {
+      "name": "CDUErrorState#CH61#UIO1 Module Comm Check Required#CAUTION No.1353",
+      "full_address": 10613,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10613
+    },
+    {
+      "name": "CDUErrorState#CH62#UIO2 Module Comm Check Required#CAUTION No.1354",
+      "full_address": 10614,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10614
+    },
+    {
+      "name": "CDUErrorState#CH63#UI1 Module Comm Check Required#CAUTION No.1355",
+      "full_address": 10615,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10615
+    },
+    {
+      "name": "CDUErrorState#CH64#UI2 Module Comm Check Required#CAUTION No.1356",
+      "full_address": 10616,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10616
+    },
+    {
+      "name": "CDUErrorState#CH65#NTC Module Comm Check Required#CAUTION No.1357",
+      "full_address": 10617,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10617
+    },
+    {
+      "name": "CDUErrorState#CH66#Condensate Formation Caution#CAUTION No.1259",
+      "full_address": 10618,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10618
+    },
+    {
+      "name": "CDUErrorState#CH67#P3 Inverter Inspection Required#WARNING No.1408",
+      "full_address": 10619,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10619
+    },
+    {
+      "name": "CDUErrorState#CH68#P3 Inverter Low Flow#WARNING No.1409",
+      "full_address": 10620,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10620
+    },
+    {
+      "name": "CDUErrorState#CH69#Inverter 3 Communication Inspection Required#WARNING No.1555",
+      "full_address": 10621,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10621
+    },
+    {
+      "name": "CDUErrorState#CH70#AIO Module Comm Check Required#CAUTION No.1358",
+      "full_address": 10622,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10622
+    },
+    {
+      "name": "CDUErrorState#CH71#IF Module Comm Check Required#CAUTION No.1359",
+      "full_address": 10623,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10623
+    },
+    {
+      "name": "CDUErrorState#CH72#Ext Module Comm Check Required#CAUTION No.1360",
+      "full_address": 10624,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10624
+    },
+    {
+      "name": "CDUErrorState#CH73#P2f3 Pressure Sensor Check Required#CAUTION No.1219",
+      "full_address": 10625,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10625
+    },
+    {
+      "name": "CDUErrorState#CH74#Secondary Filter 3 Dirty#CAUTION No.1260",
+      "full_address": 10626,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10626
+    },
+    {
+      "name": "CDUErrorState#CH75#P2Ob Temperature Sensor Check Required#CAUTION No.1220",
+      "full_address": 10627,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10627
+    },
+    {
+      "name": "CDUErrorState#CH76#Secondary Side Inlet Water Too Hot#CAUTION No.1261",
+      "full_address": 10628,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10628
+    },
+    {
+      "name": "CDUErrorState#CH77#P1Oa Pressure Sensor Check Required#CAUTION No.1221",
+      "full_address": 10629,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10629
+    },
+    {
+      "name": "CDUErrorState#CH78#P2Sa Pressure Sensor Check Required#CAUTION No.1222",
+      "full_address": 10630,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10630
+    },
+    {
+      "name": "CDUErrorState#CH79#T2Ib Temperature Sensor Check Required#CAUTION No.1223",
+      "full_address": 10631,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10631
+    },
+    {
+      "name": "CDUErrorState#CH80#Primary Side Over Pressure#CAUTION No.1262",
+      "full_address": 10632,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10632
+    },
+    {
+      "name": "CDUErrorState#CH81#CDU Blackout Check Required#CAUTION No.1611",
+      "full_address": 10633,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10633
+    },
+    {
+      "name": "CDUErrorState#CH82#Inverter1 Fan Check Required#CAUTION No.1362",
+      "full_address": 10634,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10634
+    },
+    {
+      "name": "CDUErrorState#CH83#Inverter2 Fan Check Required#CAUTION No.1363",
+      "full_address": 10635,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10635
+    },
+    {
+      "name": "CDUErrorState#CH84#Inverter3 Fan Check Required#CAUTION No.1364",
+      "full_address": 10636,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10636
+    },
+    {
+      "name": "CDUErrorState#CH85#Rear Fan Check Required#CAUTION No.1365",
+      "full_address": 10637,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10637
+    },
+    {
+      "name": "CDUErrorState#CH86#CBox Fan Check Required#CAUTION No.1366",
+      "full_address": 10638,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10638
+    },
+    {
+      "name": "CDUErrorState#CH87#Secondary Side Outlet Diff Pressure Out of Range#CAUTION No.1263",
+      "full_address": 10639,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10639
+    },
+    {
+      "name": "CDUErrorState#CH88#Secondary Side Inlet Diff Temperature Out of Range#CAUTION No.1264",
+      "full_address": 10640,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10640
+    },
+    {
+      "name": "CDUErrorState#CH89#Ext2 Module Comm Check Required#CAUTION No.1367",
+      "full_address": 10641,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10641
+    },
+    {
+      "name": "CDUErrorState#CH90#Fire Switch Shutdown#URGENT No.1612",
+      "full_address": 10642,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10642
+    },
+    {
+      "name": "CDUErrorState#CH91#Emergency Stop#URGENT No.1613",
+      "full_address": 10643,
+      "modbus_block": "DISCRETE_INPUT",
+      "instance": 10643
+    },
+    {
+      "name": "Oper. Status",
+      "full_address": 30031,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30031
+    },
+    {
+      "name": "Primary-side filter differential pressure P1Ia-P1f1",
+      "full_address": 30081,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30081
+    },
+    {
+      "name": "Secondary-side filter 1 differential pressure P2f1-P2O",
+      "full_address": 30082,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30082
+    },
+    {
+      "name": "Secondary-side filter 2 differential pressure P2f2-P2O",
+      "full_address": 30083,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30083
+    },
+    {
+      "name": "Secondary-side outlet temperature T2O",
+      "full_address": 30084,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30084
+    },
+    {
+      "name": "Secondary-side inlet pressure P2I",
+      "full_address": 30085,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30085
+    },
+    {
+      "name": "Secondary-side differential pressure P2O-P2I",
+      "full_address": 30086,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30086
+    },
+    {
+      "name": "Dew-point temperature Dwa",
+      "full_address": 30087,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30087
+    },
+    {
+      "name": "Dew-point temperature Dwb",
+      "full_address": 30088,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30088
+    },
+    {
+      "name": "Dew-point temperature Dwab",
+      "full_address": 30089,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30089
+    },
+    {
+      "name": "Ambient temperature T3ab",
+      "full_address": 30090,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30090
+    },
+    {
+      "name": "Ambient humidity RHab",
+      "full_address": 30091,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30091
+    },
+    {
+      "name": "Secondary-side outlet target temperature feedback",
+      "full_address": 30092,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30092
+    },
+    {
+      "name": "Secondary-side temperature difference T2I-T2O",
+      "full_address": 30093,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30093
+    },
+    {
+      "name": "Secondary-side filter 3 differential pressure P2f3-P2O",
+      "full_address": 30094,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30094
+    },
+    {
+      "name": "Secondary-side outlet pressure P2O",
+      "full_address": 30095,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30095
+    },
+    {
+      "name": "Cooling capacity",
+      "full_address": 30096,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30096
+    },
+    {
+      "name": "Control type feedback",
+      "full_address": 30097,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30097
+    },
+    {
+      "name": "Secondary-side inlet temperature T2I",
+      "full_address": 30098,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30098
+    },
+    {
+      "name": "Primary-side differential pressure P1I-P1O",
+      "full_address": 30099,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30099
+    },
+    {
+      "name": "CDU group average differential pressure",
+      "full_address": 30141,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30141
+    },
+    {
+      "name": "CDU group total flow rate",
+      "full_address": 30142,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30142
+    },
+    {
+      "name": "CDU group integrated operation command (Master)",
+      "full_address": 30143,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30143
+    },
+    {
+      "name": "CDUs available for group operation (Master)",
+      "full_address": 30144,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30144
+    },
+    {
+      "name": "CDU group operating status",
+      "full_address": 30145,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30145
+    },
+    {
+      "name": "Number of CDUs operating in group",
+      "full_address": 30146,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30146
+    },
+    {
+      "name": "CDU group average outlet temperature",
+      "full_address": 30147,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30147
+    },
+    {
+      "name": "CDU group average flow rate",
+      "full_address": 30148,
+      "scale": 1.0,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30148
+    },
+    {
+      "name": "CDU group average temperature difference",
+      "full_address": 30149,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30149
+    },
+    {
+      "name": "CDU group average pump speed",
+      "full_address": 30150,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30150
+    },
+    {
+      "name": "CDU group average valve opening",
+      "full_address": 30151,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30151
+    },
+    {
+      "name": "CDU group maximum pump speed",
+      "full_address": 30152,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30152
+    },
+    {
+      "name": "Secondary-side inlet pressure P2Ia",
+      "full_address": 30201,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30201
+    },
+    {
+      "name": "Secondary-side inlet pressure P2Ib",
+      "full_address": 30202,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30202
+    },
+    {
+      "name": "Secondary-side outlet pressure P2Oa",
+      "full_address": 30203,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30203
+    },
+    {
+      "name": "Primary-side inlet pressure P1Ia",
+      "full_address": 30204,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30204
+    },
+    {
+      "name": "Primary-side filter outlet pressure P1f1",
+      "full_address": 30205,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30205
+    },
+    {
+      "name": "Secondary-side filter 1 inlet pressure P2f1",
+      "full_address": 30206,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30206
+    },
+    {
+      "name": "Secondary-side filter 2 inlet pressure P2f2",
+      "full_address": 30207,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30207
+    },
+    {
+      "name": "Primary-side flow rate F1",
+      "full_address": 30208,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30208
+    },
+    {
+      "name": "Secondary-side flow rate F2",
+      "full_address": 30209,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30209
+    },
+    {
+      "name": "Ambient humidity RHa",
+      "full_address": 30210,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30210
+    },
+    {
+      "name": "Ambient humidity RHb",
+      "full_address": 30211,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30211
+    },
+    {
+      "name": "Cooling valve feedback",
+      "full_address": 30212,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30212
+    },
+    {
+      "name": "Cooling bypass valve feedback",
+      "full_address": 30213,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30213
+    },
+    {
+      "name": "Ambient temperature T3a",
+      "full_address": 30214,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30214
+    },
+    {
+      "name": "Ambient temperature T3b",
+      "full_address": 30215,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30215
+    },
+    {
+      "name": "Primary-side inlet temperature T1Ia",
+      "full_address": 30216,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30216
+    },
+    {
+      "name": "Primary-side outlet temperature T1Oa",
+      "full_address": 30217,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30217
+    },
+    {
+      "name": "Secondary-side inlet temperature T2Ia",
+      "full_address": 30218,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30218
+    },
+    {
+      "name": "Secondary-side outlet temperature T2Oa",
+      "full_address": 30219,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30219
+    },
+    {
+      "name": "Secondary-side outlet temperature T2Ob",
+      "full_address": 30220,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30220
+    },
+    {
+      "name": "Secondary-side outlet temperature T2Oc",
+      "full_address": 30221,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30221
+    },
+    {
+      "name": "Leak sensor 1",
+      "full_address": 30222,
+      "scale": 0.01,
+      "units": "volts",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30222
+    },
+    {
+      "name": "Leak sensor 2",
+      "full_address": 30223,
+      "scale": 0.01,
+      "units": "volts",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30223
+    },
+    {
+      "name": "Secondary-side filter 3 inlet pressure P2f3",
+      "full_address": 30224,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30224
+    },
+    {
+      "name": "Secondary-side outlet pressure P2Ob",
+      "full_address": 30225,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30225
+    },
+    {
+      "name": "Primary-side outlet pressure P1Oa",
+      "full_address": 30226,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30226
+    },
+    {
+      "name": "Secondary-side pressure loss P2P1",
+      "full_address": 30227,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30227
+    },
+    {
+      "name": "Secondary-side inlet temperature T2Ib",
+      "full_address": 30228,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30228
+    },
+    {
+      "name": "P1 Inv. Start Count",
+      "full_address": 30291,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30291
+    },
+    {
+      "name": "P1 Inv. Run Time 1",
+      "full_address": 30292,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30292
+    },
+    {
+      "name": "P1 Inv. Run Time 2",
+      "full_address": 30293,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30293
+    },
+    {
+      "name": "P2 Inv. Start Count",
+      "full_address": 30294,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30294
+    },
+    {
+      "name": "P2 Inv. Run Time 1",
+      "full_address": 30295,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30295
+    },
+    {
+      "name": "P2 Inv. Run Time 2",
+      "full_address": 30296,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30296
+    },
+    {
+      "name": "P3 Inv. Start Count",
+      "full_address": 30297,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30297
+    },
+    {
+      "name": "P3 Inv. Run Time 1",
+      "full_address": 30298,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30298
+    },
+    {
+      "name": "P3 Inv. Run Time 2",
+      "full_address": 30299,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30299
+    },
+    {
+      "name": "Number of operating pumps",
+      "full_address": 30311,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30311
+    },
+    {
+      "name": "Total pump operating time",
+      "full_address": 30312,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30312
+    },
+    {
+      "name": "Pump 1 operating speed",
+      "full_address": 30313,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30313
+    },
+    {
+      "name": "Pump 1 communication status",
+      "full_address": 30314,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30314
+    },
+    {
+      "name": "Pump 1 mode",
+      "full_address": 30315,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30315
+    },
+    {
+      "name": "Pump 1 frequency",
+      "full_address": 30316,
+      "scale": 0.1,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30316
+    },
+    {
+      "name": "Pump 1 voltage",
+      "full_address": 30317,
+      "scale": 1.0,
+      "units": "volts",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30317
+    },
+    {
+      "name": "Pump 1 current",
+      "full_address": 30318,
+      "scale": 0.1,
+      "units": "amperes",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30318
+    },
+    {
+      "name": "Pump 1 power",
+      "full_address": 30319,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30319
+    },
+    {
+      "name": "Pump 1 heat sink temperature",
+      "full_address": 30320,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30320
+    },
+    {
+      "name": "Pump 1 version",
+      "full_address": 30321,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30321
+    },
+    {
+      "name": "Pump 1 stop code",
+      "full_address": 30322,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30322
+    },
+    {
+      "name": "Pump 1 error code",
+      "full_address": 30323,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30323
+    },
+    {
+      "name": "Pump 2 operating speed",
+      "full_address": 30324,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30324
+    },
+    {
+      "name": "Pump 2 communication status",
+      "full_address": 30325,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30325
+    },
+    {
+      "name": "Pump 2 mode",
+      "full_address": 30326,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30326
+    },
+    {
+      "name": "Pump 2 frequency",
+      "full_address": 30327,
+      "scale": 0.1,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30327
+    },
+    {
+      "name": "Pump 2 voltage",
+      "full_address": 30328,
+      "scale": 1.0,
+      "units": "volts",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30328
+    },
+    {
+      "name": "Pump 2 current",
+      "full_address": 30329,
+      "scale": 0.1,
+      "units": "amperes",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30329
+    },
+    {
+      "name": "Pump 2 power",
+      "full_address": 30330,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30330
+    },
+    {
+      "name": "Pump 2 heat sink temperature",
+      "full_address": 30331,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30331
+    },
+    {
+      "name": "Pump 2 version",
+      "full_address": 30332,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30332
+    },
+    {
+      "name": "Pump 2 stop code",
+      "full_address": 30333,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30333
+    },
+    {
+      "name": "Pump 2 error code",
+      "full_address": 30334,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30334
+    },
+    {
+      "name": "Pump 3 operating speed",
+      "full_address": 30335,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30335
+    },
+    {
+      "name": "Pump 3 communication status",
+      "full_address": 30336,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30336
+    },
+    {
+      "name": "Pump 3 mode",
+      "full_address": 30337,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30337
+    },
+    {
+      "name": "Pump 3 frequency",
+      "full_address": 30338,
+      "scale": 0.1,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30338
+    },
+    {
+      "name": "Pump 3 voltage",
+      "full_address": 30339,
+      "scale": 1.0,
+      "units": "volts",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30339
+    },
+    {
+      "name": "Pump 3 current",
+      "full_address": 30340,
+      "scale": 0.1,
+      "units": "amperes",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30340
+    },
+    {
+      "name": "Pump 3 power",
+      "full_address": 30341,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30341
+    },
+    {
+      "name": "Pump 3 heat sink temperature",
+      "full_address": 30342,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30342
+    },
+    {
+      "name": "Pump 3 version",
+      "full_address": 30343,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30343
+    },
+    {
+      "name": "Pump 3 stop code",
+      "full_address": 30344,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30344
+    },
+    {
+      "name": "Pump 3 error code",
+      "full_address": 30345,
+      "scale": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30345
+    },
+    {
+      "name": "CDU Group Setting State (CDU1)",
+      "full_address": 30421,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30421
+    },
+    {
+      "name": "CDU ID (CDU1)",
+      "full_address": 30422,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30422
+    },
+    {
+      "name": "Operating status (CDU1)",
+      "full_address": 30423,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30423
+    },
+    {
+      "name": "Differential pressure (CDU1)",
+      "full_address": 30424,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30424
+    },
+    {
+      "name": "Secondary-side flow rate (CDU1)",
+      "full_address": 30425,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30425
+    },
+    {
+      "name": "Current pump speed (CDU1)",
+      "full_address": 30426,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30426
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU1)",
+      "full_address": 30427,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30427
+    },
+    {
+      "name": "Cooling valve opening (CDU1)",
+      "full_address": 30428,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30428
+    },
+    {
+      "name": "Pump operating time (CDU1)",
+      "full_address": 30429,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30429
+    },
+    {
+      "name": "Temperature difference (CDU1)",
+      "full_address": 30430,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30430
+    },
+    {
+      "name": "CDU Group Setting State (CDU2)",
+      "full_address": 30436,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30436
+    },
+    {
+      "name": "CDU ID (CDU2)",
+      "full_address": 30437,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30437
+    },
+    {
+      "name": "Operating mode (CDU2)",
+      "full_address": 30438,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30438
+    },
+    {
+      "name": "Differential pressure (CDU2)",
+      "full_address": 30439,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30439
+    },
+    {
+      "name": "Secondary-side flow rate (CDU2)",
+      "full_address": 30440,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30440
+    },
+    {
+      "name": "Current pump speed (CDU2)",
+      "full_address": 30441,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30441
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU2)",
+      "full_address": 30442,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30442
+    },
+    {
+      "name": "Cooling valve opening (CDU2)",
+      "full_address": 30443,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30443
+    },
+    {
+      "name": "Pump operating time (CDU2)",
+      "full_address": 30444,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30444
+    },
+    {
+      "name": "Temperature difference (CDU2)",
+      "full_address": 30445,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30445
+    },
+    {
+      "name": "CDU Group Setting State (CDU3)",
+      "full_address": 30451,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30451
+    },
+    {
+      "name": "CDU ID (CDU3)",
+      "full_address": 30452,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30452
+    },
+    {
+      "name": "Operating mode (CDU3)",
+      "full_address": 30453,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30453
+    },
+    {
+      "name": "Differential pressure (CDU3)",
+      "full_address": 30454,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30454
+    },
+    {
+      "name": "Secondary-side flow rate (CDU3)",
+      "full_address": 30455,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30455
+    },
+    {
+      "name": "Current pump speed (CDU3)",
+      "full_address": 30456,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30456
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU3)",
+      "full_address": 30457,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30457
+    },
+    {
+      "name": "Cooling valve opening (CDU3)",
+      "full_address": 30458,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30458
+    },
+    {
+      "name": "Pump operating time (CDU3)",
+      "full_address": 30459,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30459
+    },
+    {
+      "name": "Temperature difference (CDU3)",
+      "full_address": 30460,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30460
+    },
+    {
+      "name": "CDU Group Setting State (CDU4)",
+      "full_address": 30466,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30466
+    },
+    {
+      "name": "CDU ID (CDU4)",
+      "full_address": 30467,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30467
+    },
+    {
+      "name": "Operating mode (CDU4)",
+      "full_address": 30468,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30468
+    },
+    {
+      "name": "Differential pressure (CDU4)",
+      "full_address": 30469,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30469
+    },
+    {
+      "name": "Secondary-side flow rate (CDU4)",
+      "full_address": 30470,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30470
+    },
+    {
+      "name": "Current pump speed (CDU4)",
+      "full_address": 30471,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30471
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU4)",
+      "full_address": 30472,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30472
+    },
+    {
+      "name": "Cooling valve opening (CDU4)",
+      "full_address": 30473,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30473
+    },
+    {
+      "name": "Pump operating time (CDU4)",
+      "full_address": 30474,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30474
+    },
+    {
+      "name": "Temperature difference (CDU4)",
+      "full_address": 30475,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30475
+    },
+    {
+      "name": "CDU Group Setting State (CDU5)",
+      "full_address": 30481,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30481
+    },
+    {
+      "name": "CDU ID (CDU5)",
+      "full_address": 30482,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30482
+    },
+    {
+      "name": "Operating mode (CDU5)",
+      "full_address": 30483,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30483
+    },
+    {
+      "name": "Differential pressure (CDU5)",
+      "full_address": 30484,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30484
+    },
+    {
+      "name": "Secondary-side flow rate (CDU5)",
+      "full_address": 30485,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30485
+    },
+    {
+      "name": "Current pump speed (CDU5)",
+      "full_address": 30486,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30486
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU5)",
+      "full_address": 30487,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30487
+    },
+    {
+      "name": "Cooling valve opening (CDU5)",
+      "full_address": 30488,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30488
+    },
+    {
+      "name": "Pump operating time (CDU5)",
+      "full_address": 30489,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30489
+    },
+    {
+      "name": "Temperature difference (CDU5)",
+      "full_address": 30490,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30490
+    },
+    {
+      "name": "CDU Group Setting State (CDU6)",
+      "full_address": 30496,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30496
+    },
+    {
+      "name": "CDU ID (CDU6)",
+      "full_address": 30497,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30497
+    },
+    {
+      "name": "Operating mode (CDU6)",
+      "full_address": 30498,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30498
+    },
+    {
+      "name": "Differential pressure (CDU6)",
+      "full_address": 30499,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30499
+    },
+    {
+      "name": "Secondary-side flow rate (CDU6)",
+      "full_address": 30500,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30500
+    },
+    {
+      "name": "Current pump speed (CDU6)",
+      "full_address": 30501,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30501
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU6)",
+      "full_address": 30502,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30502
+    },
+    {
+      "name": "Cooling valve opening (CDU6)",
+      "full_address": 30503,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30503
+    },
+    {
+      "name": "Pump operating time (CDU6)",
+      "full_address": 30504,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30504
+    },
+    {
+      "name": "Temperature difference (CDU6)",
+      "full_address": 30505,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30505
+    },
+    {
+      "name": "CDU Group Setting State (CDU7)",
+      "full_address": 30511,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30511
+    },
+    {
+      "name": "CDU ID (CDU7)",
+      "full_address": 30512,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30512
+    },
+    {
+      "name": "Operating mode (CDU7)",
+      "full_address": 30513,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30513
+    },
+    {
+      "name": "Differential pressure (CDU7)",
+      "full_address": 30514,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30514
+    },
+    {
+      "name": "Secondary-side flow rate (CDU7)",
+      "full_address": 30515,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30515
+    },
+    {
+      "name": "Current pump speed (CDU7)",
+      "full_address": 30516,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30516
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU7)",
+      "full_address": 30517,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30517
+    },
+    {
+      "name": "Cooling valve opening (CDU7)",
+      "full_address": 30518,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30518
+    },
+    {
+      "name": "Pump operating time (CDU7)",
+      "full_address": 30519,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30519
+    },
+    {
+      "name": "Temperature difference (CDU7)",
+      "full_address": 30520,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30520
+    },
+    {
+      "name": "CDU Group Setting State (CDU8)",
+      "full_address": 30526,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30526
+    },
+    {
+      "name": "CDU ID (CDU8)",
+      "full_address": 30527,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30527
+    },
+    {
+      "name": "Operating mode (CDU8)",
+      "full_address": 30528,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 9.0,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30528
+    },
+    {
+      "name": "Differential pressure (CDU8)",
+      "full_address": 30529,
+      "scale": 0.01,
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30529
+    },
+    {
+      "name": "Secondary-side flow rate (CDU8)",
+      "full_address": 30530,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30530
+    },
+    {
+      "name": "Current pump speed (CDU8)",
+      "full_address": 30531,
+      "scale": 1.0,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30531
+    },
+    {
+      "name": "Secondary-side outlet temperature (CDU8)",
+      "full_address": 30532,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30532
+    },
+    {
+      "name": "Cooling valve opening (CDU8)",
+      "full_address": 30533,
+      "scale": 0.1,
+      "units": "percent",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30533
+    },
+    {
+      "name": "Pump operating time (CDU8)",
+      "full_address": 30534,
+      "scale": 1.0,
+      "units": "hours",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30534
+    },
+    {
+      "name": "Temperature difference (CDU8)",
+      "full_address": 30535,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "modbus_block": "INPUT_REGISTER",
+      "instance": 30535
+    },
+    {
+      "name": "Remote operation",
+      "full_address": 40001,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 2.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40001
+    },
+    {
+      "name": "Clear all alarms",
+      "full_address": 40002,
+      "modbus_block": "HOLDING_REGISTER",
+      "bacnet_type": "BINARY_VALUE",
+      "instance": 40002
+    },
+    {
+      "name": "Fill pressure",
+      "full_address": 40051,
+      "scale": 0.01,
+      "min_value": 0.3,
+      "max_value": 3.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40051
+    },
+    {
+      "name": "Fill hysteresis",
+      "full_address": 40052,
+      "scale": 0.01,
+      "min_value": 0.1,
+      "max_value": 0.5,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40052
+    },
+    {
+      "name": "Fill pump operating duration",
+      "full_address": 40053,
+      "scale": 1.0,
+      "units": "minutes",
+      "min_value": 1.0,
+      "max_value": 15.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40053
+    },
+    {
+      "name": "Water level sensor delay",
+      "full_address": 40054,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 1.0,
+      "max_value": 6.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40054
+    },
+    {
+      "name": "Control type",
+      "full_address": 40071,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 3.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40071
+    },
+    {
+      "name": "Flow rate setpoint",
+      "full_address": 40072,
+      "scale": 0.01,
+      "units": "cubic-meters-per-hour",
+      "min_value": 3.0,
+      "max_value": 90.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40072
+    },
+    {
+      "name": "Differential pressure setpoint",
+      "full_address": 40073,
+      "scale": 0.01,
+      "min_value": 0.1,
+      "max_value": 6.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40073
+    },
+    {
+      "name": "Low flow rate",
+      "full_address": 40074,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 10.0,
+      "max_value": 95.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40074
+    },
+    {
+      "name": "Low differential pressure",
+      "full_address": 40075,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 10.0,
+      "max_value": 95.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40075
+    },
+    {
+      "name": "Low-flow / low-pressure delay",
+      "full_address": 40076,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 1.0,
+      "max_value": 300.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40076
+    },
+    {
+      "name": "Target delta temperature setpoint",
+      "full_address": 40077,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 41.0,
+      "max_value": 86.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40077
+    },
+    {
+      "name": "Delta temperature alarm setpoint",
+      "full_address": 40078,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 35.6,
+      "max_value": 86.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40078
+    },
+    {
+      "name": "Constant-speed pump setpoint",
+      "full_address": 40079,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 25.0,
+      "max_value": 100.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40079
+    },
+    {
+      "name": "All-pump control",
+      "full_address": 40091,
+      "modbus_block": "HOLDING_REGISTER",
+	  "bacnet_type": "BINARY_VALUE",
+      "instance": 40091
+    },
+    {
+      "name": "Minimum pump speed",
+      "full_address": 40092,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 25.0,
+      "max_value": 90.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40092
+    },
+    {
+      "name": "Maximum pump speed",
+      "full_address": 40093,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 25.0,
+      "max_value": 90.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40093
+    },
+    {
+      "name": "Twin-pump maximum speed",
+      "full_address": 40094,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 25.0,
+      "max_value": 90.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40094
+    },
+    {
+      "name": "Maximum control pressure",
+      "full_address": 40095,
+      "scale": 0.01,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40095
+    },
+    {
+      "name": "Pump changeover delay",
+      "full_address": 40096,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 200.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40096
+    },
+    {
+      "name": "Overpressure setpoint",
+      "full_address": 40097,
+      "scale": 0.01,
+      "min_value": 2.0,
+      "max_value": 6.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40097
+    },
+    {
+      "name": "Overpressure action",
+      "full_address": 40098,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40098
+    },
+    {
+      "name": "Start speed",
+      "full_address": 40099,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 25.0,
+      "max_value": 100.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40099
+    },
+    {
+      "name": "Start duration",
+      "full_address": 40100,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 100.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40100
+    },
+    {
+      "name": "Loop restart duration",
+      "full_address": 40101,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 1.0,
+      "max_value": 120.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40101
+    },
+    {
+      "name": "Fault reset attempts",
+      "full_address": 40103,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 10.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40103
+    },
+    {
+      "name": "Fault reset interval",
+      "full_address": 40104,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 3600.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40104
+    },
+    {
+      "name": "Temperature setpoint",
+      "full_address": 40121,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 50.0,
+      "max_value": 131.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40121
+    },
+    {
+      "name": "Control mode",
+      "full_address": 40122,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40122
+    },
+    {
+      "name": "Dew-point setpoint",
+      "full_address": 40123,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 33.8,
+      "max_value": 41.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40123
+    },
+    {
+      "name": "Secondary-side low-temperature difference",
+      "full_address": 40124,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 33.8,
+      "max_value": 50.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40124
+    },
+    {
+      "name": "Secondary-side high-temperature difference",
+      "full_address": 40125,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 33.8,
+      "max_value": 50.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40125
+    },
+    {
+      "name": "Secondary-side temperature reset hysteresis",
+      "full_address": 40126,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 32.9,
+      "max_value": 41.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40126
+    },
+    {
+      "name": "PID control interval",
+      "full_address": 40127,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 1.0,
+      "max_value": 30.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40127
+    },
+    {
+      "name": "PID proportional band",
+      "full_address": 40128,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 33.8,
+      "max_value": 212.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40128
+    },
+    {
+      "name": "PID integral reset",
+      "full_address": 40129,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 999.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40129
+    },
+    {
+      "name": "PID derivative",
+      "full_address": 40130,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 999.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40130
+    },
+    {
+      "name": "Command/actual error",
+      "full_address": 40131,
+      "scale": 0.1,
+      "units": "percent",
+      "min_value": 0.0,
+      "max_value": 50.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40131
+    },
+    {
+      "name": "Valve check interval",
+      "full_address": 40132,
+      "scale": 1.0,
+      "units": "minutes",
+      "min_value": 10.0,
+      "max_value": 180.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40132
+    },
+    {
+      "name": "Minimum position",
+      "full_address": 40133,
+      "scale": 1.0,
+      "units": "percent",
+      "min_value": 0.0,
+      "max_value": 80.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40133
+    },
+    {
+      "name": "Secondary-side high inlet temperature setpoint",
+      "full_address": 40134,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 32.0,
+      "max_value": 212.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40134
+    },
+    {
+      "name": "Primary-side flow delay",
+      "full_address": 40151,
+      "scale": 1.0,
+      "units": "minutes",
+      "min_value": 1.0,
+      "max_value": 120.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40151
+    },
+    {
+      "name": "Primary-side low-temperature setpoint",
+      "full_address": 40152,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 35.6,
+      "max_value": 104.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40152
+    },
+    {
+      "name": "Primary-side high-temperature setpoint",
+      "full_address": 40153,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 42.8,
+      "max_value": 122.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40153
+    },
+    {
+      "name": "Primary-side temperature reset hysteresis",
+      "full_address": 40154,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 32.9,
+      "max_value": 41.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40154
+    },
+    {
+      "name": "Primary-side overpressure setpoint",
+      "full_address": 40155,
+      "scale": 0.01,
+      "min_value": 2.0,
+      "max_value": 10.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40155
+    },
+    {
+      "name": "Secondary-side redundant temperature difference",
+      "full_address": 40171,
+      "scale": 0.018,
+      "offset": 32.0,
+      "units": "degrees-Fahrenheit",
+      "min_value": 32.18,
+      "max_value": 50.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40171
+    },
+    {
+      "name": "Secondary-side redundant temperature delay",
+      "full_address": 40172,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 120.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40172
+    },
+    {
+      "name": "Secondary-side redundant pressure difference",
+      "full_address": 40173,
+      "scale": 0.01,
+      "min_value": 0.1,
+      "max_value": 10.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40173
+    },
+    {
+      "name": "Secondary-side redundant pressure delay",
+      "full_address": 40174,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 0.0,
+      "max_value": 120.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40174
+    },
+    {
+      "name": "Primary-side dirty filter setpoint",
+      "full_address": 40191,
+      "scale": 0.01,
+      "min_value": 0.2,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40191
+    },
+    {
+      "name": "Primary-side dirty filter hysteresis",
+      "full_address": 40192,
+      "scale": 0.01,
+      "min_value": 0.1,
+      "max_value": 0.5,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40192
+    },
+    {
+      "name": "Primary-side dirty filter delay",
+      "full_address": 40193,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 10.0,
+      "max_value": 600.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40193
+    },
+    {
+      "name": "Secondary-side dirty filter setpoint",
+      "full_address": 40194,
+      "scale": 0.01,
+      "min_value": 0.2,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40194
+    },
+    {
+      "name": "Secondary-side dirty filter hysteresis",
+      "full_address": 40195,
+      "scale": 0.01,
+      "min_value": 0.1,
+      "max_value": 0.5,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40195
+    },
+    {
+      "name": "Secondary-side dirty filter delay",
+      "full_address": 40196,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 10.0,
+      "max_value": 600.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40196
+    },
+    {
+      "name": "Leak detection - flood tray",
+      "full_address": 40211,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40211
+    },
+    {
+      "name": "Leak detection - underfloor",
+      "full_address": 40212,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40212
+    },
+    {
+      "name": "Underfloor leak delay",
+      "full_address": 40213,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 5.0,
+      "max_value": 60.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40213
+    },
+    {
+      "name": "Pump operation changeover cycle",
+      "full_address": 40221,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 30.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40221
+    },
+    {
+      "name": "Secondary-loop coolant type",
+      "full_address": 40241,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40241
+    },
+    {
+      "name": "Primary-loop coolant type",
+      "full_address": 40242,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40242
+    },
+    {
+      "name": "Device address",
+      "full_address": 40251,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40251
+    },
+    {
+      "name": "Number of devices in group",
+      "full_address": 40252,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40252
+    },
+    {
+      "name": "Number of operating devices",
+      "full_address": 40253,
+      "scale": 1.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40253
+    },
+    {
+      "name": "Changeover cycle",
+      "full_address": 40254,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 6.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40254
+    },
+    {
+      "name": "Changeover day",
+      "full_address": 40255,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 6.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40255
+    },
+    {
+      "name": "Changeover time - hour",
+      "full_address": 40256,
+      "scale": 1.0,
+      "units": "hours",
+      "min_value": 0.0,
+      "max_value": 23.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40256
+    },
+    {
+      "name": "Changeover time - minute",
+      "full_address": 40257,
+      "scale": 1.0,
+      "units": "minutes",
+      "min_value": 0.0,
+      "max_value": 59.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40257
+    },
+    {
+      "name": "Enable ALS Number Control",
+      "full_address": 40258,
+      "scale": 1.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40258
+    },
+    {
+      "name": "Startup alarm delay",
+      "full_address": 40271,
+      "scale": 1.0,
+      "units": "minutes",
+      "min_value": 1.0,
+      "max_value": 120.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40271
+    },
+    {
+      "name": "Data logging interval",
+      "full_address": 40274,
+      "scale": 1.0,
+      "units": "seconds",
+      "min_value": 1.0,
+      "max_value": 60.0,
+      "modbus_block": "HOLDING_REGISTER",
+      "instance": 40274
+    }
+  ]
+}

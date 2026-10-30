@@ -1,0 +1,4563 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+
+Vendor Name: "LG Electronics"
+Product Name: "CDU"
+Product Model Number: "KSSU500CO20"
+Product Description: "BACnet/IP implementation in LG CDU Products."
+
+BIBBs Supported:
+{
+        DS-RP-B
+        DS-WP-B
+        DS-COV-B
+        DM-DDB-B
+        DM-DOB-B
+        DM-DCC-B
+}
+
+BACnet Standard Application Services Supported:
+{
+        ReadProperty               Execute
+        WriteProperty              Execute
+        SubscribeCOV               Execute
+        ConfirmedCOVNotification   Initiate
+        UnconfirmedCOVNotification Initiate
+        DeviceCommunicationControl Execute
+        Who-Has                    Execute
+        Who-Is                     Execute
+        I-Have                     Initiate
+        I-Am                       Initiate
+}
+
+Standard Object-Types Supported:
+{
+        Device
+        Analog Input
+        Analog Output
+        Binary Input
+        Binary Value
+        --Network Port
+}
+
+Data Link Layer Option:
+{
+        --BACnet/IP
+}
+
+Character Sets Supported:
+{
+        --ISO 10646 (UTF-8)
+}
+
+Special Functionality:
+{
+        Maximum APDU size in octets: 1476
+}
+
+List of Objects in test device:
+{
+  {
+         object-identifier: (device, 1200)
+         object-name: 'CDU'
+         object-type: device
+         property-list: ?
+         system-status: operational
+         vendor-name: "LG Electronics"
+         vendor-identifier: 432
+         model-name: "KSSU500CO20"
+         description: "BACnet/IP implementation in LG CDU Products."
+         firmware-revision: "1.0"
+         application-software-version: "1.0"
+         protocol-version: 1
+         protocol-revision: 26
+         protocol-services-supported:
+         {
+                  F, F,  -- acknowledge-alarm, confirmed-cov-notification,
+                  F, F,  -- confirmed-event-notification, get-alarm-summary,
+                  F, T,  -- get-enrollment-summary, subscribe-cov,
+                  F, F,  -- atomic-read-file, atomic-write-file,
+                  F, F,  -- add-list-element, remove-list-element,
+                  F, F,  -- create-object, delete-object,
+                  T, F,  -- read-property, read-property-conditional,
+                  F, T,  -- read-property-multiple, write-property,
+                  F, T,  -- write-property-multiple, device-communication-control,
+                  F, F,  -- confirmed-private-transfer, confirmed-text-message,
+                  F, F,  -- reinitialize-device, vt-open,
+                  F, F,  -- vt-close, vt-data,
+                  F, F,  -- authenticate, request-key,
+                  F, F,  -- i-am, i-have,
+                  F, F,  -- unconfirmed-cov-notification, unconfirmed-event-notification,
+                  F, F,  -- unconfirmed-private-transfer, unconfirmed-text-message,
+                  F, T,  -- time-synchronization, who-has,
+                  T, F,  -- who-is, read-range,
+                  F, F,  -- utc-time-synchronization, life-safety-operation,
+                  F, F,  -- subscribe-cov-property, get-event-information,
+                  F, F,  -- write-group, subscribe-cov-property-multiple,
+                  F, F,  -- confirmed-cov-notification-multiple, unconfirmed-cov-notification-multiple
+                  F, F,  -- confirmed-audit-notification, audit-log-query,
+                  F, F,  -- unconfirmed-audit-notification, who-am-i,
+                  F      -- you-are
+         }
+
+         protocol-object-types-supported:
+         {
+                  T, T, F, T, F, T,        -- AI, AO, AV, BI, BO, BV
+                  F, F,                    -- calendar, command
+                  T, F,                    -- device, event enrollment
+                  F, F, F,                 -- file, group, loop
+                  F, F, F,                 -- MI, MO, notification class
+                  F, F,                    -- program, schedule
+                  F, F, F,                 -- averaging, multi-state-value, trend-log
+                  F, F,                    -- life-safety-point, life-safety-zone
+                  F, F,                    -- accumulator, pulse-converter
+                  F, F, F,                 -- event-log, global-group, trend-log-multiple
+                  F, F, F,                 -- load-control, structured-view, access-door
+                  F,                       -- timer,
+                  F, F, F,                 -- access-credential, access-point, access-rights,
+                  F, F, F,                 -- access-user, access-zone, credential-data-input
+                  F,                       -- network-security
+                  F, F, F,                 -- bitstring-value, characterstring-value, date-pattern-value
+                  F, F, F,                 -- date-value, datetime-pattern-value, datetime-value
+                  F, F, F,                 -- integer-value, large-analog-value, octetstring-value
+                  F, F, F,                 -- positive-Integer-value, time-pattern-value, time-value
+                  F, F,                    -- notification-forwarder, alert-enrollment
+                  F, F,                    -- channel,lighting-output
+                  F, T,                    -- binary-lighting-output, network-port
+                  F, F, F,                 -- elevator-group, escalator, lift
+                  F, F, F,                 -- staging, audit-log, audit-reporter
+                  F, F                     -- color, color-temperature
+         }
+
+         object-list: ?
+         max-APDU-length-accepted: 1476
+         segmentation-supported: no-segmentation
+         max-segments-accepted:  1
+         apdu-timeout: 6000
+         number-of-APDU-retries: 3
+         device-address-binding: ?
+         database-revision: ?
+         --device-uuid: ?
+         daylight-savings-status: F
+         active-cov-subscriptions: ?
+         local-time: ?
+         local-date: ?
+  },
+  {
+         object-identifier: (binary-input, 10553)
+         object-name: "CDUErrorState#CH01#T1Ia Temperature Sensor Check Required#CAUTION No.1201"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10554)
+         object-name: "CDUErrorState#CH02#T1Oa Temperature Sensor Check Required#CAUTION No.1202"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10555)
+         object-name: "CDUErrorState#CH03#T2Ia Temperature Sensor Check Required#CAUTION No.1203"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10556)
+         object-name: "CDUErrorState#CH04#T2Oa Temperature Sensor Check Required#CAUTION No.1204"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10557)
+         object-name: "CDUErrorState#CH05#T2Ob Temperature Sensor Check Required#CAUTION No.1205"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10558)
+         object-name: "CDUErrorState#CH06#T2Oc Temperature Sensor Check Required#CAUTION No.1206"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10559)
+         object-name: "CDUErrorState#CH07#T3a Temperature Sensor Check Required#CAUTION No.1207"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10560)
+         object-name: "CDUErrorState#CH08#T3b Temperature Sensor Check Required#CAUTION No.1208"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10561)
+         object-name: "CDUErrorState#CH09#RHa Humidity Sensor Check Required#CAUTION No.1209"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10562)
+         object-name: "CDUErrorState#CH10#RHb Humidity Sensor Check Required#CAUTION No.1210"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10563)
+         object-name: "CDUErrorState#CH11#P1Ia Pressure Sensor Check Required#CAUTION No.1211"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10564)
+         object-name: "CDUErrorState#CH12#P1f1 Pressure Sensor Check Required#CAUTION No.1212"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10565)
+         object-name: "CDUErrorState#CH13#P2Ia Pressure Sensor Check Required#CAUTION No.1213"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10566)
+         object-name: "CDUErrorState#CH14#P2Ib Pressure Sensor Check Required#CAUTION No.1214"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10567)
+         object-name: "CDUErrorState#CH15#P2Oa Pressure Sensor Check Required#CAUTION No.1215"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10568)
+         object-name: "CDUErrorState#CH16#P2f1 Pressure Sensor Check Required#CAUTION No.1216"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10569)
+         object-name: "CDUErrorState#CH17#P2f2 Pressure Sensor Check Required#CAUTION No.1217"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10570)
+         object-name: "CDUErrorState#CH18#2nd Flow Meter Sensor Inspection Required#WARNING No.1401"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10571)
+         object-name: "CDUErrorState#CH19#1st Flow Meter Sensor Check Required#CAUTION No.1218"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10572)
+         object-name: "CDUErrorState#CH20#MicroSD Card Check Required#CAUTION No.1351"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10573)
+         object-name: "CDUErrorState#CH21#Leak Defect/Coolant Low#WARNING No.1457"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10574)
+         object-name: "CDUErrorState#CH22#Leak Shutdown/Coolant Shortage#URGENT No.1603"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10575)
+         object-name: "CDUErrorState#CH23#P1 Inverter Inspection Required#WARNING No.1404"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10576)
+         object-name: "CDUErrorState#CH24#P1 Inverter Low Flow#WARNING No.1405"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10577)
+         object-name: "CDUErrorState#CH25#P2 Inverter Inspection Required#WARNING No.1406"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10578)
+         object-name: "CDUErrorState#CH26#P2 Inverter Low Flow#WARNING No.1407"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10579)
+         object-name: "CDUErrorState#CH27#Secondary Side Pump Shutdown#URGENT No.1601"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10580)
+         object-name: "CDUErrorState#CH28#Valve Inspection Required#WARNING No.1402"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10581)
+         object-name: "CDUErrorState#CH29#Bypass Valve Inspection Required#WARNING No.1403"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10582)
+         object-name: "CDUErrorState#CH30#Primary Side Water Low Level#WARNING No.1458"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10583)
+         object-name: "CDUErrorState#CH31#Primary Side Filter Dirty#WARNING No.1451"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10584)
+         object-name: "CDUErrorState#CH32#Primary Side Water Too Cold#CAUTION No.1251"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10585)
+         object-name: "CDUErrorState#CH33#Primary Side Water Too Hot#WARNING No.1452"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10586)
+         object-name: "CDUErrorState#CH34#Secondary Side Water Too Cold#WARNING No.1453"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10587)
+         object-name: "CDUErrorState#CH35#Secondary Side Water Too Hot#WARNING No.1454"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10588)
+         object-name: "CDUErrorState#CH36#Unit Water Overflow#URGENT No.1604"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10589)
+         object-name: "CDUErrorState#CH37#Secondary Side Diff Pressure Out of Range#CAUTION No.1252"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10590)
+         object-name: "CDUErrorState#CH38#CDU Emergency Power Transfer Required#CAUTION No.1352"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10591)
+         object-name: "CDUErrorState#CH39#Floor Water Overflow#URGENT No.1605"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10592)
+         object-name: "CDUErrorState#CH40#Check Water Refill Level#WARNING No.1459"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10593)
+         object-name: "CDUErrorState#CH41#System Low Pressure#WARNING No.1460"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10594)
+         object-name: "CDUErrorState#CH42#Secondary Side Over Pressure#URGENT No.1602"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10595)
+         object-name: "CDUErrorState#CH43#No Water Flow on Primary Side#WARNING No.1461"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10596)
+         object-name: "CDUErrorState#CH44#Water Level Sensor - Detected No Water#WARNING No.1455"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10597)
+         object-name: "CDUErrorState#CH45#Incorrect Water Sensor Status#WARNING No.1456"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10598)
+         object-name: "CDUErrorState#CH46#Group Control Network Inspection Required#WARNING No.1552"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10599)
+         object-name: "CDUErrorState#CH47#Inverter 1 Communication Inspection Required#WARNING No.1553"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10600)
+         object-name: "CDUErrorState#CH48#Inverter 2 Communication Inspection Required#WARNING No.1554"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10601)
+         object-name: "CDUErrorState#CH49#Secondary Filter 1 Dirty#CAUTION No.1253"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10602)
+         object-name: "CDUErrorState#CH50#Secondary Filter 2 Dirty#CAUTION No.1254"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10603)
+         object-name: "CDUErrorState#CH51#Secondary Side Temp T2Oa Diff Check Required#CAUTION No.1255"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10604)
+         object-name: "CDUErrorState#CH52#Secondary Side Temp T2Ob Diff Check Required#CAUTION No.1256"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10605)
+         object-name: "CDUErrorState#CH53#Secondary Side Temp T2Oc Diff Check Required#CAUTION No.1257"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10606)
+         object-name: "CDUErrorState#CH54#Insufficient Units for Group Control#WARNING No.1551"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10607)
+         object-name: "CDUErrorState#CH55#Pump Performance Limited#CAUTION No.1258"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10608)
+         object-name: "CDUErrorState#CH56#Dew point Temp reference is not possible#URGENT No.1606"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10609)
+         object-name: "CDUErrorState#CH57#Cooling valve control is not possible#URGENT No.1607"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10610)
+         object-name: "CDUErrorState#CH58#Secondary overpress cannot be determined#URGENT No.1608"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10611)
+         object-name: "CDUErrorState#CH59#Load response is not possible#URGENT No.1609"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10612)
+         object-name: "CDUErrorState#CH60#Flow rate control is not possible#URGENT No.1610"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10613)
+         object-name: "CDUErrorState#CH61#UIO1 Module Comm Check Required#CAUTION No.1353"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10614)
+         object-name: "CDUErrorState#CH62#UIO2 Module Comm Check Required#CAUTION No.1354"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10615)
+         object-name: "CDUErrorState#CH63#UI1 Module Comm Check Required#CAUTION No.1355"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10616)
+         object-name: "CDUErrorState#CH64#UI2 Module Comm Check Required#CAUTION No.1356"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10617)
+         object-name: "CDUErrorState#CH65#NTC Module Comm Check Required#CAUTION No.1357"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10618)
+         object-name: "CDUErrorState#CH66#Condensate Formation Caution#CAUTION No.1259"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10619)
+         object-name: "CDUErrorState#CH67#P3 Inverter Inspection Required#WARNING No.1408"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10620)
+         object-name: "CDUErrorState#CH68#P3 Inverter Low Flow#WARNING No.1409"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10621)
+         object-name: "CDUErrorState#CH69#Inverter 3 Communication Inspection Required#WARNING No.1555"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10622)
+         object-name: "CDUErrorState#CH70#AIO Module Comm Check Required#CAUTION No.1358"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10623)
+         object-name: "CDUErrorState#CH71#IF Module Comm Check Required#CAUTION No.1359"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10624)
+         object-name: "CDUErrorState#CH72#Ext Module Comm Check Required#CAUTION No.1360"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10625)
+         object-name: "CDUErrorState#CH73#P2f3 Pressure Sensor Check Required#CAUTION No.1219"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10626)
+         object-name: "CDUErrorState#CH74#Secondary Filter 3 Dirty#CAUTION No.1260"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10627)
+         object-name: "CDUErrorState#CH75#P2Ob Temperature Sensor Check Required#CAUTION No.1220"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10628)
+         object-name: "CDUErrorState#CH76#Secondary Side Inlet Water Too Hot#CAUTION No.1261"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10629)
+         object-name: "CDUErrorState#CH77#P1Oa Pressure Sensor Check Required#CAUTION No.1221"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10630)
+         object-name: "CDUErrorState#CH78#P2Sa Pressure Sensor Check Required#CAUTION No.1222"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10631)
+         object-name: "CDUErrorState#CH79#T2Ib Temperature Sensor Check Required#CAUTION No.1223"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10632)
+         object-name: "CDUErrorState#CH80#Primary Side Over Pressure#CAUTION No.1262"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10633)
+         object-name: "CDUErrorState#CH81#CDU Blackout Check Required#CAUTION No.1611"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10634)
+         object-name: "CDUErrorState#CH82#Inverter1 Fan Check Required#CAUTION No.1362"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10635)
+         object-name: "CDUErrorState#CH83#Inverter2 Fan Check Required#CAUTION No.1363"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10636)
+         object-name: "CDUErrorState#CH84#Inverter3 Fan Check Required#CAUTION No.1364"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10637)
+         object-name: "CDUErrorState#CH85#Rear Fan Check Required#CAUTION No.1365"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10638)
+         object-name: "CDUErrorState#CH86#CBox Fan Check Required#CAUTION No.1366"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10639)
+         object-name: "CDUErrorState#CH87#Secondary Side Outlet Diff Pressure Out of Range#CAUTION No.1263"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10640)
+         object-name: "CDUErrorState#CH88#Secondary Side Inlet Diff Temperature Out of Range#CAUTION No.1264"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10641)
+         object-name: "CDUErrorState#CH89#Ext2 Module Comm Check Required#CAUTION No.1367"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10642)
+         object-name: "CDUErrorState#CH90#Fire Switch Shutdown#URGENT No.1612"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (binary-input, 10643)
+         object-name: "CDUErrorState#CH91#Emergency Stop#URGENT No.1613"
+         object-type: binary-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+  },
+  {
+         object-identifier: (analog-input, 30031)
+         object-name: "Oper. Status"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30081)
+         object-name: "Primary-side filter differential pressure P1Ia-P1f1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30082)
+         object-name: "Secondary-side filter 1 differential pressure P2f1-P2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30083)
+         object-name: "Secondary-side filter 2 differential pressure P2f2-P2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30084)
+         object-name: "Secondary-side outlet temperature T2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30085)
+         object-name: "Secondary-side inlet pressure P2I"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30086)
+         object-name: "Secondary-side differential pressure P2O-P2I"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30087)
+         object-name: "Dew-point temperature Dwa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30088)
+         object-name: "Dew-point temperature Dwb"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30089)
+         object-name: "Dew-point temperature Dwab"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30090)
+         object-name: "Ambient temperature T3ab"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30091)
+         object-name: "Ambient humidity RHab"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30092)
+         object-name: "Secondary-side outlet target temperature feedback"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30093)
+         object-name: "Secondary-side temperature difference T2I-T2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30094)
+         object-name: "Secondary-side filter 3 differential pressure P2f3-P2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30095)
+         object-name: "Secondary-side outlet pressure P2O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30096)
+         object-name: "Cooling capacity"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30097)
+         object-name: "Control type feedback"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30098)
+         object-name: "Secondary-side inlet temperature T2I"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30099)
+         object-name: "Primary-side differential pressure P1I-P1O"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30291)
+         object-name: "P1 Inv. Start Count"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30292)
+         object-name: "P1 Inv. Run Time 1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30293)
+         object-name: "P1 Inv. Run Time 2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30294)
+         object-name: "P2 Inv. Start Count"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30295)
+         object-name: "P2 Inv. Run Time 1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30296)
+         object-name: "P2 Inv. Run Time 2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30297)
+         object-name: "P3 Inv. Start Count"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30298)
+         object-name: "P3 Inv. Run Time 1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30299)
+         object-name: "P3 Inv. Run Time 2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30141)
+         object-name: "CDU group average differential pressure"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30142)
+         object-name: "CDU group total flow rate"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30143)
+         object-name: "CDU group integrated operation command (Master)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30144)
+         object-name: "CDUs available for group operation (Master)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30145)
+         object-name: "CDU group operating status"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30146)
+         object-name: "Number of CDUs operating in group"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30147)
+         object-name: "CDU group average outlet temperature"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30148)
+         object-name: "CDU group average flow rate"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30149)
+         object-name: "CDU group average temperature difference"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30150)
+         object-name: "CDU group average pump speed"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30151)
+         object-name: "CDU group average valve opening"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30152)
+         object-name: "CDU group maximum pump speed"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30201)
+         object-name: "Secondary-side inlet pressure P2Ia"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30202)
+         object-name: "Secondary-side inlet pressure P2Ib"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30203)
+         object-name: "Secondary-side outlet pressure P2Oa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30204)
+         object-name: "Primary-side inlet pressure P1Ia"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30205)
+         object-name: "Primary-side filter outlet pressure P1f1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30206)
+         object-name: "Secondary-side filter 1 inlet pressure P2f1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30207)
+         object-name: "Secondary-side filter 2 inlet pressure P2f2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30208)
+         object-name: "Primary-side flow rate F1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30209)
+         object-name: "Secondary-side flow rate F2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30210)
+         object-name: "Ambient humidity RHa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30211)
+         object-name: "Ambient humidity RHb"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30212)
+         object-name: "Cooling valve feedback"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30213)
+         object-name: "Cooling bypass valve feedback"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30214)
+         object-name: "Ambient temperature T3a"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30215)
+         object-name: "Ambient temperature T3b"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30216)
+         object-name: "Primary-side inlet temperature T1Ia"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30217)
+         object-name: "Primary-side outlet temperature T1Oa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30218)
+         object-name: "Secondary-side inlet temperature T2Ia"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30219)
+         object-name: "Secondary-side outlet temperature T2Oa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30220)
+         object-name: "Secondary-side outlet temperature T2Ob"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30221)
+         object-name: "Secondary-side outlet temperature T2Oc"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30222)
+         object-name: "Leak sensor 1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30223)
+         object-name: "Leak sensor 2"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30224)
+         object-name: "Secondary-side filter 3 inlet pressure P2f3"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30225)
+         object-name: "Secondary-side outlet pressure P2Ob"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30226)
+         object-name: "Primary-side outlet pressure P1Oa"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30227)
+         object-name: "Secondary-side pressure loss P2P1"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30228)
+         object-name: "Secondary-side inlet temperature T2Ib"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30311)
+         object-name: "Number of operating pumps"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30312)
+         object-name: "Total pump operating time"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30313)
+         object-name: "Pump 1 operating speed"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30314)
+         object-name: "Pump 1 communication status"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30315)
+         object-name: "Pump 1 mode"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30316)
+         object-name: "Pump 1 frequency"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30317)
+         object-name: "Pump 1 voltage"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30318)
+         object-name: "Pump 1 current"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30319)
+         object-name: "Pump 1 power"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30320)
+         object-name: "Pump 1 heat sink temperature"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30321)
+         object-name: "Pump 1 version"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30322)
+         object-name: "Pump 1 stop code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30323)
+         object-name: "Pump 1 error code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30324)
+         object-name: "Pump 2 operating speed"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30325)
+         object-name: "Pump 2 communication status"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30326)
+         object-name: "Pump 2 mode"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30327)
+         object-name: "Pump 2 frequency"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30328)
+         object-name: "Pump 2 voltage"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30329)
+         object-name: "Pump 2 current"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30330)
+         object-name: "Pump 2 power"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30331)
+         object-name: "Pump 2 heat sink temperature"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30332)
+         object-name: "Pump 2 version"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30333)
+         object-name: "Pump 2 stop code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30334)
+         object-name: "Pump 2 error code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30335)
+         object-name: "Pump 3 operating speed"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30336)
+         object-name: "Pump 3 communication status"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30337)
+         object-name: "Pump 3 mode"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30338)
+         object-name: "Pump 3 frequency"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30339)
+         object-name: "Pump 3 voltage"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30340)
+         object-name: "Pump 3 current"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30341)
+         object-name: "Pump 3 power"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30342)
+         object-name: "Pump 3 heat sink temperature"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30343)
+         object-name: "Pump 3 version"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30344)
+         object-name: "Pump 3 stop code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30345)
+         object-name: "Pump 3 error code"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30421)
+         object-name: "CDU Group Setting State (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30422)
+         object-name: "CDU ID (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30423)
+         object-name: "Operating status (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30424)
+         object-name: "Differential pressure (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30425)
+         object-name: "Secondary-side flow rate (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30426)
+         object-name: "Current pump speed (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30427)
+         object-name: "Secondary-side outlet temperature (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30428)
+         object-name: "Cooling valve opening (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30429)
+         object-name: "Pump operating time (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30430)
+         object-name: "Temperature difference (CDU1)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30436)
+         object-name: "CDU Group Setting State (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30437)
+         object-name: "CDU ID (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30438)
+         object-name: "Operating mode (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30439)
+         object-name: "Differential pressure (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30440)
+         object-name: "Secondary-side flow rate (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30441)
+         object-name: "Current pump speed (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30442)
+         object-name: "Secondary-side outlet temperature (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30443)
+         object-name: "Cooling valve opening (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30444)
+         object-name: "Pump operating time (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30445)
+         object-name: "Temperature difference (CDU2)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30451)
+         object-name: "CDU Group Setting State (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30452)
+         object-name: "CDU ID (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30453)
+         object-name: "Operating mode (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30454)
+         object-name: "Differential pressure (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30455)
+         object-name: "Secondary-side flow rate (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30456)
+         object-name: "Current pump speed (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30457)
+         object-name: "Secondary-side outlet temperature (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30458)
+         object-name: "Cooling valve opening (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30459)
+         object-name: "Pump operating time (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30460)
+         object-name: "Temperature difference (CDU3)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30466)
+         object-name: "CDU Group Setting State (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30467)
+         object-name: "CDU ID (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30468)
+         object-name: "Operating mode (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30469)
+         object-name: "Differential pressure (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30470)
+         object-name: "Secondary-side flow rate (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30471)
+         object-name: "Current pump speed (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30472)
+         object-name: "Secondary-side outlet temperature (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30473)
+         object-name: "Cooling valve opening (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30474)
+         object-name: "Pump operating time (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30475)
+         object-name: "Temperature difference (CDU4)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30481)
+         object-name: "CDU Group Setting State (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30482)
+         object-name: "CDU ID (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30483)
+         object-name: "Operating mode (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30484)
+         object-name: "Differential pressure (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30485)
+         object-name: "Secondary-side flow rate (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30486)
+         object-name: "Current pump speed (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30487)
+         object-name: "Secondary-side outlet temperature (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30488)
+         object-name: "Cooling valve opening (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30489)
+         object-name: "Pump operating time (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30490)
+         object-name: "Temperature difference (CDU5)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30496)
+         object-name: "CDU Group Setting State (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30497)
+         object-name: "CDU ID (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30498)
+         object-name: "Operating mode (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30499)
+         object-name: "Differential pressure (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30500)
+         object-name: "Secondary-side flow rate (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30501)
+         object-name: "Current pump speed (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30502)
+         object-name: "Secondary-side outlet temperature (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30503)
+         object-name: "Cooling valve opening (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30504)
+         object-name: "Pump operating time (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30505)
+         object-name: "Temperature difference (CDU6)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30511)
+         object-name: "CDU Group Setting State (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30512)
+         object-name: "CDU ID (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30513)
+         object-name: "Operating mode (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30514)
+         object-name: "Differential pressure (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30515)
+         object-name: "Secondary-side flow rate (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30516)
+         object-name: "Current pump speed (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30517)
+         object-name: "Secondary-side outlet temperature (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30518)
+         object-name: "Cooling valve opening (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30519)
+         object-name: "Pump operating time (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30520)
+         object-name: "Temperature difference (CDU7)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30526)
+         object-name: "CDU Group Setting State (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30527)
+         object-name: "CDU ID (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30528)
+         object-name: "Operating mode (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 9
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30529)
+         object-name: "Differential pressure (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30530)
+         object-name: "Secondary-side flow rate (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30531)
+         object-name: "Current pump speed (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30532)
+         object-name: "Secondary-side outlet temperature (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-input, 30533)
+         object-name: "Cooling valve opening (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+  },
+  {
+         object-identifier: (analog-input, 30534)
+         object-name: "Pump operating time (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+  },
+  {
+         object-identifier: (analog-input, 30535)
+         object-name: "Temperature difference (CDU8)"
+         object-type: analog-input
+         property-list: ?
+         present-value: ?
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.01 W
+  },
+  {
+         object-identifier: (analog-output, 40001)
+         object-name: "Remote operation"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 2
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (binary-value, 40002)
+         object-name: "Clear all alarms"
+         object-type: binary-value
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+  },
+  {
+         object-identifier: (analog-output, 40051)
+         object-name: "Fill pressure"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.3
+         max-pres-value: 3
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40052)
+         object-name: "Fill hysteresis"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.1
+         max-pres-value: 0.5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40053)
+         object-name: "Fill pump operating duration"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: minutes
+         min-pres-value: 1
+         max-pres-value: 15
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40054)
+         object-name: "Water level sensor delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 1
+         max-pres-value: 6
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40071)
+         object-name: "Control type"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 3
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40072)
+         object-name: "Flow rate setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: cubic-meters-per-hour
+         min-pres-value: 3
+         max-pres-value: 90
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40073)
+         object-name: "Differential pressure setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.1
+         max-pres-value: 6
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40074)
+         object-name: "Low flow rate"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 10
+         max-pres-value: 95
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40075)
+         object-name: "Low differential pressure"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 10
+         max-pres-value: 95
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40076)
+         object-name: "Low-flow / low-pressure delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 1
+         max-pres-value: 300
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40077)
+         object-name: "Target delta temperature setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 5
+         max-pres-value: 30
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40078)
+         object-name: "Delta temperature alarm setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 2
+         max-pres-value: 30
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40079)
+         object-name: "Constant-speed pump setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 25
+         max-pres-value: 100
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (binary-value, 40091)
+         object-name: "All-pump control"
+         object-type: binary-value
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+  },
+  {
+         object-identifier: (analog-output, 40092)
+         object-name: "Minimum pump speed"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 25
+         max-pres-value: 90
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40093)
+         object-name: "Maximum pump speed"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 25
+         max-pres-value: 90
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40094)
+         object-name: "Twin-pump maximum speed"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 25
+         max-pres-value: 90
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40095)
+         object-name: "Maximum control pressure"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40096)
+         object-name: "Pump changeover delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 200
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40097)
+         object-name: "Overpressure setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 2
+         max-pres-value: 6
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40098)
+         object-name: "Overpressure action"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40099)
+         object-name: "Start speed"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 25
+         max-pres-value: 100
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40100)
+         object-name: "Start duration"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 100
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40101)
+         object-name: "Loop restart duration"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 1
+         max-pres-value: 120
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40103)
+         object-name: "Fault reset attempts"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 10
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40104)
+         object-name: "Fault reset interval"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 3600
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40121)
+         object-name: "Temperature setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 10
+         max-pres-value: 55
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40122)
+         object-name: "Control mode"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40123)
+         object-name: "Dew-point setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 1
+         max-pres-value: 5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40124)
+         object-name: "Secondary-side low-temperature difference"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 1
+         max-pres-value: 10
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40125)
+         object-name: "Secondary-side high-temperature difference"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 1
+         max-pres-value: 10
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40126)
+         object-name: "Secondary-side temperature reset hysteresis"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 0.5
+         max-pres-value: 5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40127)
+         object-name: "PID control interval"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 1
+         max-pres-value: 30
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40128)
+         object-name: "PID proportional band"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 1
+         max-pres-value: 100
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40129)
+         object-name: "PID integral reset"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 999
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40130)
+         object-name: "PID derivative"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 999
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40131)
+         object-name: "Command/actual error"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 0
+         max-pres-value: 50
+         cov-increment: 0.1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40132)
+         object-name: "Valve check interval"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: minutes
+         min-pres-value: 10
+         max-pres-value: 180
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40133)
+         object-name: "Minimum position"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         min-pres-value: 0
+         max-pres-value: 80
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40134)
+         object-name: "Secondary-side high inlet temperature setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 0
+         max-pres-value: 100
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40151)
+         object-name: "Primary-side flow delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: minutes
+         min-pres-value: 1
+         max-pres-value: 120
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40152)
+         object-name: "Primary-side low-temperature setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 2
+         max-pres-value: 40
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40153)
+         object-name: "Primary-side high-temperature setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 6
+         max-pres-value: 50
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40154)
+         object-name: "Primary-side temperature reset hysteresis"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 0.5
+         max-pres-value: 5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40155)
+         object-name: "Primary-side overpressure setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 2
+         max-pres-value: 10
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40171)
+         object-name: "Secondary-side redundant temperature difference"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         min-pres-value: 0.1
+         max-pres-value: 10
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40172)
+         object-name: "Secondary-side redundant temperature delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 120
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40173)
+         object-name: "Secondary-side redundant pressure difference"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.1
+         max-pres-value: 10
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40174)
+         object-name: "Secondary-side redundant pressure delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 0
+         max-pres-value: 120
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40191)
+         object-name: "Primary-side dirty filter setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.2
+         max-pres-value: 1
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40192)
+         object-name: "Primary-side dirty filter hysteresis"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.1
+         max-pres-value: 0.5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40193)
+         object-name: "Primary-side dirty filter delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 10
+         max-pres-value: 600
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40194)
+         object-name: "Secondary-side dirty filter setpoint"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.2
+         max-pres-value: 1
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40195)
+         object-name: "Secondary-side dirty filter hysteresis"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0.1
+         max-pres-value: 0.5
+         cov-increment: 0.01 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40196)
+         object-name: "Secondary-side dirty filter delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 10
+         max-pres-value: 600
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40211)
+         object-name: "Leak detection - flood tray"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40212)
+         object-name: "Leak detection - underfloor"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40213)
+         object-name: "Underfloor leak delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 5
+         max-pres-value: 60
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40221)
+         object-name: "Pump operation changeover cycle"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 30
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40241)
+         object-name: "Secondary-loop coolant type"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40242)
+         object-name: "Primary-loop coolant type"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40251)
+         object-name: "Device address"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40252)
+         object-name: "Number of devices in group"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40253)
+         object-name: "Number of operating devices"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 1
+         max-pres-value: 8
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40254)
+         object-name: "Changeover cycle"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 6
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40255)
+         object-name: "Changeover day"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 6
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40256)
+         object-name: "Changeover time - hour"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         min-pres-value: 0
+         max-pres-value: 23
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40257)
+         object-name: "Changeover time - minute"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: minutes
+         min-pres-value: 0
+         max-pres-value: 59
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40258)
+         object-name: "Enable ALS Number Control"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         min-pres-value: 0
+         max-pres-value: 1
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40271)
+         object-name: "Startup alarm delay"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: minutes
+         min-pres-value: 1
+         max-pres-value: 120
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  },
+  {
+         object-identifier: (analog-output, 40274)
+         object-name: "Data logging interval"
+         object-type: analog-output
+         property-list: ?
+         present-value: ? W
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: seconds
+         min-pres-value: 1
+         max-pres-value: 60
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+  }
+}
+
+End of BACnet Protocol Implementation Conformance Statement

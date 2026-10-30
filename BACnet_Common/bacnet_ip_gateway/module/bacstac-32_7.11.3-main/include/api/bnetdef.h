@@ -1,0 +1,2201 @@
+/*
+ * BACstac(TM) BNETDEF.H
+ * Copyright (c) 1996-2024 by Cimetrics Inc. All rights reserved.
+ *
+ * Purpose: define BACnet enumerations and constants
+ *
+ */
+
+
+#ifndef BNETDEF_H
+#define BNETDEF_H
+
+#ifndef BACBASE_H
+#include "bacbase.h"
+#endif
+
+#include "bnpropid.h" /* BACSTAC_PROPERTY_ID */
+
+typedef enum BACSTAC_OBJECT_TYPE
+{
+    OBJ_ACCESS_CREDENTIAL = 32,             /* Add-135-2008f */
+    OBJ_ACCESS_DOOR = 30,                   /* Add-135-2001f */
+    OBJ_ACCESS_POINT = 33,                  /* Add-135-2008f */
+    OBJ_ACCESS_RIGHTS = 34,                 /* Add-135-2008f */
+    OBJ_ACCESS_USER = 35,                   /* Add-135-2008f */
+    OBJ_ACCESS_ZONE = 36,                   /* Add-135-2008f */
+    OBJ_ACCUMULATOR = 23,                   /* Add-135-2001c-4 */
+    OBJ_ALERT_ENROLLMENT = 52,              /* Add-135-2010af-31 */
+    OBJ_ANALOG_INPUT = 0,
+    OBJ_ANALOG_OUTPUT = 1,
+    OBJ_ANALOG_VALUE = 2,
+    OBJ_AUDIT_LOG = 61,                     /* Add-135-2016bi */
+    OBJ_AUDIT_REPORTER = 62,                /* Add-135-2016bi */
+    OBJ_AVERAGING = 18,
+    OBJ_BINARY_INPUT = 3,
+    OBJ_BINARY_LIGHTING_OUTPUT = 55,        /* Add-135-20112az-1 */
+    OBJ_BINARY_OUTPUT = 4,
+    OBJ_BINARY_VALUE = 5,
+    OBJ_BITSTRING_VALUE = 39,               /* Add-135-2008w */
+    OBJ_CALENDAR = 6,
+    OBJ_CHANNEL = 53,                       /* Add-135-2010aa */
+    OBJ_COLOR = 63,                         /* Add-135-2020ca */
+    OBJ_COLOR_TEMPERATURE = 64,             /* Add-135-2020ca */
+    OBJ_COMMAND = 7,
+    OBJ_CHARSTRING_VALUE = 40,              /* Add-135-2008w */
+    OBJ_CRED_DATA_INPUT = 37,               /* Add-135-2008f */
+    OBJ_DATE_PATTERN_VALUE = 41,            /* Add-135-2008w */
+    OBJ_DATE_VALUE = 42,                    /* Add-135-2008w */
+    OBJ_DATETIME_PATTERN_VALUE = 43,        /* Add-135-2008w */
+    OBJ_DATETIME_VALUE = 44,                /* Add-135-2008w */
+    OBJ_DEVICE = 8,
+    OBJ_ELEVATOR_GROUP = 57,                /* Add-135-2012aq */
+    OBJ_ESCALATOR = 58,                     /* Add-135-2012aq */
+    OBJ_EVENT_ENROLLMENT = 9,
+    OBJ_EVENT_LOG = 25,                     /* Add-135-2004b-1 */
+    OBJ_FILE = 10,
+    OBJ_GLOBAL_GROUP = 26,                  /* Add-135-2008p */
+    OBJ_GROUP = 11,
+    OBJ_INTEGER_VALUE = 45,                 /* Add-135-2008w */
+    OBJ_LARGE_ANALOG_VALUE = 46,            /* Add-135-2008w */
+    OBJ_LIFE_SAFETY_POINT = 21,                 /* Add-135c-1,2 */
+    OBJ_LIFE_SAFETY_ZONE = 22,                  /* Add-135c-1,2 */
+    OBJ_LIFT = 59,                          /* Add-135-2012aq */
+    OBJ_LIGHTING_OUTPUT = 54,               /* Add-135-2010i */
+    OBJ_LOAD_CONTROL = 28,                      /* Add-135-2004e */
+    OBJ_LOOP = 12,
+    OBJ_MULTISTATE_INPUT = 13,
+    OBJ_MULTISTATE_OUTPUT = 14,
+    OBJ_MULTISTATE_VALUE = 19,
+    OBJ_NETWORK_PORT = 56,                  /* Add-135-2012ai-1 */
+    OBJ_NETWORK_SECURITY = 38,              /* Add-135-2008g */
+    OBJ_NOTIFICATION_CLASS = 15,
+    OBJ_NOTIFICATION_FORWARDER = 51,        /* Add-135-2010af-29 */
+    OBJ_OCTETSTRING_VALUE = 47,             /* Add-135-2008w */
+    OBJ_POSITIVE_INTEGER_VALUE = 48,        /* Add-135-2008w */
+    OBJ_PROGRAM = 16,
+    OBJ_PULSE_CONVERTER = 24,               /* Add-135-2001c-5 */
+    OBJ_SCHEDULE = 17,
+    OBJ_STAGING = 60,                       /* Add-135-2016bd */
+    OBJ_STRUCTURED_VIEW = 29,               /* Add-135-2004d-1 */
+    OBJ_TIME_PATTERN_VALUE = 49,            /* Add-135-2008w */
+    OBJ_TIME_VALUE = 50,                    /* Add-135-2008w */
+    OBJ_TIMER = 31,                         /* Add-135-2012ay-1 */
+    OBJ_TRENDLOG = 20,
+    OBJ_TRENDLOG_MULTIPLE = 27,             /* Add-135-2004b-3 */
+    OBJ_LAST_KNOWN_TYPE = 64,
+    OBJ_FIRST_PROPRIETARY = 128,
+    OBJ_MAX_TYPE = 1023,
+    BACSTAC_OBJECT_TYPE_MAX = 1023
+    BACSTAC_ENUM_COMPATIBLE(OBJECT_TYPE)
+} BACSTAC_OBJECT_TYPE;
+
+typedef enum BACSTAC_OBJECT_TYPES_BITS
+{
+    OBJ_ACCESS_CREDENTIAL_BIT = 32,         /* Add-135-2008f */
+    OBJ_ACCESS_DOOR_BIT = 30,               /* Add-135-2001f */
+    OBJ_ACCESS_POINT_BIT = 33,              /* Add-135-2008f */
+    OBJ_ACCESS_RIGHTS_BIT = 34,             /* Add-135-2008f */
+    OBJ_ACCESS_USER_BIT = 35,               /* Add-135-2008f */
+    OBJ_ACCESS_ZONE_BIT = 36,               /* Add-135-2008f */
+    OBJ_ACCUMULATOR_BIT = 23,               /* Add-135-2001c-4 */
+    OBJ_ALERT_ENROLLMENT_BIT = 52,          /* Add-135-2010af-31 */
+    OBJ_ANALOG_INPUT_BIT = 0,
+    OBJ_ANALOG_OUTPUT_BIT = 1,
+    OBJ_ANALOG_VALUE_BIT = 2,
+    OBJ_AUDIT_LOG_BIT = 61,                 /* Add-135-2016bi */
+    OBJ_AUDIT_REPORTER_BIT = 62,            /* Add-135-2016bi */
+    OBJ_AVERAGING_BIT = 18,
+    OBJ_BINARY_INPUT_BIT = 3,
+    OBJ_BINARY_LIGHTING_OUTPUT_BIT = 55,    /* Add-135-20112az-1 */
+    OBJ_BINARY_OUTPUT_BIT = 4,
+    OBJ_BINARY_VALUE_BIT = 5,
+    OBJ_BITSTRING_VALUE_BIT = 39,           /* Add-135-2008w */
+    OBJ_CALENDAR_BIT = 6,
+    OBJ_CHANNEL_BIT = 53,                   /* Add-135-2010aa */
+    OBJ_COLOR_BIT = 63,                     /* Add-135-2020ca */
+    OBJ_COLOR_TEMPERATURE_BIT = 64,         /* Add-135-2020ca */
+    OBJ_COMMAND_BIT = 7,
+    OBJ_CHARSTRING_VALUE_BIT = 40,          /* Add-135-2008w */
+    OBJ_CRED_DATA_INPUT_BIT = 37,           /* Add-135-2008f */
+    OBJ_DATE_PATTERN_VALUE_BIT = 41,        /* Add-135-2008w */
+    OBJ_DATE_VALUE_BIT = 42,                /* Add-135-2008w */
+    OBJ_DATETIME_PATTERN_VALUE_BIT = 43,    /* Add-135-2008w */
+    OBJ_DATETIME_VALUE_BIT = 44,            /* Add-135-2008w */
+    OBJ_DEVICE_BIT = 8,
+    OBJ_ELEVATOR_GROUP_BIT = 57,            /* Add-135-2012aq */
+    OBJ_ESCALATOR_BIT = 58,                 /* Add-135-2012aq */
+    OBJ_EVENT_ENROLLMENT_BIT = 9,
+    OBJ_EVENT_LOG_BIT = 25,                 /* Add-135-2004b-1 */
+    OBJ_FILE_BIT = 10,
+    OBJ_GLOBAL_GROUP_BIT = 26,              /* Add-135-2008p */
+    OBJ_GROUP_BIT = 11,
+    OBJ_INTEGER_VALUE_BIT = 45,             /* Add-135-2008w */
+    OBJ_LARGE_ANALOG_VALUE_BIT = 46,        /* Add-135-2008w */
+    OBJ_LIFE_SAFETY_POINT_BIT = 21,              /* Add-135c-1,2 */
+    OBJ_LIFE_SAFETY_ZONE_BIT = 22,               /* Add-135c-1,2 */
+    OBJ_LIFT_BIT = 59,                      /* Add-135-2012aq */
+    OBJ_LIGHTING_OUTPUT_BIT = 54,           /* Add-135-2010i */
+    OBJ_LOAD_CONTROL_BIT = 28,                   /* Add-135-2004e */
+    OBJ_LOOP_BIT = 12,
+    OBJ_MULTISTATE_INPUT_BIT = 13,
+    OBJ_MULTISTATE_OUTPUT_BIT = 14,
+    OBJ_MULTISTATE_VALUE_BIT = 19,
+    OBJ_NETWORK_PORT_BIT = 56,              /* Add-135-2012ai-1 */
+    OBJ_NETWORK_SECURITY_BIT = 38,          /* Add-135-2008g */
+    OBJ_NOTIFICATION_CLASS_BIT = 15,
+    OBJ_NOTIFICATION_FORWARDER_BIT = 51,    /* Add-135-2010af-29 */
+    OBJ_OCTETSTRING_VALUE_BIT = 47,         /* Add-135-2008w */
+    OBJ_POSITIVE_INTEGER_VALUE_BIT = 48,    /* Add-135-2008w */
+    OBJ_PROGRAM_BIT = 16,
+    OBJ_PULSE_CONVERTER_BIT = 24,           /* Add-135-2001c-5 */
+    OBJ_SCHEDULE_BIT = 17,
+    OBJ_STAGING_BIT = 60,                   /* Add-135-2016bd */
+    OBJ_STRUCTURED_VIEW_BIT = 29,           /* Add-135-2004d-1 */
+    OBJ_TIME_PATTERN_VALUE_BIT = 49,        /* Add-135-2008w */
+    OBJ_TIME_VALUE_BIT = 50,                /* Add-135-2008w */
+    OBJ_TIMER_BIT = 31,                     /* Add-135-2012ay-1 */
+    OBJ_TRENDLOG_BIT = 20,
+    OBJ_TRENDLOG_MULTIPLE_BIT = 27          /* Add-135-2004b-3 */
+} BACSTAC_OBJECT_TYPES_BITS;
+
+typedef enum BACSTAC_SERVICES_BITS
+{
+    /* ALARM AND EVENT SERVICES */
+
+    SVC_ACKNOWLEDGE_ALARM = 0,
+    SVC_CONF_COV_NOTIFICATION = 1,
+    SVC_CONF_EVENT_NOTIFICATION = 2,
+    SVC_GET_ALARM_SUMMARY = 3,
+    SVC_GET_ENROLLMENT_SUMMARY = 4,
+    SVC_SUBSCRIBE_COV = 5,
+
+    /* FILE ACCESS SERVICES */
+
+    SVC_ATOMIC_READ_FILE = 6,
+    SVC_ATOMIC_WRITE_FILE   = 7,
+
+    /* OBJECT ACCESS SERVICES */
+
+    SVC_ADD_LIST_ELEMENT = 8,
+    SVC_REMOVE_LIST_ELEMENT = 9,
+    SVC_CREATE_OBJECT = 10,
+    SVC_DELETE_OBJECT = 11,
+    SVC_READ_PROP = 12,
+    SVC_READ_PROP_CONDITIONAL = 13,
+    SVC_READ_PROP_MULTIPLE = 14,
+    SVC_WRITE_PROP = 15,
+    SVC_WRITE_PROP_MULTIPLE = 16,
+
+    /* REMOTE DEVICE MANAGEMENT SERVICES */
+
+    SVC_DEVICE_COMM_CONTROL = 17,
+    SVC_CONF_PRIVATE_TRANSFER = 18,
+    SVC_CONF_TEXT_MESSAGE = 19,
+    SVC_REINITIALIZE_DEVICE = 20,
+
+    /* VIRTUAL TERMINAL SERVICES */
+
+    SVC_VT_OPEN = 21,
+    SVC_VT_CLOSE = 22,
+    SVC_VT_DATA = 23,
+
+    /* SECURITY SERVICES */
+
+    SVC_AUTHENTICATE = 24,
+    SVC_REQUEST_KEY = 25,
+
+    /* UNCONFIRMED SERVICES */
+
+    SVC_I_AM = 26,
+    SVC_I_HAVE = 27,
+    SVC_UNCONF_COV_NOTIFICATION = 28,
+    SVC_UNCONF_EVENT_NOTIFICATION = 29,
+    SVC_UNCONF_PRIVATE_TRANSFER = 30,
+    SVC_UNCONF_TEXT_MESSAGE = 31,
+    SVC_TIME_SYNCHRONIZATION = 32,
+    SVC_WHO_HAS = 33,
+    SVC_WHO_IS = 34,
+    SVC_READ_RANGE = 35,
+    SVC_UTC_TIME_SYNCHRONIZATION = 36,
+
+    /* Addendum C services */
+
+    SVC_LIFE_SAFETY_OPERATION = 37,         /* Add-135c-4 */
+    SVC_SUBSCRIBE_COV_PROP = 38,
+    SVC_GET_EVENT_INFORMATION = 39,
+    SVC_WRITE_GROUP = 40,                   /* Add-2010aa-2 */
+    SVC_SUBSCRIBE_COV_PROP_MULTI = 41,      /* Add-2012aq */
+    SVC_CONF_COV_NOTIFICATION_MULTI = 42,   /* Add-2012aq */
+    SVC_UNCONF_COV_NOTIFICATION_MULTI = 43, /* Add-2012aq */
+    SVC_CONF_AUDIT_NOTIFICATION = 44,       /* Add-2016bi */
+    SVC_AUDIT_LOG_QUERY = 45,               /* Add-2016bi */
+    SVC_UNCONF_AUDIT_NOTIFICATION = 46,     /* Add-2016bi */
+    SVC_WHO_AM_I = 47,                      /* Add-2016bz */
+    SVC_YOU_ARE = 48,                       /* Add-2016bz */
+    SVC_LAST_KNOWN_BIT = 48
+
+    /* for backward compatibility only */
+    , SVC_SUBSCRIBE_COV_PROPERTY = SVC_SUBSCRIBE_COV_PROP
+#ifdef _MSC_VER
+#pragma deprecated(SVC_SUBSCRIBE_COV_PROPERTY)
+#endif /* _MSC_VER */
+
+    /* This definition is provided only for backward compatibility
+     * with the wrong name given earlier. Do not use this name! */
+    , SVC_GET_WRITE_GROUP = SVC_WRITE_GROUP
+#ifdef _MSC_VER
+#pragma deprecated(SVC_GET_WRITE_GROUP)
+#endif /* _MSC_VER */
+
+} BACSTAC_SERVICES_BITS;
+
+typedef enum BACSTAC_STATUS_FLAG_BITS
+{
+    STATUS_IN_ALARM =       0,
+    STATUS_FAULT =          1,
+    STATUS_OVERRIDDEN =     2,
+    STATUS_OUT_OF_SERVICE = 3
+} BACSTAC_STATUS_FLAG_BITS;
+
+typedef enum BACSTAC_EVENT_STATE
+{
+    STATE_NORMAL =          0,
+    STATE_FAULT =           1,
+    STATE_OFFNORMAL =       2,
+    STATE_HIGH_LIMIT =      3,
+    STATE_LOW_LIMIT =       4,
+    STATE_LIFE_SAFETY_ALARM=5,                   /* Add-135c */
+    STATE_LAST_KNOWN =      5,
+    STATE_FIRST_PROPRIETARY = 64,
+    STATE_MAX               = 65535,
+    BACSTAC_EVENT_STATE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(EVENT_STATE)
+} BACSTAC_EVENT_STATE;
+
+typedef enum BACSTAC_BINARY_PV
+{
+    BACSTAC_BINARY_INACTIVE = 0,
+    BACSTAC_BINARY_ACTIVE = 1,
+    BACSTAC_BINARY_PV_MAX = 1
+    BACSTAC_ENUM_COMPATIBLE(BINARY_PV)
+} BACSTAC_BINARY_PV;
+
+typedef enum BACSTAC_DEVICE_STATUS
+{
+    DEV_OPERATIONAL = 0,
+    DEV_OPERATIONAL_READ_ONLY = 1,
+    DEV_DOWNLOAD_REQUIRED = 2,
+    DEV_DOWNLOAD_IN_PROGRESS = 3,
+    DEV_NON_OPERATIONAL = 4,
+    DEV_BACKUP_IN_PROGRESS = 5,
+    DEV_LAST_KNOWN_STATUS = 5,
+    DEV_FIRST_PROPRIETARY = 64,
+    DEV_MAX_STATUS = 65535,
+    BACSTAC_DEVICE_STATUS_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(DEVICE_STATUS)
+} BACSTAC_DEVICE_STATUS;
+
+typedef enum BACSTAC_POLARITY
+{
+    POLARITY_NORMAL = 0,
+    POLARITY_REVERSE = 1,
+    BACSTAC_POLARITY_MAX = 1
+    BACSTAC_ENUM_COMPATIBLE(POLARITY)
+} BACSTAC_POLARITY;
+
+#ifndef BACSTAC_SEGMENTATION_DEFINED
+#define BACSTAC_SEGMENTATION_DEFINED
+typedef enum BACSTAC_SEGMENTATION
+{
+    SEGMENTED_BOTH = 0,
+    SEGMENTED_TRANSMIT = 1,
+    SEGMENTED_RECEIVE = 2,
+    NO_SEGMENTATION = 3,
+    BACSTAC_SEGMENTATION_MAX = 3
+    BACSTAC_ENUM_COMPATIBLE(SEGMENTATION)
+} BACSTAC_SEGMENTATION;
+#endif
+
+typedef enum BACSTAC_RELIABILITY
+{
+    RELIABILITY_NO_FAULT_DETECTED = 0,
+    RELIABILITY_NO_SENSOR = 1,
+    RELIABILITY_OVER_RANGE = 2,
+    RELIABILITY_UNDER_RANGE = 3,
+    RELIABILITY_OPEN_LOOP = 4,
+    RELIABILITY_SHORTED_LOOP = 5,
+    RELIABILITY_NO_OUTPUT = 6,
+    RELIABILITY_UNRELIABLE_OTHER = 7,
+    RELIABILITY_PROCESS_ERROR = 8,
+    RELIABILITY_MULTI_STATE_FAULT = 9,
+    RELIABILITY_CONFIGURATION_ERROR = 10,   /* Add-135-2001a */
+    RELIABILITY_COMMUNICATION_FAILURE = 12, /* Add-135-2004b */
+    RELIABILITY_MEMBER_FAULT = 13,          /*Add -135-2008p */
+    RELIABILITY_MONITORED_OBJECT_FAULT = 14,/*Add -135-2010af */
+    RELIABILITY_TRIPPED = 15,               /*Add -135-2010i */
+    RELIABILITY_LAMP_FAILURE = 16,          /*Add -135-2012az-1 */
+    RELIABILITY_ACTIVATION_FAILURE = 17,    /*Add -135-2012ai */
+    RELIABILITY_RENEW_DHCP_FAILURE = 18,    /*Add -135-2012ai */
+    RELIABILITY_RENEW_FD_REG_FAILURE = 19,  /*Add -135-2012ai */
+    RELIABILITY_RESTART_AUTO_FAILURE = 20,  /*Add -135-2012ai */
+    RELIABILITY_RESTART_FAILURE = 21,       /*Add -135-2012ai */
+    RELIABILITY_PROP_COMMAND_FAILURE = 22,  /*Add -135-2012ai */
+    RELIABILITY_FAULTS_LISTED = 23,         /*Add -135-2012aq */
+    RELIABILITY_REF_OBJ_FAULT = 24,         /*Add -135-2012bf */
+    RELIABILITY_MULTI_STATE_OUT_OF_RANGE = 25, /*Add -135-2016ar */
+    RELIABILITY_LAST_KNOWN = 25,
+    RELIABILITY_FIRST_PROPRIETARY = 64,
+    RELIABILITY_MAX = 65535,
+    BACSTAC_RELIABILITY_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(RELIABILITY)
+} BACSTAC_RELIABILITY;
+
+typedef enum BACSTAC_ENGINEERING_UNITS
+{
+    /* Acceleration */
+
+    UNIT_M_PER_SECOND_PER_SECOND = 166,     /* 2001 Add-135d-1 */
+
+    /* Area */
+
+    UNIT_SQ_METERS = 0,
+    UNIT_SQ_CENTIMETERS = 116,
+    UNIT_SQ_FEET = 1,
+    UNIT_SQ_INCHES = 115,
+
+    /* CURRENCY */
+
+    UNIT_CURRENCY1 = 105,
+    UNIT_CURRENCY2 = 106,
+    UNIT_CURRENCY3 = 107,
+    UNIT_CURRENCY4 = 108,
+    UNIT_CURRENCY5 = 109,
+    UNIT_CURRENCY6 = 110,
+    UNIT_CURRENCY7 = 111,
+    UNIT_CURRENCY8 = 112,
+    UNIT_CURRENCY9 = 113,
+    UNIT_CURRENCY10 = 114,
+
+    /* EFFICIENCY */
+
+    UNIT_BTU_PER_HOUR_PER_WATT = 47898,              /* Add-135-2020cn */
+    UNIT_BTU_PER_WATT_HOUR_SEASONAL = 47899,         /* Add-135-2020cn */
+    UNIT_COEFFICIENT_OF_PERFORMANCE = 47900,         /* Add-135-2020cn */
+    UNIT_COEFFICIENT_OF_PERFORMANCE_SEASONAL = 47901,/* Add-135-2020cn */
+    UNIT_KILOWATT_PER_TON_REFRIGERATION = 47902,     /* Add-135-2020cn */
+    UNIT_LUMENS_PER_WATT = 47903,                    /* Add-135-2020cn */
+
+    /* ELECTRICAL */
+
+    UNIT_MILLIAMPERES = 2,
+    UNIT_AMPERES = 3,
+    UNIT_AMPERES_PER_METER = 167,           /* 2001 Add-135d-1 */
+    UNIT_AMPERES_PER_SQUARE_METER = 168,    /* 2001 Add-135d-1 */
+    UNIT_AMPERE_SQUARE_METERS = 169,        /* 2001 Add-135d-1 */
+    UNIT_DECIBELS = 199,                    /* 2008 Add-135z-4 */
+    UNIT_DECIBELS_MILLIVOLT = 200,          /* 2008 Add-135z-4 */
+    UNIT_DECIBELS_VOLT = 201,               /* 2008 Add-135z-4 */
+    UNIT_FARADS = 170,                      /* 2001 Add-135d-1 */
+    UNIT_HENRYS = 171,                      /* 2001 Add-135d-1 */
+    UNIT_OHMS = 4,
+    UNIT_OHM_METER_SQ_PER_METER = 237,
+    UNIT_OHM_METERS = 172,                  /* 2001 Add-135d-1 */
+    UNIT_MILLIOHMS = 145,                   /* 2001 Add-135a-7 */
+    UNIT_KILOHMS = 122,
+    UNIT_MEGOHMS = 123,
+    UNIT_MICROSIEMENS = 190,
+    UNIT_MILLISIEMENS = 202,                /* 2008 Add-135z-4 */
+    UNIT_SIEMENS = 173, /* 1 mho equals 1 siemens*/ /* 2001 Add-135d-1 */
+    UNIT_SIEMENS_PER_METER = 174,           /* 2001 Add-135d-1 */
+    UNIT_MICROSIEMENS_PER_CENTIMETER = 47909, /* Add-135-2020cn */
+    UNIT_MILLISIEMENS_PER_CENTIMETER = 47910, /* Add-135-2020cn */
+    UNIT_MILLISIEMENS_PER_METER = 47911,    /* Add-135-2020cn */
+    UNIT_TESLAS = 175,                      /* 2001 Add-135d-1 */
+    UNIT_VOLTS = 5,
+    UNIT_MILLIVOLTS = 124,
+    UNIT_KILOVOLTS = 6,
+    UNIT_MEGAVOLTS = 7,
+    UNIT_VOLT_AMPERES = 8,
+    UNIT_KILOVOLT_AMPERES = 9,
+    UNIT_MEGAVOLT_AMPERES = 10,
+    UNIT_VOLT_AMPERES_REACTIVE = 11,
+    UNIT_KILOVOLT_AMPERES_REACTIVE = 12,
+    UNIT_MEGAVOLT_AMPERES_REACTIVE = 13,
+    UNIT_VOLTS_PER_KELVIN = 176,            /* 2001 Add-135d-1 */
+    UNIT_VOLTS_PER_METER = 177,             /* 2001 Add-135d-1 */
+    UNIT_DEGREES_PHASE = 14,
+    UNIT_POWER_FACTOR = 15,
+    UNIT_WEBERS = 178,                      /* 2001 Add-135d-1 */
+
+    /* ENERGY */
+
+    UNIT_AMPERE_SECONDS = 238,
+    UNIT_VOLT_AMPERE_HOURS = 239,
+    UNIT_KILOVOLT_AMPERE_HOURS = 240,
+    UNIT_MEGAVOLT_AMPERE_HOURS = 241,
+    UNIT_VOLT_AMPERE_REACTIVE_HOURS = 242,
+    UNIT_KILOVOLT_AMPERE_REACTIVE_HOURS = 243,
+    UNIT_MEGAVOLT_AMPERE_REACTIVE_HOURS = 244,
+    UNIT_VOLT_SQUARE_HOURS = 245,
+    UNIT_AMPERE_SQUARE_HOURS = 246,
+    UNIT_JOULES = 16,
+    UNIT_KILOJOULES = 17,
+    UNIT_KILOJOULES_PER_KG = 125,
+    UNIT_MEGAJOULES = 126,
+    UNIT_GIGAJOULES = 47925,                /* Add-135-2020cn */
+    UNIT_TERAJOULES = 47926,                /* Add-135-2020cn */
+    UNIT_WATT_HOURS = 18,
+    UNIT_KILOWATT_HOURS = 19,
+    UNIT_MEGAWATT_HOURS = 146,              /* 2001 Add-135a-7 */
+    UNIT_GIGAWATT_HOURS = 47927,            /* Add-135-2020cn */
+    UNIT_WATT_REACTIVE_HOURS = 203,         /* 2008 Add-135z-4 */
+    UNIT_KILOWATT_REACTIVE_HOURS = 204,     /* 2008 Add-135z-4 */
+    UNIT_MEGAWATT_REACTIVE_HOURS = 205,     /* 2008 Add-135z-4 */
+    UNIT_GIGAWATT_REACTIVE_HOURS = 47928,   /* Add-135-2020cn */
+    UNIT_BTUS = 20,
+    UNIT_KILO_BTUS = 147,                   /* 2001 Add-135a-7 */
+    UNIT_MEGA_BTUS = 148,                   /* 2001 Add-135a-7 */
+    UNIT_THERMS = 21,
+    UNIT_TON_HOURS = 22,
+    UNIT_ACTIVE_ENERGY_PULSE_VALUE = 47918,          /* Add-135-2020cn */
+    UNIT_REACTIVE_ENERGY_PULSE_VALUE = 47919,        /* Add-135-2020cn */
+    UNIT_APPARENT_ENERGY_PULSE_VALUE = 47920,        /* Add-135-2020cn */
+    UNIT_VOLT_SQ_HOUR_PULSE_VALUE = 47921,           /* Add-135-2020cn */
+    UNIT_AMPERE_SQ_HOUR_PULSE_VALUE = 47922,         /* Add-135-2020cn */
+
+    /* ENTHALPY */
+
+    UNIT_JOULES_PER_KG_DRY_AIR = 23,
+    UNIT_KILOJOULES_PER_KG_DRY_AIR = 149,   /* 2001 Add-135a-7 */
+    UNIT_MEGAJOULES_PER_KG_DRY_AIR = 150,   /* 2001 Add-135a-7 */
+    UNIT_BTUS_PER_LB_DRY_AIR = 24,
+    UNIT_BTUS_PER_POUND = 117,
+
+    /* ENTROPY */
+
+    UNIT_JOULES_PER_KELVIN = 127,
+    UNIT_KILOJOULES_PER_KELVIN = 151,       /* 2001 Add-135a-7 */
+    UNIT_MEGAJOULES_PER_KELVIN = 152,       /* 2001 Add-135a-7 */
+    UNIT_JOULES_PER_KG_KELVIN = 128,
+
+    /* FORCE */
+
+    UNIT_NEWTON = 153,                      /* 2001 Add-135a-7 */
+
+    /* FREQUENCY */
+
+    UNIT_CYCLES_PER_HOUR = 25,
+    UNIT_CYCLES_PER_MINUTE = 26,
+    UNIT_HERTZ = 27,
+    UNIT_KILOHERTZ = 129,
+    UNIT_MEGAHERTZ = 130,
+    UNIT_PER_DAY = 47823,                   /* Add-135-2020cn */
+    UNIT_PER_HOUR = 131,
+    UNIT_PER_MINUTE = 100,
+    UNIT_PER_SECOND = 101,
+    UNIT_PER_MILLISECOND = 47824,           /* Add-135-2020cn */
+
+    /* HUMIDITY */
+
+    UNIT_GRAMS_OF_WATER_PER_KG = 28,
+    UNIT_RELATIVE_HUMIDITY = 29,
+
+    /* LENGTH */
+
+    UNIT_MICROMETERS = 194,                 /* 2008 Add-135z-4 */
+    UNIT_MILLIMETERS = 30,
+    UNIT_CENTIMETERS = 118,
+    UNIT_KILOMETERS = 193,                  /* 2008 Add-135z-4 */
+    UNIT_METERS = 31,
+    UNIT_INCHES = 32,
+    UNIT_FEET  = 33,
+    UNIT_YARDS = 47825,                     /* Add-135-2020cn */
+    UNIT_MILES = 47826,                     /* Add-135-2020cn */
+    UNIT_NAUTICAL_MILES = 47827,            /* Add-135-2020cn */
+
+    /* LIGHT */
+
+    UNIT_CANDELAS = 179,                    /* 2001 Add-135d-1 */
+    UNIT_CANDELAS_PER_SQUARE_METER = 180,   /* 2001 Add-135d-1 */
+    UNIT_WATTS_PER_SQ_FOOT = 34,
+    UNIT_WATTS_PER_SQ_METER = 35,
+    UNIT_LUMENS = 36,
+    UNIT_LUXES = 37,
+    UNIT_FOOT_CANDLES = 38,
+
+    /* MASS */
+
+    UNIT_NANOGRAMS = 47828,                 /* Add-135-2020cn */
+    UNIT_MICROGRAMS = 47829,                /* Add-135-2020cn */
+    UNIT_MILLIGRAMS = 196,                  /* 2008 Add-135z-4 */
+    UNIT_GRAMS = 195,                       /* 2008 Add-135z-4 */
+    UNIT_KILOGRAMS = 39,
+    UNIT_POUNDS_MASS = 40,
+    UNIT_TONS = 41,
+    UNIT_METRIC_TONNES = 47830,             /* Add-135-2020cn */
+    UNIT_SHORT_TONS = 47831,                /* Add-135-2020cn */
+    UNIT_LONG_TONS = 47832,                 /* Add-135-2020cn */
+
+    /* MASS FLOW */
+
+    UNIT_GS_PER_SECOND = 154,               /* 2001 Add-135a-7 */
+    UNIT_GS_PER_MINUTE = 155,               /* 2001 Add-135a-7 */
+    UNIT_GRAMS_PER_HOUR = 47833,            /* Add-135-2020cn */
+    UNIT_GRAMS_PER_DAY = 47834,             /* Add-135-2020cn */
+    UNIT_KGS_PER_SECOND = 42,
+    UNIT_KGS_PER_MINUTE = 43,
+    UNIT_KGS_PER_HOUR = 44,
+    UNIT_KGS_PER_DAY = 47835,               /* Add-135-2020cn */
+    UNIT_POUNDS_MASS_PER_SECOND = 119,
+    UNIT_POUNDS_MASS_PER_MINUTE = 45,
+    UNIT_POUNDS_MASS_PER_HOUR = 46,
+    UNIT_POUNDS_MASS_PER_DAY = 47812,       /* Add-135-2012bg-1 */
+    UNIT_TONS_PER_HOUR = 156,
+    UNIT_SHORT_TONS_PER_SECOND = 47836,     /* Add-135-2020cn */
+    UNIT_SHORT_TONS_PER_MINUTE = 47837,     /* Add-135-2020cn */
+    UNIT_SHORT_TONS_PER_HOUR = 47838,       /* Add-135-2020cn */
+    UNIT_SHORT_TONS_PER_DAY = 47839,        /* Add-135-2020cn */
+    UNIT_METRIC_TONNES_PER_SECOND = 47840,  /* Add-135-2020cn */
+    UNIT_METRIC_TONNES_PER_MINUTE = 47841,  /* Add-135-2020cn */
+    UNIT_METRIC_TONNES_PER_HOUR = 47842,    /* Add-135-2020cn */
+    UNIT_METRIC_TONNES_PER_DAY = 47843,     /* Add-135-2020cn */
+    UNIT_LONG_TONS_PER_SECOND = 47844,      /* Add-135-2020cn */
+    UNIT_LONG_TONS_PER_MINUTE = 47845,      /* Add-135-2020cn */
+    UNIT_LONG_TONS_PER_HOUR = 47846,        /* Add-135-2020cn */
+    UNIT_LONG_TONS_PER_DAY = 47847,         /* Add-135-2020cn */
+
+    /* POWER */
+
+    UNIT_MILLIWATTS = 132,
+    UNIT_WATTS = 47,
+    UNIT_KILOWATTS = 48,
+    UNIT_MEGAWATTS = 49,
+    UNIT_GIGAWATTS = 47924,                 /* Add-135-2020cn */
+    UNIT_BTUS_PER_SECOND = 47848,           /* Add-135-2020cn */
+    UNIT_BTUS_PER_MINUTE = 47849,           /* Add-135-2020cn */
+    UNIT_BTUS_PER_HOUR = 50,
+    UNIT_BTUS_PER_DAY = 47850,              /* Add-135-2020cn */
+    UNIT_KILO_BTUS_PER_SECOND = 47851,      /* Add-135-2020cn */
+    UNIT_KILO_BTUS_PER_MINUTE = 47852,      /* Add-135-2020cn */
+    UNIT_KILO_BTUS_PER_HOUR = 157,          /* 2001 Add-135a-7 */
+    UNIT_KILO_BTUS_PER_DAY = 47853,         /* Add-135-2020cn */
+    UNIT_MEGA_BTUS_PER_SECOND = 47854,      /* Add-135-2020cn */
+    UNIT_MEGA_BTUS_PER_MINUTE = 47855,      /* Add-135-2020cn */
+    UNIT_MEGA_BTUS_PER_HOUR = 47856,        /* Add-135-2020cn */
+    UNIT_MEGA_BTUS_PER_DAY = 47857,         /* Add-135-2020cn */
+    UNIT_JOULES_PER_SECOND = 47858,         /* Add-135-2020cn */
+    UNIT_JOULES_PER_MINUTE = 47859,         /* Add-135-2020cn */
+    UNIT_JOULES_PER_HOUR = 247,
+    UNIT_JOULES_PER_DAY = 47860,            /* Add-135-2020cn */
+    UNIT_KILOJOULES_PER_SECOND = 47861,     /* Add-135-2020cn */
+    UNIT_KILOJOULES_PER_MINUTE = 47862,     /* Add-135-2020cn */
+    UNIT_KILOJOULES_PER_HOUR = 47863,       /* Add-135-2020cn */
+    UNIT_KILOJOULES_PER_DAY = 47864,        /* Add-135-2020cn */
+    UNIT_MEGAJOULES_PER_SECOND = 47865,     /* Add-135-2020cn */
+    UNIT_MEGAJOULES_PER_MINUTE = 47866,     /* Add-135-2020cn */
+    UNIT_MEGAJOULES_PER_HOUR = 47867,       /* Add-135-2020cn */
+    UNIT_MEGAJOULES_PER_DAY = 47868,        /* Add-135-2020cn */
+    UNIT_HORSEPOWER = 51,
+    UNIT_TONS_REFRIGERATION = 52,
+
+    /* PRESSURE */
+
+    UNIT_PASCALS = 53,
+    UNIT_HECTOPASCALS = 133,
+    UNIT_KILOPASCALS = 54,
+    UNIT_MILLIBARS = 134,
+    UNIT_BARS = 55,
+    UNIT_POUNDS_FORCE_PER_SQ_INCH = 56,
+    UNIT_POUNDS_FORCE_PER_SQ_INCH_ABSOLUTE = 47907, /* Add-135-2020cn */
+    UNIT_POUNDS_FORCE_PER_SQ_INCH_GAUGE = 47908, /* Add-135-2020cn */
+    UNIT_MILLIMETERS_OF_WATER = 206,        /* 2008 Add-135z-4 */
+    UNIT_CENTIMETERS_OF_WATER = 57,
+    UNIT_INCHES_OF_WATER = 58,
+    UNIT_MILLIMETERS_OF_MERCURY = 59,
+    UNIT_CENTIMETERS_OF_MERCURY = 60,
+    UNIT_INCHES_OF_MERCURY = 61,
+
+    /* TEMPERATURE */
+
+    UNIT_DEGREES_C = 62,
+    UNIT_DEGREES_C_PER_DAY = 47869,         /* Add-135-2020cn */
+    UNIT_DEGREES_C_PER_HOUR = 91,
+    UNIT_DEGREES_C_PER_MINUTE = 92,
+    UNIT_KELVIN = 63,
+    UNIT_KELVIN_PER_DAY = 47870,            /* Add-135-2020cn */
+    UNIT_KELVIN_PER_HOUR = 181,             /* 2001 Add-135d-1 */
+    UNIT_KELVIN_PER_MINUTE = 182,           /* 2001 Add-135d-1 */
+    UNIT_DEGREES_F = 64,
+    UNIT_DEGREES_F_PER_DAY = 47871,         /* Add-135-2020cn */
+    UNIT_DEGREES_F_PER_HOUR = 93,
+    UNIT_DEGREES_F_PER_MINUTE = 94,
+    UNIT_DEGREE_DAYS_C = 65,
+    UNIT_DEGREE_DAYS_F = 66,
+    UNIT_DELTA_DEGREES_CELSIUS = 47872,     /* Add-135-2020cn */
+    UNIT_DELTA_DEGREES_FAHRENHEIT = 120,
+    UNIT_DELTA_KELVIN = 121,
+
+    /* TIME */
+
+    UNIT_YEARS = 67,
+    UNIT_MONTHS = 68,
+    UNIT_WEEKS = 69,
+    UNIT_DAYS = 70,
+    UNIT_HOURS = 71,
+    UNIT_MINUTES = 72,
+    UNIT_SECONDS = 73,
+    UNIT_HUNDREDTHS_SECONDS = 158,          /* 2001 Add-135a-7 */
+    UNIT_MILLISECONDS = 159,                /* 2001 Add-135a-7 */
+
+    /* TORQUE */                            /* 2001 Add-135a-7 */
+
+    UNIT_NEWTON_METERS = 160,               /* 2001 Add-135a-7 */
+    UNIT_POUND_FORCE_FEET = 47904,          /* Add-135-2020cn */
+    UNIT_POUND_FORCE_INCHES = 47905,        /* Add-135-2020cn */
+    UNIT_OUNCE_FORCE_INCHES = 47906,        /* Add-135-2020cn */
+
+    /* VELOCITY */
+
+    UNIT_MILLIMETERS_PER_SECOND = 161,      /* 2001 Add-135a-7 */
+    UNIT_MILLIMETERS_PER_MINUTE = 162,      /* 2001 Add-135a-7 */
+    UNIT_METERS_PER_SECOND = 74,
+    UNIT_METERS_PER_MINUTE = 163,           /* 2001 Add-135a-7 */
+    UNIT_METERS_PER_HOUR = 164,             /* 2001 Add-135a-7 */
+    UNIT_KILOMETERS_PER_HOUR = 75,
+    UNIT_FEET_PER_SECOND = 76,
+    UNIT_FEET_PER_MINUTE = 77,
+    UNIT_MILES_PER_HOUR = 78,
+
+    /* VOLUME */
+
+    UNIT_CUBIC_FEET = 79,
+    UNIT_CUBIC_METERS = 80,
+    UNIT_IMPERIAL_GALLONS = 81,
+    UNIT_MILLILITERS = 197,                 /* 2008 Add-135z-4 */
+    UNIT_LITERS = 82,
+    UNIT_US_GALLONS = 83,
+    UNIT_MILLIONS_OF_US_GALLONS = 47912,    /* Add-135-2020cn */
+    UNIT_MILLIONS_OF_IMPERIAL_GALLONS = 47913, /* Add-135-2020cn */
+    UNIT_VOLUME1 = 47937,                   /* Add-135-2020cn */
+    UNIT_VOLUME2 = 47938,                   /* Add-135-2020cn */
+    UNIT_VOLUME3 = 47939,                   /* Add-135-2020cn */
+    UNIT_VOLUME4 = 47940,                   /* Add-135-2020cn */
+    UNIT_VOLUME5 = 47941,                   /* Add-135-2020cn */
+    UNIT_VOLUME6 = 47942,                   /* Add-135-2020cn */
+    UNIT_VOLUME7 = 47943,                   /* Add-135-2020cn */
+    UNIT_VOLUME8 = 47944,                   /* Add-135-2020cn */
+    UNIT_VOLUME9 = 47945,                   /* Add-135-2020cn */
+    UNIT_VOLUME10 = 47946,                  /* Add-135-2020cn */
+
+    /* VOLUMETRIC FLOW */
+
+    UNIT_CUBIC_FEET_PER_SECOND = 142,
+    UNIT_CUBIC_FEET_PER_MINUTE = 84,
+    UNIT_MILLION_STD_CUBIC_FEET_PER_MINUTE = 254,    /* Add-135-2012bg-1 */
+    UNIT_CUBIC_FEET_PER_HOUR = 191,
+    UNIT_CUBIC_FEET_PER_DAY = 248,
+    UNIT_STD_CUBIC_FEET_PER_DAY = 47808,             /* Add-135-2012bg-1 */
+    UNIT_MILLION_STD_CUBIC_FEET_PER_DAY = 47809,     /* Add-135-2012bg-1 */
+    UNIT_THOUSAND_CUBIC_FEET_PER_DAY = 47810,        /* Add-135-2012bg-1 */
+    UNIT_THOUSAND_STD_CUBIC_FEET_PER_DAY = 47811,    /* Add-135-2012bg-1 */
+    UNIT_MILLION_CUBIC_FEET_PER_MINUTE = 47873,      /* Add-135-2020cn */
+    UNIT_MILLION_CUBIC_FEET_PER_DAY = 47874,         /* Add-135-2020cn */
+    UNIT_CUBIC_METERS_PER_SECOND = 85,
+    UNIT_CUBIC_METERS_PER_MINUTE = 165,     /* 2001 Add-135a-7 */
+    UNIT_CUBIC_METERS_PER_HOUR = 135,
+    UNIT_CUBIC_METERS_PER_DAY = 249,
+    UNIT_IMP_GALLONS_PER_SECOND = 47875,    /* Add-135-2020cn */
+    UNIT_IMP_GALLONS_PER_MINUTE = 86,
+    UNIT_IMP_GALLONS_PER_HOUR = 47876,      /* Add-135-2020cn */
+    UNIT_IMP_GALLONS_PER_DAY = 47877,       /* Add-135-2020cn */
+    UNIT_MILLILITERS_PER_SECOND = 198,      /* 2008 Add-135z-4 */
+    UNIT_MILLILITERS_PER_MINUTE = 47914,    /* Add-135-2020cn */
+    UNIT_LITERS_PER_SECOND = 87,
+    UNIT_LITERS_PER_MINUTE = 88,
+    UNIT_LITERS_PER_HOUR = 136,
+    UNIT_LITERS_PER_DAY = 47878,            /* Add-135-2020cn */
+    UNIT_US_GALLONS_PER_SECOND = 47879,     /* Add-135-2020cn */
+    UNIT_US_GALLONS_PER_MINUTE = 89,
+    UNIT_US_GALLONS_PER_HOUR = 192,
+    UNIT_US_GALLONS_PER_DAY = 47880,        /* Add-135-2020cn */
+    UNIT_CUBIC_METER_PULSE_VALUE = 47923,   /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW1 = 47947,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW2 = 47948,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW3 = 47949,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW4 = 47950,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW5 = 47951,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW6 = 47952,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW7 = 47953,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW8 = 47954,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW9 = 47955,          /* Add-135-2020cn */
+    UNIT_VOLUMETRIC_FLOW10 = 47956,         /* Add-135-2020cn */
+
+    /* OTHER */
+
+    UNIT_DEGREES_ANGULAR = 90,
+    UNIT_JOULE_SECONDS = 183,               /* 2001 Add-135d-1 */
+    UNIT_KG_PER_CUBIC_METER = 186,          /* 2001 Add-135d-1 */
+    UNIT_KWATT_HOURS_PER_SQ_METER = 137,
+    UNIT_KWATT_HOURS_PER_SQ_FOOT = 138,
+    UNIT_WATT_HOURS_PER_CUBIC_METER = 250,
+    UNIT_JOULES_PER_CUBIC_METER = 251,
+    UNIT_MEGAJOULES_PER_SQ_METER = 139,
+    UNIT_MEGAJOULES_PER_SQ_FOOT = 140,
+    UNIT_MOLE_PERCENT = 252,
+    UNIT_NO_UNITS = 95,
+    UNIT_NEWTON_SECONDS = 187,              /* 2001 Add-135d-1 */
+    UNIT_NEWTONS_PER_METER = 188,           /* 2001 Add-135d-1 */
+    UNIT_PARTS_PER_MILLION = 96,
+    UNIT_PARTS_PER_BILLION = 97,
+    UNIT_PASCAL_SECONDS = 253,
+    UNIT_PERCENT = 98,
+    UNIT_PERCENT_OBSCUR_PER_FOOT = 143,     /* Add-135c */
+    UNIT_PERCENT_OBSCUR_PER_METER = 144,    /* Add-135c */
+    UNIT_PERCENT_PER_SECOND = 99,
+    UNIT_PERCENT_PER_MINUTE = 47881,        /* Add-135-2020cn */
+    UNIT_PERCENT_PER_HOUR = 47882,          /* Add-135-2020cn */
+    UNIT_PERCENT_PER_DAY = 47883,           /* Add-135-2020cn */
+    UNIT_PSI_PER_DEGREE_F = 102,
+    UNIT_RADIANS = 103,
+    UNIT_RADIANS_PER_SECOND = 184,          /* 2001 Add-135d-1 */
+    UNIT_REVOLUTIONS_PER_MIN = 104,
+    UNIT_SQUARE_METERS_PER_NEWTON = 185,    /* 2001 Add-135d-1 */
+    UNIT_WATTS_PER_METER_PER_KELVIN = 189,  /* 2001 Add-135d-1 */
+    UNIT_WATTS_PER_SQ_METER_KELVIN = 141,
+    UNIT_PER_MILLE = 207,
+    UNIT_PER_MILLION = 47884,               /* Add-135-2020cn */
+    UNIT_PER_BILLION = 47885,               /* Add-135-2020cn */
+    UNIT_GRAMS_PER_GRAM = 208,
+    UNIT_MILLIGRAMS_PER_GRAM = 211,
+    UNIT_MICROGRAMS_PER_GRAM = 47886,       /* Add-135-2020cn */
+    UNIT_NANOGRAMS_PER_GRAM = 47887,        /* Add-135-2020cn */
+    UNIT_KILOGRAMS_PER_KILOGRAM = 209,
+    UNIT_GRAMS_PER_KILOGRAM = 210,
+    UNIT_MILLIGRAMS_PER_KILOGRAM = 212,
+    UNIT_MICROGRAMS_PER_KILOGRAM = 47888,   /* Add-135-2020cn */
+    UNIT_NANOGRAMS_PER_KILOGRAM = 47889,    /* Add-135-2020cn */
+    UNIT_GRAMS_PER_MILLILITER = 213,
+    UNIT_MILLIGRAMS_PER_MILLILITER = 47890, /* Add-135-2020cn */
+    UNIT_MICROGRAMS_PER_MILLILITER = 47891, /* Add-135-2020cn */
+    UNIT_NANOGRAMS_PER_MILLILITER = 47892,  /* Add-135-2020cn */
+    UNIT_KILOGRAMS_PER_LITER = 47893,       /* Add-135-2020cn */
+    UNIT_GRAMS_PER_LITER = 214,
+    UNIT_MILLIGRAMS_PER_LITER = 215,
+    UNIT_MICROGRAMS_PER_LITER = 216,
+    UNIT_NANOGRAMS_PER_LITER = 47894,       /* Add-135-2020cn */
+    UNIT_GRAMS_PER_CUBIC_METER = 217,
+    UNIT_MILLIGRAMS_PER_CUBIC_METER = 218,
+    UNIT_MICROGRAMS_PER_CUBIC_METER = 219,
+    UNIT_NANOGRAMS_PER_CUBIC_METER = 220,
+    UNIT_GRAMS_PER_CUBIC_CENTIMETER = 221,
+    UNIT_MILLIGRAMS_PER_CUBIC_CENTIMETER = 47895,    /* Add-135-2020cn */
+    UNIT_MICROGRAMS_PER_CUBIC_CENTIMETER = 47896,    /* Add-135-2020cn */
+    UNIT_NANOGRAMS_PER_CUBIC_CENTIMETER = 47897,     /* Add-135-2020cn */
+    UNIT_BECQUERELS = 222,
+    UNIT_KILOBECQUERELS = 223,
+    UNIT_MEGABECQUERELS = 224,
+    UNIT_GRAY = 225,
+    UNIT_MILLIGRAY = 226,
+    UNIT_MICROGRAY = 227,
+    UNIT_SIEVERTS = 228,
+    UNIT_MILLISIEVERTS = 229,
+    UNIT_MICROSIEVERTS = 230,
+    UNIT_MICROSIEVERTS_PER_HOUR = 231,
+    UNIT_MILLIREMS = 47814,                          /* Add-135-2012bg-1 */
+    UNIT_MILLIREMS_PER_HOUR = 47815,                 /* Add-135-2012bg-1 */
+    UNIT_DECIBELS_A = 232,
+    UNIT_NEPHELOMETRIC_TURBIDITY_UNIT = 233,
+    UNIT_PH = 234,
+    UNIT_GRAMS_PER_SQUARE_METER = 235,
+    UNIT_MINUTES_PER_KELVIN = 236,
+    UNIT_DEGREES_LOVIBOND = 47816,                   /* Add-135-2016br-1 */
+    UNIT_ALCOHOL_BY_VOLUME = 47817,                  /* Add-135-2016br-1 */
+    UNIT_INTERNATIONAL_BITTERING = 47818,            /* Add-135-2016br-1 */
+    UNIT_EUROPEAN_BITTERNESS = 47819,                /* Add-135-2016br-1 */
+    UNIT_DEGREES_PLATO = 47820,                      /* Add-135-2016br-1 */
+    UNIT_SPECIFIC_GRAVITY = 47821,                   /* Add-135-2016br-1 */
+    UNIT_EUROPEAN_BREWING_CONVENTION = 47822,        /* Add-135-2016br-1 */
+    UNIT_MILS_PER_YEAR = 47915,                      /* Add-135-2020cn */
+    UNIT_MILLIMETERS_PER_YEAR = 47916,               /* Add-135-2020cn */
+    UNIT_PULSES_PER_MINUTE = 47917,                  /* Add-135-2020cn */
+    UNIT_BITS_PER_SECOND = 47929,                    /* Add-135-2020cn */
+    UNIT_KILOBITS_PER_SECOND = 47930,                /* Add-135-2020cn */
+    UNIT_MEGABITS_PER_SECOND = 47931,                /* Add-135-2020cn */
+    UNIT_GIGABITS_PER_SECOND = 47932,                /* Add-135-2020cn */
+    UNIT_BYTES_PER_SECOND = 47933,                   /* Add-135-2020cn */
+    UNIT_KILOBYTES_PER_SECOND = 47934,               /* Add-135-2020cn */
+    UNIT_MEGABYTES_PER_SECOND = 47935,               /* Add-135-2020cn */
+    UNIT_GIGABYTES_PER_SECOND = 47936,               /* Add-135-2020cn */
+    UNIT_SITE_UNIT1 = 47958,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT2 = 47959,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT3 = 47960,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT4 = 47961,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT5 = 47962,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT6 = 47963,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT7 = 47964,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT8 = 47965,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT9 = 47966,                         /* Add-135-2020cn */
+    UNIT_SITE_UNIT10 = 47967,                        /* Add-135-2020cn */
+    UNIT_FIRST_EXTENDED = 47808,
+    UNIT_LAST_KNOWN = 47967,
+    UNIT_FIRST_PROPRIETARY = 256,
+    UNIT_MAX = 65535,
+    BACSTAC_ENGINEERING_UNITS_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(ENGINEERING_UNITS)
+    /* for backward compatibility */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
+    #define UNIT_MICRO_SIEMENS                  _Pragma("GCC warning \"UNIT_MICRO_SIEMENS is deprecated\"") UNIT_MICROSIEMENS
+    #define UNIT_JOULE_PER_HOURS                _Pragma("GCC warning \"UNIT_JOULE_PER_HOURS is deprecated\"") UNIT_JOULES_PER_HOUR
+        /* renamed in Add-135-2020cn Begin */
+    #define UNIT_VOLTS_PER_DEGREE_KELVIN        _Pragma("GCC warning \"UNIT_VOLTS_PER_DEGREE_KELVIN is deprecated\"") UNIT_VOLTS_PER_KELVIN
+    #define UNIT_VOLT_AMPERE_HOURS_REACTIVE     _Pragma("GCC warning \"UNIT_VOLT_AMPERE_HOURS_REACTIVE is deprecated\"") UNIT_VOLT_AMPERE_REACTIVE_HOURS
+    #define UNIT_KILOVOLT_AMPERE_HOURS_REACTIVE _Pragma("GCC warning \"UNIT_KILOVOLT_AMPERE_HOURS_REACTIVE is deprecated\"") UNIT_KILOVOLT_AMPERE_REACTIVE_HOURS
+    #define UNIT_MEGAVOLT_AMPERE_HOURS_REACTIVE _Pragma("GCC warning \"UNIT_MEGAVOLT_AMPERE_HOURS_REACTIVE is deprecated\"") UNIT_MEGAVOLT_AMPERE_REACTIVE_HOURS
+    #define UNIT_WATT_HOURS_REACTIVE            _Pragma("GCC warning \"UNIT_WATT_HOURS_REACTIVE is deprecated\"") UNIT_WATT_REACTIVE_HOURS
+    #define UNIT_KILOWATT_HOURS_REACTIVE        _Pragma("GCC warning \"UNIT_KILOWATT_HOURS_REACTIVE is deprecated\"") UNIT_KILOWATT_REACTIVE_HOURS
+    #define UNIT_MEGAWATT_HOURS_REACTIVE        _Pragma("GCC warning \"UNIT_MEGAWATT_HOURS_REACTIVE is deprecated\"") UNIT_MEGAWATT_REACTIVE_HOURS
+    #define UNIT_JOULES_PER_DEGREE_K            _Pragma("GCC warning \"UNIT_JOULES_PER_DEGREE_K is deprecated\"") UNIT_JOULES_PER_KELVIN
+    #define UNIT_KILOJOULES_PER_DEGREE_K        _Pragma("GCC warning \"UNIT_KILOJOULES_PER_DEGREE_K is deprecated\"") UNIT_KILOJOULES_PER_KELVIN
+    #define UNIT_MEGAJOULES_PER_DEGREE_K        _Pragma("GCC warning \"UNIT_MEGAJOULES_PER_DEGREE_K is deprecated\"") UNIT_MEGAJOULES_PER_KELVIN
+    #define UNIT_JOULES_PER_KG_DEGREE_K         _Pragma("GCC warning \"UNIT_JOULES_PER_KG_DEGREE_K is deprecated\"") UNIT_JOULES_PER_KG_KELVIN
+    #define UNIT_DEGREES_K                      _Pragma("GCC warning \"UNIT_DEGREES_K is deprecated\"") UNIT_KELVIN
+    #define UNIT_DEGREES_K_PER_HOUR             _Pragma("GCC warning \"UNIT_DEGREES_K_PER_HOUR is deprecated\"") UNIT_KELVIN_PER_HOUR
+    #define UNIT_DEGREES_K_PER_MINUTE           _Pragma("GCC warning \"UNIT_DEGREES_K_PER_MINUTE is deprecated\"") UNIT_KELVIN_PER_MINUTE
+    #define UNIT_DELTA_DEGREES_KELVIN           _Pragma("GCC warning \"UNIT_DELTA_DEGREES_KELVIN is deprecated\"") UNIT_DELTA_KELVIN
+    #define UNIT_WATTS_PER_M_PER_DEGREE_K       _Pragma("GCC warning \"UNIT_WATTS_PER_M_PER_DEGREE_K is deprecated\"") UNIT_WATTS_PER_METER_PER_KELVIN
+    #define UNIT_WATTS_PER_SQ_M_DEGREE_K        _Pragma("GCC warning \"UNIT_WATTS_PER_SQ_M_DEGREE_K is deprecated\"") UNIT_WATTS_PER_SQ_M_KELVIN
+    #define UNIT_MINUTES_PER_DEGREE_KELVIN      _Pragma("GCC warning \"UNIT_MINUTES_PER_DEGREE_KELVIN is deprecated\"") UNIT_MINUTES_PER_KELVIN
+        /* renamed in Add-135-2020cn End */
+        /* renamed LBS -> POUNDS Begin */
+    #define UNIT_LBS_MASS_PER_SECOND            _Pragma("GCC warning \"UNIT_LBS_MASS_PER_SECOND is deprecated\"") UNIT_POUNDS_MASS_PER_SECOND
+    #define UNIT_LBS_MASS_PER_MINUTE            _Pragma("GCC warning \"UNIT_LBS_MASS_PER_MINUTE is deprecated\"") UNIT_POUNDS_MASS_PER_MINUTE
+    #define UNIT_LBS_MASS_PER_HOUR              _Pragma("GCC warning \"UNIT_LBS_MASS_PER_HOUR is deprecated\"") UNIT_POUNDS_MASS_PER_HOUR
+    #define UNIT_LBS_FORCE_PER_SQ_INCH          _Pragma("GCC warning \"UNIT_LBS_FORCE_PER_SQ_INCH is deprecated\"") UNIT_POUNDS_FORCE_PER_SQ_INCH
+    #define UNIT_LBS_FORCE_PER_SQ_INCH_ABSOLUTE _Pragma("GCC warning \"UNIT_LBS_FORCE_PER_SQ_INCH_ABSOLUTE is deprecated\"") UNIT_POUNDS_FORCE_PER_SQ_INCH_ABSOLUTE
+    #define UNIT_LBS_FORCE_PER_SQ_INCH_GAUGE    _Pragma("GCC warning \"UNIT_LBS_FORCE_PER_SQ_INCH_GAUGE is deprecated\"") UNIT_POUNDS_FORCE_PER_SQ_INCH_GAUGE
+        /* renamed LBS -> POUNDS End */
+#else
+    ,
+    UNIT_MICRO_SIEMENS = 190,
+    UNIT_JOULE_PER_HOURS = 247,
+        /* renamed in Add-135-2020cn Begin */
+    UNIT_VOLTS_PER_DEGREE_KELVIN = UNIT_VOLTS_PER_KELVIN,
+    UNIT_VOLT_AMPERE_HOURS_REACTIVE = UNIT_VOLT_AMPERE_REACTIVE_HOURS,
+    UNIT_KILOVOLT_AMPERE_HOURS_REACTIVE = UNIT_KILOVOLT_AMPERE_REACTIVE_HOURS,
+    UNIT_MEGAVOLT_AMPERE_HOURS_REACTIVE = UNIT_MEGAVOLT_AMPERE_REACTIVE_HOURS,
+    UNIT_WATT_HOURS_REACTIVE = UNIT_WATT_REACTIVE_HOURS,
+    UNIT_KILOWATT_HOURS_REACTIVE = UNIT_KILOWATT_REACTIVE_HOURS,
+    UNIT_MEGAWATT_HOURS_REACTIVE = UNIT_MEGAWATT_REACTIVE_HOURS,
+    UNIT_JOULES_PER_DEGREE_K = UNIT_JOULES_PER_KELVIN,
+    UNIT_KILOJOULES_PER_DEGREE_K = UNIT_KILOJOULES_PER_KELVIN,
+    UNIT_MEGAJOULES_PER_DEGREE_K = UNIT_MEGAJOULES_PER_KELVIN,
+    UNIT_JOULES_PER_KG_DEGREE_K = UNIT_JOULES_PER_KG_KELVIN,
+    UNIT_DEGREES_K = UNIT_KELVIN,
+    UNIT_DEGREES_K_PER_HOUR = UNIT_KELVIN_PER_HOUR,
+    UNIT_DEGREES_K_PER_MINUTE = UNIT_KELVIN_PER_MINUTE,
+    UNIT_DELTA_DEGREES_KELVIN = UNIT_DELTA_KELVIN,
+    UNIT_WATTS_PER_M_PER_DEGREE_K = UNIT_WATTS_PER_METER_PER_KELVIN,
+    UNIT_WATTS_PER_SQ_M_DEGREE_K = UNIT_WATTS_PER_SQ_METER_KELVIN,
+    UNIT_MINUTES_PER_DEGREE_KELVIN = UNIT_MINUTES_PER_KELVIN,
+        /* renamed in Add-135-2020cn End */
+        /* renamed LBS -> POUNDS Begin */
+    UNIT_LBS_MASS_PER_SECOND = UNIT_POUNDS_MASS_PER_SECOND,
+    UNIT_LBS_MASS_PER_MINUTE = UNIT_POUNDS_MASS_PER_MINUTE,
+    UNIT_LBS_MASS_PER_HOUR = UNIT_POUNDS_MASS_PER_HOUR,
+    UNIT_LBS_FORCE_PER_SQ_INCH = UNIT_POUNDS_FORCE_PER_SQ_INCH,
+    UNIT_LBS_FORCE_PER_SQ_INCH_ABSOLUTE = UNIT_POUNDS_FORCE_PER_SQ_INCH_ABSOLUTE, /* Add-135-2020cn */
+    UNIT_LBS_FORCE_PER_SQ_INCH_GAUGE = UNIT_POUNDS_FORCE_PER_SQ_INCH_GAUGE /* Add-135-2020cn */
+        /* renamed LBS -> POUNDS End */
+#endif
+#ifdef _MSC_VER
+    #pragma deprecated(UNIT_MICRO_SIEMENS)
+    #pragma deprecated(UNIT_JOULE_PER_HOURS)
+    #pragma deprecated(UNIT_VOLTS_PER_DEGREE_KELVIN)
+    #pragma deprecated(UNIT_VOLT_AMPERE_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_KILOVOLT_AMPERE_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_MEGAVOLT_AMPERE_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_WATT_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_KILOWATT_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_MEGAWATT_HOURS_REACTIVE)
+    #pragma deprecated(UNIT_JOULES_PER_DEGREE_K)
+    #pragma deprecated(UNIT_KILOJOULES_PER_DEGREE_K)
+    #pragma deprecated(UNIT_MEGAJOULES_PER_DEGREE_K)
+    #pragma deprecated(UNIT_JOULES_PER_KG_DEGREE_K)
+    #pragma deprecated(UNIT_DEGREES_K)
+    #pragma deprecated(UNIT_DEGREES_K_PER_HOUR)
+    #pragma deprecated(UNIT_DEGREES_K_PER_MINUTE)
+    #pragma deprecated(UNIT_DELTA_DEGREES_KELVIN)
+    #pragma deprecated(UNIT_WATTS_PER_M_PER_DEGREE_K)
+    #pragma deprecated(UNIT_WATTS_PER_SQ_M_DEGREE_K)
+    #pragma deprecated(UNIT_MINUTES_PER_DEGREE_KELVIN)
+    #pragma deprecated(UNIT_LBS_MASS_PER_SECOND)
+    #pragma deprecated(UNIT_LBS_MASS_PER_MINUTE)
+    #pragma deprecated(UNIT_LBS_MASS_PER_HOUR)
+    #pragma deprecated(UNIT_LBS_FORCE_PER_SQ_INCH)
+    #pragma deprecated(UNIT_LBS_FORCE_PER_SQ_INCH_ABSOLUTE)
+    #pragma deprecated(UNIT_LBS_FORCE_PER_SQ_INCH_GAUGE)
+#endif
+} BACSTAC_ENGINEERING_UNITS;
+
+typedef enum BACSTAC_ACTION
+{
+    ACTION_DIRECT = 0,
+    ACTION_REVERSE = 1,
+    BACSTAC_ACTION_MAX = 1
+    BACSTAC_ENUM_COMPATIBLE(ACTION)
+} BACSTAC_ACTION;
+
+typedef enum BACSTAC_EVENT_TRANSITION_BITS
+{
+    EVENT_TRANSITION_TO_OFFNORMAL = 0,
+    EVENT_TRANSITION_TO_FAULT = 1,
+    EVENT_TRANSITION_TO_NORMAL = 2,
+    BACSTAC_EVENT_TRANSITION_BITS_MAX = 2
+} BACSTAC_EVENT_TRANSITION_BITS;
+
+typedef enum BACSTAC_EVENT_TYPE
+{
+    EVENT_TYPE_CHANGE_OF_BITSTRING = 0,
+    EVENT_TYPE_CHANGE_OF_STATE = 1,
+    EVENT_TYPE_CHANGE_OF_VALUE = 2,
+    EVENT_TYPE_COMMAND_FAILURE = 3,
+    EVENT_TYPE_FLOATING_LIMIT = 4,
+    EVENT_TYPE_OUT_OF_RANGE = 5,
+    EVENT_TYPE_COMPLEX = 6,
+    EVENT_TYPE_BUFFER_READY = 7,            /* deprecated by Add-135-2001b */
+    EVENT_TYPE_CHANGE_OF_LIFE_SAFETY = 8,   /* Add-135c */
+    EVENT_TYPE_EXTENDED = 9,                /* Add-135-2001a */
+    EVENT_TYPE_BUFFER_READY2 = 10,          /* Add-135-2001b */
+    EVENT_TYPE_UNSIGNED_RANGE = 11,         /* Add-135-2001c-4 */
+    EVENT_TYPE_ACCESS_EVENT = 13,           /* Add-135-2008j-7 */
+    EVENT_TYPE_DOUBLE_OUT_OF_RANGE = 14,    /* Add-135-2008w */
+    EVENT_TYPE_SIGNED_OUT_OF_RANGE = 15,    /* Add-135-2008w */
+    EVENT_TYPE_UNSIGNED_OUT_OF_RANGE = 16,  /* Add-135-2008w */
+    EVENT_TYPE_CHANGE_OF_CHARSTRING = 17,   /* Add-135-2008w */
+    EVENT_TYPE_CHANGE_OF_STATUS_FLAGS = 18, /* Add-135-2008p */
+    EVENT_TYPE_CHANGE_OF_RELIABILITY = 19,  /* Add-135-2010af-32 */
+    EVENT_TYPE_NONE = 20,                   /* Add-135-2010af-32 */
+    EVENT_TYPE_CHANGE_OF_DISCRETE_VAL = 21, /* Add-135-2012aw-2 */
+    EVENT_TYPE_CHANGE_OF_TIMER = 22,        /* Add-135-2012ay-1 */
+    EVENT_TYPE_LAST_KNOWN = 22,
+    EVENT_TYPE_FIRST_PROPRIETARY = 64,
+    EVENT_TYPE_MAX = 65535,
+    BACSTAC_EVENT_TYPE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(EVENT_TYPE)
+} BACSTAC_EVENT_TYPE;
+
+typedef enum BACSTAC_LIMIT_ENABLE
+{
+    LOW_LIMIT_ENABLE = 0,
+    HIGH_LIMIT_ENABLE = 1,
+    BACSTAC_LIMIT_ENABLE_MAX = 1
+    BACSTAC_OTHER_ENUM(LIMIT_ENABLE)
+} BACSTAC_LIMIT_ENABLE;
+
+typedef enum BACSTAC_NOTIFY_TYPE
+{
+    NOTIFY_TYPE_ALARM = 0,
+    NOTIFY_TYPE_EVENT = 1,
+    NOTIFY_TYPE_ACK_NOTIFICATION = 2,
+    BACSTAC_NOTIFY_TYPE_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(NOTIFY_TYPE)
+} BACSTAC_NOTIFY_TYPE;
+
+typedef enum BACSTAC_PROGRAM_ERROR
+{
+    PROGRAM_ERROR_NORMAL = 0,
+    PROGRAM_ERROR_LOAD_FAILED = 1,
+    PROGRAM_ERROR_INTERNAL = 2,
+    PROGRAM_ERROR_PROGRAM = 3,
+    PROGRAM_ERROR_OTHER = 4,
+    PROGRAM_ERROR_LAST_KNOWN = 4,
+    PROGRAM_ERROR_FIRST_PROPRIETARY = 64,
+    PROGRAM_ERROR_MAX = 65535,
+    BACSTAC_PROGRAM_ERROR_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(PROGRAM_ERROR)
+} BACSTAC_PROGRAM_ERROR;
+
+typedef enum BACSTAC_PROGRAM_REQUEST
+{
+    PROGRAM_REQUEST_READY = 0,
+    PROGRAM_REQUEST_LOAD = 1,
+    PROGRAM_REQUEST_RUN = 2,
+    PROGRAM_REQUEST_HALT = 3,
+    PROGRAM_REQUEST_RESTART = 4,
+    PROGRAM_REQUEST_UNLOAD = 5,
+    BACSTAC_PROGRAM_REQUEST_MAX = 5
+    BACSTAC_ENUM_COMPATIBLE(PROGRAM_REQUEST)
+} BACSTAC_PROGRAM_REQUEST;
+
+typedef enum BACSTAC_PROGRAM_STATE
+{
+    PROGRAM_STATE_IDLE = 0,
+    PROGRAM_STATE_LOADING = 1,
+    PROGRAM_STATE_RUNNING = 2,
+    PROGRAM_STATE_WAITING = 3,
+    PROGRAM_STATE_HALTED = 4,
+    PROGRAM_STATE_UNLOADING = 5,
+    BACSTAC_PROGRAM_STATE_MAX = 5
+    BACSTAC_ENUM_COMPATIBLE(PROGRAM_STATE)
+} BACSTAC_PROGRAM_STATE;
+
+typedef enum BACSTAC_DAY_OF_WEEK_BITS
+{
+    DAY_MONDAY = 0,
+    DAY_TUESDAY = 1,
+    DAY_WEDNESDAY = 2,
+    DAY_THURSDAY = 3,
+    DAY_FRIDAY = 4,
+    DAY_SATURDAY = 5,
+    DAY_SUNDAY = 6
+} BACSTAC_DAY_OF_WEEK_BITS;             /* BACnetDaysOfWeek */
+
+typedef enum BACSTAC_REINIT_TYPE
+{
+    REINIT_COLDSTART = 0,
+    REINIT_WARMSTART = 1,
+    REINIT_STARTBACKUP = 2,
+    REINIT_ENDBACKUP = 3,
+    REINIT_STARTRESTORE = 4,
+    REINIT_ENDRESTORE = 5,
+    REINIT_ABORTRESTORE = 6,
+    REINIT_ACTIVATE_CHANGES = 7,
+    BACSTAC_REINIT_TYPE_MAX = 7
+    BACSTAC_OTHER_ENUM(REINIT_TYPE)
+} BACSTAC_REINIT_TYPE;
+
+#ifndef BACSTAC_DCC_VALUE
+#define BACSTAC_DCC_VALUE BACSTAC_DCC_VALUE
+typedef enum BACSTAC_DCC_VALUE
+{
+    DCC_ENABLE = 0,
+    DCC_DISABLE = 1,
+    DCC_DISABLE_INITIATION = 2,
+    BACSTAC_DCC_VALUE_MAX = 2
+    BACSTAC_OTHER_ENUM(DCC_VALUE)
+} BACSTAC_DCC_VALUE;
+#endif
+
+typedef enum BACSTAC_RANGE_FLAGS
+{
+    BACSTAC_FIRST_ITEM = 0,
+    BACSTAC_LAST_ITEM = 1,
+    BACSTAC_MORE_ITEMS = 2
+} BACSTAC_RANGE_FLAGS;
+
+typedef enum BACSTAC_LOG_STATUS_BITS
+{
+    LOG_DISABLED = 0,
+    BUFFER_PURGED = 1,
+    LOG_INTERRUPTED = 2                     /* Add-135-2004b */
+} BACSTAC_LOG_STATUS_BITS;
+
+typedef enum BACSTAC_FILE_ACCESS_METHOD
+{
+    FILE_RECORD_ACCESS = 0,
+    FILE_STREAM_ACCESS = 1,
+    BACSTAC_FILE_ACCESS_METHOD_MAX = 1
+    BACSTAC_ENUM_COMPATIBLE(FILE_ACCESS_METHOD)
+} BACSTAC_FILE_ACCESS_METHOD;
+
+/* Add-135c Begin */
+
+typedef enum BACSTAC_LIFE_SAFETY_STATE
+{
+    SAFETY_STATE_QUIET = 0,
+    SAFETY_STATE_PRE_ALARM = 1,
+    SAFETY_STATE_ALARM = 2,
+    SAFETY_STATE_FAULT = 3,
+    SAFETY_STATE_FAULT_PRE_ALARM = 4,
+    SAFETY_STATE_FAULT_ALARM = 5,
+    SAFETY_STATE_NOT_READY = 6,
+    SAFETY_STATE_ACTIVE = 7,
+    SAFETY_STATE_TAMPER = 8,
+    SAFETY_STATE_TEST_ALARM = 9,
+    SAFETY_STATE_TEST_ACTIVE = 10,
+    SAFETY_STATE_TEST_FAULT = 11,
+    SAFETY_STATE_TEST_FAULT_ALARM = 12,
+    SAFETY_STATE_HOLDUP = 13,
+    SAFETY_STATE_DURESS = 14,
+    SAFETY_STATE_TAMPER_ALARM = 15,
+    SAFETY_STATE_ABNORMAL = 16,
+    SAFETY_STATE_EMERGENCY_POWER = 17,
+    SAFETY_STATE_DELAYED = 18,
+    SAFETY_STATE_BLOCKED = 19,
+    SAFETY_STATE_LOCAL_ALARM = 20,
+    SAFETY_STATE_GENERAL_ALARM = 21,
+    SAFETY_STATE_SUPERVISORY = 22,
+    SAFETY_STATE_TEST_SUPERVISORY = 23,
+    SAFETY_STATE_NON_DEFAULT_MODE = 24,       /* Add-135-2016bt */
+    SAFETY_STATE_OEO_UNAVAILADLE = 25,        /* Add-135-2016bt */
+    SAFETY_STATE_OEO_ALARM = 26,              /* Add-135-2016bt */
+    SAFETY_STATE_OEO_PHASE1_RECALL = 27,      /* Add-135-2016bt */
+    SAFETY_STATE_OEO_EVACUATE = 28,           /* Add-135-2016bt */
+    SAFETY_STATE_OEO_UNAFFECTED = 29,         /* Add-135-2016bt */
+    SAFETY_STATE_TEST_OEO_UNAVAILADLE = 30,   /* Add-135-2016bt */
+    SAFETY_STATE_TEST_OEO_ALARM = 31,         /* Add-135-2016bt */
+    SAFETY_STATE_TEST_OEO_PHASE1_RECALL = 32, /* Add-135-2016bt */
+    SAFETY_STATE_TEST_OEO_EVACUATE = 33,      /* Add-135-2016bt */
+    SAFETY_STATE_TEST_OEO_UNAFFECTED = 34,    /* Add-135-2016bt */
+    SAFETY_STATE_LAST_KNOWN = 34,
+    SAFETY_STATE_FIRST_PROPRIETARY = 256,
+    SAFETY_STATE_MAX = 65535,
+    BACSTAC_LIFE_SAFETY_STATE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFE_SAFETY_STATE)
+} BACSTAC_LIFE_SAFETY_STATE;
+
+typedef enum BACSTAC_MAINTENANCE
+{
+    MAINTENANCE_NONE = 0,
+    MAINTENANCE_PERIODIC_TEST = 1,
+    MAINTENANCE_NEED_SRV_OPERATIONAL = 2,
+    MAINTENANCE_NEED_SRV_INOPERATIVE = 3,
+    MAINTENANCE_LAST_KNOWN = 3,
+    MAINTENANCE_FIRST_PROPRIETARY = 256,
+    MAINTENANCE_MAX = 65535,
+    BACSTAC_MAINTENANCE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(MAINTENANCE)
+} BACSTAC_MAINTENANCE;
+
+typedef enum BACSTAC_SILENCED_STATE
+{
+    SILENCED_STATE_UNSILENCED = 0,
+    SILENCED_STATE_AUDIBLE_SILENCED = 1,
+    SILENCED_STATE_VISIBLE_SILENCED = 2,
+    SILENCED_STATE_ALL_SILENCED = 3,
+    SILENCED_STATE_LAST_KNOWN = 3,
+    SILENCED_STATE_FIRST_PROPRIETARY = 64,
+    SILENCED_STATE_MAX = 65535,
+    BACSTAC_SILENCED_STATE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(SILENCED_STATE)
+} BACSTAC_SILENCED_STATE;
+
+typedef enum BACSTAC_LIFE_SAFETY_MODE
+{
+    SAFETY_MODE_OFF = 0,
+    SAFETY_MODE_ON = 1,
+    SAFETY_MODE_TEST = 2,
+    SAFETY_MODE_MANNED = 3,
+    SAFETY_MODE_UNMANNED = 4,
+    SAFETY_MODE_ARMED = 5,
+    SAFETY_MODE_DISARMED = 6,
+    SAFETY_MODE_PREARMED = 7,
+    SAFETY_MODE_SLOW = 8,
+    SAFETY_MODE_FAST = 9,
+    SAFETY_MODE_DISCONNECTED = 10,
+    SAFETY_MODE_ENABLED = 11,
+    SAFETY_MODE_DISABLED = 12,
+    SAFETY_MODE_A_RELEASE_DISABLED = 13,
+    SAFETY_MODE_DEFAULT = 14,
+    SAFETY_MODE_ACTIVATED_OEO_ALARM = 15,         /* Add-135-2016bt */
+    SAFETY_MODE_ACTIVATED_OEO_EVACUATE = 16,      /* Add-135-2016bt */
+    SAFETY_MODE_ACTIVATED_OEO_PHASE1_RECALL = 17, /* Add-135-2016bt */
+    SAFETY_MODE_ACTIVATED_OEO_UNAVAILABLE = 18,   /* Add-135-2016bt */
+    SAFETY_MODE_DEACTIVATED = 19,                 /* Add-135-2016bt */
+    SAFETY_MODE_LAST_KNOWN = 19,
+    SAFETY_MODE_FIRST_PROPRIETARY = 256,
+    SAFETY_MODE_MAX = 65535,
+    BACSTAC_LIFE_SAFETY_MODE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFE_SAFETY_MODE)
+} BACSTAC_LIFE_SAFETY_MODE;
+
+typedef enum BACSTAC_LIFE_SAFETY_OPERATION
+{
+    SAFETY_OPERATION_NONE = 0,
+    SAFETY_OPERATION_SILENCE = 1,
+    SAFETY_OPERATION_SILENCE_AUDIBLE = 2,
+    SAFETY_OPERATION_SILENCE_VISUAL= 3,
+    SAFETY_OPERATION_RESET = 4,
+    SAFETY_OPERATION_RESET_ALARM = 5,
+    SAFETY_OPERATION_RESET_FAULT = 6,
+    SAFETY_OPERATION_UNSILENCE = 7,         /* 2001 Add-135c-2 */
+    SAFETY_OPERATION_UNSILENCE_AUDIBLE = 8, /* 2001 Add-135c-2 */
+    SAFETY_OPERATION_UNSILENCE_VISUAL = 9,  /* 2001 Add-135c-2 */
+    SAFETY_OPERATION_LAST_KNOWN = 9,
+    SAFETY_OPERATION_FIRST_PROPRIETARY = 64,
+    BACSTAC_LIFE_SAFETY_OPERATION_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFE_SAFETY_OPERATION)
+
+    /* for backward compatibility only */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
+    #define SAFETY_OPERATION_MAX _Pragma("GCC warning \"SAFETY_OPERATION_MAX is deprecated\"") BACSTAC_LIFE_SAFETY_OPERATION_MAX
+    #define BACSTAC_SAFETY_OPERATION_MAX _Pragma("GCC warning \"BACSTAC_SAFETY_OPERATION_MAX is deprecated\"") BACSTAC_LIFE_SAFETY_OPERATION_MAX
+#else
+    ,
+    SAFETY_OPERATION_MAX = BACSTAC_LIFE_SAFETY_OPERATION_MAX,
+    BACSTAC_SAFETY_OPERATION_MAX = BACSTAC_LIFE_SAFETY_OPERATION_MAX
+#endif
+#ifdef _MSC_VER
+#   pragma deprecated(SAFETY_OPERATION_MAX)
+#   pragma deprecated(BACSTAC_SAFETY_OPERATION_MAX)
+#endif /* _MSC_VER */
+} BACSTAC_LIFE_SAFETY_OPERATION;
+
+/* Add-135c End */
+
+/* Add-135-2001c-4 Begin */
+typedef enum BACSTAC_ACCUMULATOR_STATUS
+{
+    ACCUMULATOR_STATUS_NORMAL = 0,
+    ACCUMULATOR_STATUS_STARTING = 1,
+    ACCUMULATOR_STATUS_RECOVERED = 2,
+    ACCUMULATOR_STATUS_ABNORMAL = 3,
+    ACCUMULATOR_STATUS_FAILED = 4,
+    BACSTAC_ACCUMULATOR_STATUS_MAX = 4
+    BACSTAC_ENUM_COMPATIBLE(ACCUMULATOR_STATUS)
+} BACSTAC_ACCUMULATOR_STATUS;
+/* Add-135-2001c-4 End */
+
+/* Add-135-2004d-1 Begin */
+typedef enum BACSTAC_NODE_TYPE
+{
+    NODE_TYPE_UNKNOWN    = 0,
+    NODE_TYPE_SYSTEM     = 1,
+    NODE_TYPE_NETWORK    = 2,
+    NODE_TYPE_DEVICE     = 3,
+    NODE_TYPE_ORGANIZATIONAL = 4,
+    NODE_TYPE_AREA       = 5,
+    NODE_TYPE_EQUIPMENT  = 6,
+    NODE_TYPE_POINT      = 7,
+    NODE_TYPE_COLLECTION = 8,
+    NODE_TYPE_PROPERTY   = 9,
+    NODE_TYPE_FUNCTIONAL = 10,
+    NODE_TYPE_OTHER      = 11,
+    NODE_TYPE_SUBSYSTEM  = 12,
+    NODE_TYPE_BUILDING   = 13,
+    NODE_TYPE_FLOOR      = 14,
+    NODE_TYPE_SECTION    = 15,
+    NODE_TYPE_MODULE     = 16,
+    NODE_TYPE_TREE       = 17,
+    NODE_TYPE_MEMBER     = 18,
+    NODE_TYPE_PROTOCOL   = 19,
+    NODE_TYPE_ROOM       = 20,
+    NODE_TYPE_ZONE       = 21,
+    BACSTAC_NODE_TYPE_MAX = 21
+    BACSTAC_ENUM_COMPATIBLE(NODE_TYPE)
+}  BACSTAC_NODE_TYPE;
+/* Add-135-2004d-1 End */
+
+/* Add-135-2004e Begin */
+typedef enum BACSTAC_SHED_STATE
+{
+    SHED_INACTIVE        = 0,
+    SHED_REQUEST_PENDING = 1,
+    SHED_COMPLIANT       = 2,
+    SHED_NON_COMPLIANT   = 3,
+    BACSTAC_SHED_STATE_MAX = 3
+    BACSTAC_ENUM_COMPATIBLE(SHED_STATE)
+}  BACSTAC_SHED_STATE;
+/* Add-135-2004e End */
+
+/* Add-135-2004f Begin */
+typedef enum BACSTAC_DOOR_VALUE
+{
+    DOOR_VALUE_LOCK             = 0,
+    DOOR_VALUE_UNLOCK           = 1,
+    DOOR_VALUE_PULSE_UNLOCK     = 2,
+    DOOR_VALUE_EXT_PULSE_UNLOCK = 3,
+    BACSTAC_DOOR_VALUE_MAX      = 3
+    BACSTAC_ENUM_COMPATIBLE(DOOR_VALUE)
+}  BACSTAC_DOOR_VALUE;
+
+typedef enum BACSTAC_LOCK_STATUS
+{
+    LOCK_STATUS_LOCKED         = 0,
+    LOCK_STATUS_UNLOCKED       = 1,
+    LOCK_STATUS_LOCK_FAULT     = 2,
+    LOCK_STATUS_UNUSED         = 3,
+    LOCK_STATUS_UNKNOWN        = 4,
+    BACSTAC_LOCK_STATUS_MAX    = 4
+    BACSTAC_ENUM_COMPATIBLE(LOCK_STATUS)
+}  BACSTAC_LOCK_STATUS;
+
+typedef enum BACSTAC_DOOR_SECURED_STATUS
+{
+    DOOR_SECURED_STATUS_SECURED   = 0,
+    DOOR_SECURED_STATUS_UNSECURED = 1,
+    DOOR_SECURED_STATUS_UNKNOWN   = 2,
+    BACSTAC_DOOR_SECURED_STATUS_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(DOOR_SECURED_STATUS)
+}  BACSTAC_DOOR_SECURED_STATUS;
+
+typedef enum BACSTAC_DOOR_STATUS
+{
+    DOOR_STATUS_CLOSED      = 0,
+    DOOR_STATUS_OPENED      = 1,
+    DOOR_STATUS_UNKNOWN     = 2,
+    DOOR_STATUS_DOOR_FAULT  = 3,
+    DOOR_STATUS_UNUSED      = 4,
+    DOOR_STATUS_NONE        = 5,
+    DOOR_STATUS_CLOSING     = 6,
+    DOOR_STATUS_OPENING     = 7,
+    DOOR_STATUS_SAFETY_LOCKED  = 8,
+    DOOR_STATUS_LIMITED_OPENED = 9,
+    BACSTAC_DOOR_STATUS_LAST = 9,
+    BACSTAC_DOOR_STATUS_PTY = 1024,
+    BACSTAC_DOOR_STATUS_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(DOOR_STATUS)
+}  BACSTAC_DOOR_STATUS;
+
+typedef enum BACSTAC_DOOR_ALARM_STATE
+{
+    DOOR_ALARM_STATE_NORMAL             = 0,
+    DOOR_ALARM_STATE_ALARM              = 1,
+    DOOR_ALARM_STATE_DOOR_OPEN_TOO_LONG = 2,
+    DOOR_ALARM_STATE_FORCED_OPEN        = 3,
+    DOOR_ALARM_STATE_TAMPER             = 4,
+    DOOR_ALARM_STATE_DOOR_FAULT         = 5,
+    DOOR_ALARM_STATE_LOCK_DOWN          = 6,
+    DOOR_ALARM_STATE_FREE_ACCESS        = 7,
+    DOOR_ALARM_STATE_EGRESS_OPEN        = 8,
+    DOOR_ALARM_STATE_LAST_KNOWN         = 8,
+    DOOR_ALARM_STATE_FIRST_PROPRIETARY  = 64,
+    DOOR_ALARM_STATE_MAX                = 65535,
+    BACSTAC_DOOR_ALARM_STATE_MAX        = 65535
+    BACSTAC_ENUM_COMPATIBLE(DOOR_ALARM_STATE)
+}  BACSTAC_DOOR_ALARM_STATE;
+/* Add-135-2004f End */
+
+typedef enum BACSTAC_VT_CLASS
+{
+    VT_CLASS_DEFAULT_TERMINAL  = 0,
+    VT_CLASS_ANSI_X3_64        = 1,
+    VT_CLASS_DEC_VT52          = 2,
+    VT_CLASS_DEC_VT100         = 3,
+    VT_CLASS_DEC_VT220         = 4,
+    VT_CLASS_HP_700_94         = 5,
+    VT_CLASS_IBM_3130          = 6,
+    VT_CLASS_LAST_KNOWN        = 6,
+    VT_CLASS_FIRST_PROPRIETARY = 64,
+    VT_CLASS_MAX               = 65535,
+    BACSTAC_VT_CLASS_MAX       = 65535
+    BACSTAC_ENUM_COMPATIBLE(VT_CLASS)
+}  BACSTAC_VT_CLASS;
+
+/* Add-135-2004b Begin */
+typedef enum BACSTAC_LOGGING_TYPE
+{
+    LOGGING_TYPE_POLLED             = 0,
+    LOGGING_TYPE_COV                = 1,
+    LOGGING_TYPE_TRIGGERED          = 2,
+    LOGGING_TYPE_LAST_KNOWN         = 2,
+    LOGGING_TYPE_FIRST_PROPRIETARY  = 64,
+    LOGGING_TYPE_MAX                = 255,
+    BACSTAC_LOGGING_TYPE_MAX = 255
+    BACSTAC_ENUM_COMPATIBLE(LOGGING_TYPE)
+}  BACSTAC_LOGGING_TYPE;
+
+typedef enum BACSTAC_RESTART_REASON
+{
+    RESTART_REASON_UNKNOWN              = 0,
+    RESTART_REASON_COLDSTART            = 1,
+    RESTART_REASON_WARMSTART            = 2,
+    RESTART_REASON_DETECTED_POWER_LOST  = 3,
+    RESTART_REASON_DETECTED_POWERED_OFF = 4,
+    RESTART_REASON_HARDWARE_WATCHDOG    = 5,
+    RESTART_REASON_SOFTWARE_WATCHDOG    = 6,
+    RESTART_REASON_SUSPENDED            = 7,
+    RESTART_REASON_ACTIVATE_CHANGES     = 8,
+    RESTART_REASON_LAST_KNOWN           = 8,
+    RESTART_REASON_FIRST_PROPRIETARY    = 64,
+    RESTART_REASON_MAX                  = 255,
+    BACSTAC_RESTART_REASON_MAX          = 255
+    BACSTAC_ENUM_COMPATIBLE(RESTART_REASON)
+}  BACSTAC_RESTART_REASON;
+/* Add-135-2004b End */
+
+/* Add-135-2008j Begin */
+typedef enum BACSTAC_AUTHN_FACTOR_TYPE
+{
+    BAFT_UNDEFINED                   = 0,
+    BAFT_ERROR                       = 1,
+    BAFT_CUSTOM                      = 2,
+    BAFT_SIMPLE_NUMBER16             = 3,
+    BAFT_SIMPLE_NUMBER32             = 4,
+    BAFT_SIMPLE_NUMBER56             = 5,
+    BAFT_SIMPLE_ALPHA_NUMERIC        = 6,
+    BAFT_ABA_TRACK2                  = 7,
+    BAFT_WIEGAND26                   = 8,
+    BAFT_WIEGAND37                   = 9,
+    BAFT_WIEGAND37_FACILITY          = 10,
+    BAFT_FACILITY16_CARD32           = 11,
+    BAFT_FACILITY32_CARD32           = 12,
+    BAFT_FASC_N                      = 13,
+    BAFT_FASC_N_BCD                  = 14,
+    BAFT_FASC_N_LARGE                = 15,
+    BAFT_FASC_N_LARGE_BCD            = 16,
+    BAFT_GSA75                       = 17,
+    BAFT_CHUID                       = 18,
+    BAFT_CHUID_FULL                  = 19,
+    BAFT_GUID                        = 20,
+    BAFT_CBEFF_A                     = 21,
+    BAFT_CBEFF_B                     = 22,
+    BAFT_CBEFF_C                     = 23,
+    BAFT_USER_PASSWORD               = 24,
+    BACSTAC_AUTHN_FACTOR_TYPE_MAX    = 24
+    BACSTAC_OTHER_ENUM(AUTHN_FACTOR_TYPE)
+} BACSTAC_AUTHN_FACTOR_TYPE;
+
+typedef enum BACSTAC_ACCESS_EVENT
+{
+    BAE_NONE                         = 0,
+    BAE_GRANTED                      = 1,
+    BAE_MUSTER                       = 2,
+    BAE_PASSBACK_DETECTED            = 3,
+    BAE_DURESS                       = 4,
+    BAE_TRACE                        = 5,
+    BAE_LOCKOUT_MAX_ATTEMPTS         = 6,
+    BAE_LOCKOUT_OTHER                = 7,
+    BAE_LOCKOUT_RELINQUISHED         = 8,
+    BAE_LOCKED_BY_HIGHER_PRIORITY    = 9,
+    BAE_OUT_OF_SERVICE               = 10,
+    BAE_OUT_OF_SERVICE_RELINQUISHED  = 11,
+    BAE_ACCOMPANIMENT_BY             = 12,
+    BAE_AUTHN_FACTOR_READ            = 13,
+    BAE_AUTHZ_DELAYED                = 14,
+    BAE_VERIFICATION_REQUIRED        = 15,
+    /* Enumerated values 128-511 are used for events
+     * which indicate that access has been denied. */
+    BAE_DENIED_DENY_ALL              = 128,
+    BAE_DENIED_UNKNOWN_CREDENTIAL    = 129,
+    BAE_DENIED_AUTHN_UNAVAILABLE     = 130,
+    BAE_DENIED_AUTHN_FACTOR_TIMEOUT  = 131,
+    BAE_DENIED_INCORRECT_AUTHN_FACTOR = 132,
+    BAE_DENIED_ZONE_NO_ACCESS_RIGHTS = 133,
+    BAE_DENIED_POINT_NO_ACCESS_RIGHTS = 134,
+    BAE_DENIED_NO_ACCESS_RIGHTS      = 135,
+    BAE_DENIED_OUT_OF_TIME_RANGE     = 136,
+    BAE_DENIED_THREAT_LEVEL          = 137,
+    BAE_DENIED_PASSBACK              = 138,
+    BAE_DENIED_UNEXPECTED_LOC_USAGE  = 139,
+    BAE_DENIED_MAX_ATTEMPTS          = 140,
+    BAE_DENIED_LOWER_OCCUPANCY_LIMIT = 141,
+    BAE_DENIED_UPPER_OCCUPANCY_LIMIT = 142,
+    BAE_DENIED_AUTHN_FACTOR_LOST     = 143,
+    BAE_DENIED_AUTHN_FACTOR_STOLEN   = 144,
+    BAE_DENIED_AUTHN_FACTOR_DAMAGED  = 145,
+    BAE_DENIED_AUTHN_FACTOR_DESTROYED = 146,
+    BAE_DENIED_AUTHN_FACTOR_DISABLED = 147,
+    BAE_DENIED_AUTHN_FACTOR_ERROR    = 148,
+    BAE_DENIED_CRED_UNASSIGNED       = 149,
+    BAE_DENIED_CRED_NOT_PROVISIONED  = 150,
+    BAE_DENIED_CRED_NOT_YET_ACTIVE   = 151,
+    BAE_DENIED_CRED_EXPIRED          = 152,
+    BAE_DENIED_CRED_MANUAL_DISABLE   = 153,
+    BAE_DENIED_CRED_LOCKOUT          = 154,
+    BAE_DENIED_CRED_MAX_DAYS         = 155,
+    BAE_DENIED_CRED_MAX_USES         = 156,
+    BAE_DENIED_CRED_INACTIVITY       = 157,
+    BAE_DENIED_CRED_DISABLED         = 158,
+    BAE_DENIED_NO_ACCOMPANIMENT      = 159,
+    BAE_DENIED_INCORRECT_ACCOMPANIMENT = 160,
+    BAE_DENIED_LOCKOUT               = 161,
+    BAE_DENIED_VERIFICATION_FAILED   = 162,
+    BAE_DENIED_VERIFICATION_TIMEOUT  = 163,
+    BAE_DENIED_OTHER                 = 164,
+    BACSTAC_ACCESS_EVENT_LAST        = 164,
+    BACSTAC_ACCESS_EVENT_PTY         = 512,
+    BACSTAC_ACCESS_EVENT_MAX         = 65535
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_EVENT)
+} BACSTAC_ACCESS_EVENT;
+
+typedef enum BACSTAC_AUTHN_STATUS
+{
+    BAS_NOT_READY                    = 0,
+    BAS_READY                        = 1,
+    BAS_DISABLED                     = 2,
+    BAS_WAITING_FOR_AUTHN_FACTOR     = 3,
+    BAS_WAITING_FOR_ACCOMPANIMENT    = 4,
+    BAS_WAITING_FOR_VERIFICATION     = 5,
+    BAS_IN_PROGRESS                  = 6,
+    BACSTAC_AUTHN_STATUS_MAX         = 6
+    BACSTAC_ENUM_COMPATIBLE(AUTHN_STATUS)
+} BACSTAC_AUTHN_STATUS;
+
+typedef enum BACSTAC_AUTHZ_MODE
+{
+    BAM_AUTHORIZE                    = 0,
+    BAM_GRANT_ACTIVE                 = 1,
+    BAM_DENY_ALL                     = 2,
+    BAM_VERIFICATION_REQUIRED        = 3,
+    BAM_AUTHZ_DELAYED                = 4,
+    BAM_NONE                         = 5,
+    BACSTAC_AUTHZ_MODE_LAST          = 5,
+    BACSTAC_AUTHZ_MODE_PTY           = 64,
+    BACSTAC_AUTHZ_MODE_MAX           = 65535
+    BACSTAC_ENUM_COMPATIBLE(AUTHZ_MODE)
+} BACSTAC_AUTHZ_MODE;
+
+typedef enum BACSTAC_ZONE_OCCUPANCY_STATE
+{
+    BZOS_NORMAL                      = 0,
+    BZOS_BELOW_LOWER_LIMIT           = 1,
+    BZOS_AT_LOWER_LIMIT              = 2,
+    BZOS_AT_UPPER_LIMIT              = 3,
+    BZOS_ABOVE_UPPER_LIMIT           = 4,
+    BZOS_DISABLED                    = 5,
+    BZOS_NOT_SUPPORTED               = 6,
+    BACSTAC_ZONE_OCCUPANCY_STATE_LAST = 6,
+    BACSTAC_ZONE_OCCUPANCY_STATE_PTY = 64,
+    BACSTAC_ZONE_OCCUPANCY_STATE_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(ZONE_OCCUPANCY_STATE)
+} BACSTAC_ZONE_OCCUPANCY_STATE;
+
+typedef enum BACSTAC_ACCESS_CRED_DISABLE
+{
+    BACD_NONE                        = 0,
+    BACD_DISABLE                     = 1,
+    BACD_DISABLE_MANUAL              = 2,
+    BACD_DISABLE_LOCKOUT             = 3,
+    BACSTAC_ACCESS_CRED_DISABLE_LAST = 3,
+    BACSTAC_ACCESS_CRED_DISABLE_PTY  = 64,
+    BACSTAC_ACCESS_CRED_DISABLE_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_CRED_DISABLE)
+} BACSTAC_ACCESS_CRED_DISABLE;
+
+typedef enum BACSTAC_ACCESS_CRED_DISABLE_REASON
+{
+    BACDR_DISABLED                   = 0,
+    BACDR_DISABLED_NEEDS_PROVISIONING = 1,
+    BACDR_DISABLED_UNASSIGNED        = 2,
+    BACDR_DISABLED_NOT_YET_ACTIVE    = 3,
+    BACDR_DISABLED_EXPIRED           = 4,
+    BACDR_DISABLED_LOCKOUT           = 5,
+    BACDR_DISABLED_MAX_DAYS          = 6,
+    BACDR_DISABLED_MAX_USES          = 7,
+    BACDR_DISABLED_INACTIVITY        = 8,
+    BACDR_DISABLED_MANUAL            = 9,
+    BACSTAC_ACCESS_CRED_DISABLE_REASON_LAST = 9,
+    BACSTAC_ACCESS_CRED_DISABLE_REASON_PTY = 64,
+    BACSTAC_ACCESS_CRED_DISABLE_REASON_MAX = 65535
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_CRED_DISABLE_REASON)
+} BACSTAC_ACCESS_CRED_DISABLE_REASON;
+
+typedef enum BACSTAC_ACCESS_PASSBACK_MODE
+{
+    BAPM_PASSBACK_OFF                = 0,
+    BAPM_HARD_PASSBACK               = 1,
+    BAPM_SOFT_PASSBACK               = 2,
+    BACSTAC_ACCESS_PASSBACK_MODE_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_PASSBACK_MODE)
+} BACSTAC_ACCESS_PASSBACK_MODE;
+
+typedef enum BACSTAC_ACCESS_USER_TYPE
+{
+    BAUT_ASSET                       = 0,
+    BAUT_GROUP                       = 1,
+    BAUT_PERSON                      = 2,
+    BACSTAC_ACCESS_USER_TYPE_LAST    = 2,
+    BACSTAC_ACCESS_USER_TYPE_PTY     = 64,
+    BACSTAC_ACCESS_USER_TYPE_MAX     = 65535
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_USER_TYPE)
+} BACSTAC_ACCESS_USER_TYPE;
+
+typedef enum BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE
+{
+    BAAFD_NONE                               = 0,
+    BAAFD_DISABLED                           = 1,
+    BAAFD_DISABLED_LOST                      = 2,
+    BAAFD_DISABLED_STOLEN                    = 3,
+    BAAFD_DISABLED_DAMAGED                   = 4,
+    BAAFD_DISABLED_DESTROYED                 = 5,
+    BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE_LAST = 5,
+    BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE_PTY  = 64,
+    BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(ACCESS_AUTHN_FACTOR_DISABLE)
+} BACSTAC_ACCESS_AUTHN_FACTOR_DISABLE;
+/* Add-135-2008j End */
+
+/* Add-135-2008n Begin */
+typedef enum BACSTAC_BACKUP_STATE
+{
+    BACSTAC_BACKUP_ST_IDLE               = 0,
+    BACSTAC_BACKUP_ST_PREPARING_BACKUP   = 1,
+    BACSTAC_BACKUP_ST_PREPARING_RESTORE  = 2,
+    BACSTAC_BACKUP_ST_PERFORMING_BACKUP  = 3,
+    BACSTAC_BACKUP_ST_PERFORMING_RESTORE = 4,
+    BACSTAC_BACKUP_ST_BACKUP_FAILURE     = 5,
+    BACSTAC_BACKUP_ST_RESTORE_FAILURE    = 6,
+    BACSTAC_BACKUP_STATE_MAX             = 6
+    BACSTAC_ENUM_COMPATIBLE(BACKUP_STATE)
+} BACSTAC_BACKUP_STATE;
+/* Add-135-2008n End */
+
+/* Add-135-2010ac Begin */
+typedef enum BACSTAC_FAULT_TYPE
+{
+    FAULT_NONE             = 0,
+    FAULT_CHARACTERSTRING  = 1,
+    FAULT_EXTENDED         = 2,
+    FAULT_LIFE_SAFETY      = 3,
+    FAULT_STATE            = 4,
+    FAULT_STATUS_FLAGS     = 5,
+    FAULT_OUT_OF_RANGE     = 6,
+    FAULT_LISTED           = 7,
+    BACSTAC_FAULT_TYPE_MAX = 7
+    BACSTAC_ENUM_COMPATIBLE(FAULT_TYPE)
+} BACSTAC_FAULT_TYPE;
+/* Add-135-2010ac End */
+
+/* Add-135-2010ae Begin */
+typedef enum BACSTAC_AUTHZ_EXEMPTION
+{
+    BAE_PASSBACK                         = 0,
+    BAE_OCCUPANCY_CHECK                  = 1,
+    BAE_ACCESS_RIGHTS                    = 2,
+    BAE_LOCKOUT                          = 3,
+    BAE_DENY                             = 4,
+    BAE_VERIFICATION                     = 5,
+    BAE_AUTHORIZATION_DELAY              = 6,
+    BACSTAC_AUTHZ_EXEMPTION_LAST         = 6,
+    BACSTAC_AUTHZ_EXEMPTION_PTY          = 64,
+    BACSTAC_AUTHZ_EXEMPTION_MAX          = 255
+    BACSTAC_ENUM_COMPATIBLE(AUTHZ_EXEMPTION)
+} BACSTAC_AUTHZ_EXEMPTION;
+/* Add-135-2010ae End */
+
+/* Add-135-2012ai Begin */
+typedef enum BACSTAC_BIP_MODE
+{
+    BIP_MODE_NORMAL      = 0,
+    BIP_MODE_FOREIGN     = 1,
+    BIP_MODE_BBMD        = 2,
+    BACSTAC_BIP_MODE_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(BIP_MODE)
+} BACSTAC_BIP_MODE;
+
+typedef enum BACSTAC_NET_PORT_CMD
+{
+    BNPC_IDLE                     = 0,
+    BNPC_DISCARD_CHANGES          = 1,
+    BNPC_RENEW_FD_REGISTRATION    = 2,
+    BNPC_RESTART_SUBORDINATE_DISCOVERY = 3,
+    BNPC_RESTART_SLAVE_DISCOVERY  = 3,       /* rename in Add-135-2020ce */
+    BNPC_RENEW_DHCP               = 4,
+    BNPC_RESTART_AUTONEGOTIATION  = 5,
+    BNPC_DISCONNECT               = 6,
+    BNPC_RESTART_PORT             = 7,
+    BNPC_GENERATE_CSR_FILE        = 8,
+    BNPC_VALIDATE_CHANGES         = 9,
+    BNPC_RESTART_DEVICE_DISCOVERY = 10, /* Add-135-2020bx */
+    BACSTAC_NET_PORT_CMD_LAST     = 10,
+    BACSTAC_NET_PORT_CMD_PTY      = 128,
+    BACSTAC_NET_PORT_CMD_MAX      = 255
+    BACSTAC_ENUM_COMPATIBLE(NET_PORT_CMD)
+} BACSTAC_NET_PORT_CMD;
+
+typedef enum BACSTAC_NET_NUMBER_QUALITY
+{
+    BNNQ_UNKNOWN                       = 0,
+    BNNQ_LEARNED                       = 1,
+    BNNQ_LEARNED_CONFIGURED            = 2,
+    BNNQ_CONFIGURED                    = 3,
+    BACSTAC_NET_NUMBER_QUALITY_MAX     = 3
+    BACSTAC_ENUM_COMPATIBLE(NET_NUMBER_QUALITY)
+} BACSTAC_NET_NUMBER_QUALITY;
+
+typedef enum BACSTAC_NETWORK_TYPE
+{
+    BNT_ETHERNET              = 0,
+    BNT_ARCNET                = 1,
+    BNT_MSTP                  = 2,
+    BNT_PTP                   = 3,
+    BNT_LONTALK               = 4,
+    BNT_IPV4                  = 5,
+    BNT_ZIGBEE                = 6,
+    BNT_VIRTUAL               = 7,
+    BNT_NON_BACNET            = 8,   /* removed in version 1 revision 18 */
+    BNT_IPV6                  = 9,
+    BNT_SERIAL                = 10,
+    BNT_SC                    = 11,
+    BACSTAC_NETWORK_TYPE_LAST = 11,
+    BACSTAC_NETWORK_TYPE_PTY  = 64,
+    NETWORK_TYPE_CIMETRICS_NULL = 140,
+    NETWORK_TYPE_CIMETRICS_ANNEX_H = 141,
+    NETWORK_TYPE_CIMETRICS_SC = 142,
+    BACSTAC_NETWORK_TYPE_MAX  = 255
+    BACSTAC_ENUM_COMPATIBLE(NETWORK_TYPE)
+} BACSTAC_NETWORK_TYPE;
+
+typedef enum BACSTAC_RE_STATUS
+{
+    RE_STATUS_AVAILABLE     = 0,
+    RE_STATUS_BUSY          = 1,
+    RE_STATUS_DISCONNECTED  = 2,
+    BACSTAC_RE_STATUS_MAX   = 2
+    BACSTAC_OTHER_ENUM(RE_STATUS)
+} BACSTAC_RE_STATUS;
+/* Add-135-2012ai End */
+
+/* Add-135-2012aq Begin */
+typedef enum BACSTAC_ESCALATOR_FAULT
+{
+    BEF_CONTROLLER_FAULT           = 0,
+    BEF_DRIVE_AND_MOTOR_FAULT      = 1,
+    BEF_MECHANICAL_COMPONENT_FAULT = 2,
+    BEF_OVERSPEED_FAULT            = 3,
+    BEF_POWER_SUPPLY_FAULT         = 4,
+    BEF_SAFETY_DEVICE_FAULT        = 5,
+    BEF_CONTROLLER_SUPPLY_FAULT    = 6,
+    BEF_DRIVE_TEMPERATURE_EXCEEDED = 7,
+    BEF_COMB_PLATE_FAULT           = 8,
+    BACSTAC_ESCALATOR_FAULT_LAST   = 8,
+    BACSTAC_ESCALATOR_FAULT_PTY    = 1024,
+    BACSTAC_ESCALATOR_FAULT_MAX    = 65535
+    BACSTAC_ENUM_COMPATIBLE(ESCALATOR_FAULT)
+} BACSTAC_ESCALATOR_FAULT;
+
+typedef enum BACSTAC_ESCALATOR_MODE
+{
+    BEM_UNKNOWN                 = 0,
+    BEM_STOP                    = 1,
+    BEM_UP                      = 2,
+    BEM_DOWN                    = 3,
+    BEM_INSPECTION              = 4,
+    BEM_OUT_OF_SERVICE          = 5,
+    BACSTAC_ESCALATOR_MODE_LAST = 5,
+    BACSTAC_ESCALATOR_MODE_PTY  = 1024,
+    BACSTAC_ESCALATOR_MODE_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(ESCALATOR_MODE)
+} BACSTAC_ESCALATOR_MODE;
+
+typedef enum BACSTAC_ESCALATOR_OPER_DIR
+{
+    BEOD_UNKNOWN                    = 0,
+    BEOD_STOPPED                    = 1,
+    BEOD_UP_RATED_SPEED             = 2,
+    BEOD_UP_REDUCED_SPEED           = 3,
+    BEOD_DOWN_RATED_SPEED           = 4,
+    BEOD_DOWN_REDUCED_SPEED         = 5,
+    BACSTAC_ESCALATOR_OPER_DIR_LAST = 5,
+    BACSTAC_ESCALATOR_OPER_DIR_PTY  = 1024,
+    BACSTAC_ESCALATOR_OPER_DIR_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(ESCALATOR_OPER_DIR)
+} BACSTAC_ESCALATOR_OPER_DIR;
+
+typedef enum BACSTAC_LIFT_CAR_DIR
+{
+    BLCD_UNKNOWN              = 0,
+    BLCD_NONE                 = 1,
+    BLCD_STOPPED              = 2,
+    BLCD_UP                   = 3,
+    BLCD_DOWN                 = 4,
+    BLCD_UP_AND_DOWN          = 5,
+    BACSTAC_LIFT_CAR_DIR_LAST = 5,
+    BACSTAC_LIFT_CAR_DIR_PTY  = 1024,
+    BACSTAC_LIFT_CAR_DIR_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFT_CAR_DIR)
+} BACSTAC_LIFT_CAR_DIR;
+
+typedef enum BACSTAC_LIFT_CAR_DOOR_CMD
+{
+    BLCDC_NONE                    = 0,
+    BLCDC_OPEN                    = 1,
+    BLCDC_CLOSE                   = 2,
+    BACSTAC_LIFT_CAR_DOOR_CMD_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(LIFT_CAR_DOOR_CMD)
+} BACSTAC_LIFT_CAR_DOOR_CMD;
+
+typedef enum BACSTAC_LIFT_CAR_DRIVE_STATUS
+{
+    BLCDS_UNKNOWN                      = 0,
+    BLCDS_STATIONARY                   = 1,
+    BLCDS_BRAKING                      = 2,
+    BLCDS_ACCELERATE                   = 3,
+    BLCDS_DECELERATE                   = 4,
+    BLCDS_RATED_SPEED                  = 5,
+    BLCDS_SINGLE_FLOOR_JUMP            = 6,
+    BLCDS_TWO_FLOOR_JUMP               = 7,
+    BLCDS_THREE_FLOOR_JUMP             = 8,
+    BLCDS_MULTI_FLOOR_JUMP             = 9,
+    BACSTAC_LIFT_CAR_DRIVE_STATUS_LAST = 9,
+    BACSTAC_LIFT_CAR_DRIVE_STATUS_PTY  = 1024,
+    BACSTAC_LIFT_CAR_DRIVE_STATUS_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFT_CAR_DRIVE_STATUS)
+} BACSTAC_LIFT_CAR_DRIVE_STATUS;
+
+typedef enum BACSTAC_LIFT_CAR_MODE
+{
+    BLCM_UNKNOWN               = 0,
+    BLCM_NORMAL                = 1,
+    BLCM_VIP                   = 2,
+    BLCM_HOMING                = 3,
+    BLCM_PARKING               = 4,
+    BLCM_ATTENDANT_CONTROL     = 5,
+    BLCM_FIREFIGHTER_CONTROL   = 6,
+    BLCM_EMERGENCY_POWER       = 7,
+    BLCM_INSPECTION            = 8,
+    BLCM_CABINET_RECALL        = 9,
+    BLCM_EARTHQUAKE_OPERATION  = 10,
+    BLCM_FIRE_OPERATION        = 11,
+    BLCM_OUT_OF_SERVICE        = 12,
+    BLCM_OCCUPANT_EVACUATION   = 13,
+    BACSTAC_LIFT_CAR_MODE_LAST = 13,
+    BACSTAC_LIFT_CAR_MODE_PTY  = 1024,
+    BACSTAC_LIFT_CAR_MODE_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFT_CAR_MODE)
+} BACSTAC_LIFT_CAR_MODE;
+
+typedef enum BACSTAC_LIFT_FAULT
+{
+    BLF_CONTROLLER_FAULT                 = 0,
+    BLF_DRIVE_AND_MOTOR_FAULT            = 1,
+    BLF_GOVERNOR_AND_SAFETY_GEAR_FAULT   = 2,
+    BLF_LIFT_SHAFT_DEVICE_FAULT          = 3,
+    BLF_POWER_SUPPLY_FAULT               = 4,
+    BLF_SAFETY_INTERLOCK_FAULT           = 5,
+    BLF_DOOR_CLOSING_FAULT               = 6,
+    BLF_DOOR_OPENING_FAULT               = 7,
+    BLF_CAR_STOPPED_OUTSIDE_LANDING_ZONE = 8,
+    BLF_CALL_BUTTON_STUCK                = 9,
+    BLF_START_FAILURE                    = 10,
+    BLF_CONTROLLER_SUPPLY_FAULT          = 11,
+    BLF_SELF_TEST_FAILURE                = 12,
+    BLF_RUNTIME_LIMIT_EXCEEDED           = 13,
+    BLF_POSITION_LOST                    = 14,
+    BLF_DRIVE_TEMPERATURE_EXCEEDED       = 15,
+    BLF_LOAD_MEASUREMENT_FAULT           = 16,
+    BACSTAC_LIFT_FAULT_LAST              = 16,
+    BACSTAC_LIFT_FAULT_PTY               = 1024,
+    BACSTAC_LIFT_FAULT_MAX               = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIFT_FAULT)
+} BACSTAC_LIFT_FAULT;
+
+typedef enum BACSTAC_LIFT_GROUP_MODE
+{
+    BLGM_UNKNOWN                = 0,
+    BLGM_NORMAL                 = 1,
+    BLGM_DOWN_PEAK              = 2,
+    BLGM_TWO_WAY                = 3,
+    BLGM_FOUR_WAY               = 4,
+    BLGM_EMERGENCY_POWER        = 5,
+    BLGM_UP_PEAK                = 6,
+    BACSTAC_LIFT_GROUP_MODE_MAX = 6
+    BACSTAC_ENUM_COMPATIBLE(LIFT_GROUP_MODE)
+} BACSTAC_LIFT_GROUP_MODE;
+/* Add-135-2012aq End */
+
+/* Add-135-2012bf Begin */
+typedef enum BACSTAC_PROTOCOL_LEVEL
+{
+    BPL_PHYSICAL               = 0,
+    BPL_PROTOCOL               = 1,
+    BPL_BACNET_APPLICATION     = 2,
+    BPL_NON_BACNET_APPLICATION = 3,
+    BACSTAC_PROTOCOL_LEVEL_MAX = 3
+    BACSTAC_ENUM_COMPATIBLE(PROTOCOL_LEVEL)
+} BACSTAC_PROTOCOL_LEVEL;
+/* Add-135-2012bf End */
+
+/* Add-135-2010i Begin */
+typedef enum BACSTAC_LIGHTING_OPERATION
+{
+    BLO_NONE                        = 0,
+    BLO_FADE_TO                     = 1,
+    BLO_RAMP_TO                     = 2,
+    BLO_STEP_UP                     = 3,
+    BLO_STEP_DOWN                   = 4,
+    BLO_STEP_ON                     = 5,
+    BLO_STEP_OFF                    = 6,
+    BLO_WARN                        = 7,
+    BLO_WARN_OFF                    = 8,
+    BLO_WARN_RELINQUISH             = 9,
+    BLO_STOP                        = 10,
+    BLO_RESTORE_ON                  = 11,
+    BLO_DEFAULT_ON                  = 12,
+    BLO_TOGGLE_RESTORE              = 13,
+    BLO_TOGGLE_DEFAULT              = 14,
+    BACSTAC_LIGHTING_OPERATION_LAST = 14,
+    BACSTAC_LIGHTING_OPERATION_PTY  = 256,
+    BACSTAC_LIGHTING_OPERATION_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(LIGHTING_OPERATION)
+} BACSTAC_LIGHTING_OPERATION;
+
+typedef enum BACSTAC_LIGHTING_IN_PROGRESS
+{
+    BLIP_IDLE                        = 0,
+    BLIP_FADE_ACTIVE                 = 1,
+    BLIP_RAMP_ACTIVE                 = 2,
+    BLIP_NOT_CONTROLLED              = 3,
+    BLIP_OTHER                       = 4,
+    BLIP_TRIM_ACTIVE                 = 5,
+    BACSTAC_LIGHTING_IN_PROGRESS_MAX = 5
+    BACSTAC_ENUM_COMPATIBLE(LIGHTING_IN_PROGRESS)
+} BACSTAC_LIGHTING_IN_PROGRESS;
+
+typedef enum BACSTAC_LIGHTING_TRANSITION
+{
+    BLT_NONE                        = 0,
+    BLT_FADE                        = 1,
+    BLT_RAMP                        = 2,
+    BACSTAC_LIGHTING_TRANSITION_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(LIGHTING_TRANSITION)
+} BACSTAC_LIGHTING_TRANSITION;
+/* Add-135-2010i End */
+
+/* Add-135-2010aa-1 Begin */
+typedef enum BACSTAC_WRITE_STATUS
+{
+    BWS_IDLE                 = 0,
+    BWS_IN_PROGRESS          = 1,
+    BWS_SUCCESSFUL           = 2,
+    BWS_FAILED               = 3,
+    BACSTAC_WRITE_STATUS_MAX = 3
+    BACSTAC_ENUM_COMPATIBLE(WRITE_STATUS)
+} BACSTAC_WRITE_STATUS;
+/* Add-135-2010aa-1 End */
+
+/* Add-135-2012az-1 Begin */
+typedef enum BACSTAC_BINARY_LIGHTING_PV
+{
+    BBLPV_OFF             = 0,
+    BBLPV_ON              = 1,
+    BBLPV_WARN            = 2,
+    BBLPV_WARN_OFF        = 3,
+    BBLPV_WARN_RELINQUISH = 4,
+    BBLPV_STOP            = 5,
+    BBLPT_TOGGLE          = 6,
+    BACSTAC_BINARY_LIGHTING_PV_LAST = 6,
+    BACSTAC_BINARY_LIGHTING_PV_PTY  = 64,
+    BACSTAC_BINARY_LIGHTING_PV_MAX  = 255
+    BACSTAC_ENUM_COMPATIBLE(BINARY_LIGHTING_PV)
+} BACSTAC_BINARY_LIGHTING_PV;
+/* Add-135-2012az-1 End */
+
+/* Add-135-2008g Begin */
+typedef enum BACSTAC_SECURITY_LEVEL
+{
+    BSL_INCAPABLE            = 0,
+    BSL_PLAIN                = 1,
+    BSL_SIGNED               = 2,
+    BSL_ENCRYPTED            = 3,
+    BSL_SIGNED_END_TO_END    = 4,
+    BSL_ENCRYPTED_END_TO_END = 5,
+    BACSTAC_SECURITY_LEVEL_MAX = 5
+    BACSTAC_ENUM_COMPATIBLE(SECURITY_LEVEL)
+} BACSTAC_SECURITY_LEVEL;
+
+typedef enum BACSTAC_SECURITY_POLICY
+{
+    BSP_PLAIN_NON_TRUSTED = 0,
+    BSP_PLAIN_TRUSTED     = 1,
+    BSP_SIGNED_TRUSTED    = 2,
+    BSP_ENCRYPTED_TRUSTED = 3,
+    BACSTAC_SECURITY_POLICY_MAX = 3
+    BACSTAC_ENUM_COMPATIBLE(SECURITY_POLICY)
+} BACSTAC_SECURITY_POLICY;
+/* Add-135-2008g End */
+
+/* Add-135-2012ay Begin */
+typedef enum BACSTAC_TIMER_STATE
+{
+    BTS_IDLE    = 0,
+    BTS_RUNNING = 1,
+    BTS_EXPIRED = 2,
+    BACSTAC_TIMER_STATE_MAX = 2
+    BACSTAC_ENUM_COMPATIBLE(TIMER_STATE)
+} BACSTAC_TIMER_STATE;
+
+typedef enum BACSTAC_TIMER_TRANSITION
+{
+    BTT_NONE               = 0,
+    BTT_IDLE_TO_RUNNING    = 1,
+    BTT_RUNNING_TO_IDLE    = 2,
+    BTT_RUNNING_TO_RUNNING = 3,
+    BTT_RUNNING_TO_EXPIRED = 4,
+    BTT_FORCED_TO_EXPIRED  = 5,
+    BTT_EXPIRED_TO_IDLE    = 6,
+    BTT_EXPIRED_TO_RUNNING = 7,
+    BACSTAC_TIMER_TRANSITION_MAX = 7
+    BACSTAC_ENUM_COMPATIBLE(TIMER_TRANSITION)
+} BACSTAC_TIMER_TRANSITION;
+/* Add-135-2012ay End */
+
+/* Add-135-2012am Begin */
+typedef enum BACSTAC_RELATIONSHIP
+{
+    BR_UNKNOWN             = 0,
+    BR_DEFAULT             = 1,
+    BR_CONTAINS            = 2,
+    BR_CONTAINED_BY        = 3,
+    BR_USES                = 4,
+    BR_USED_BY             = 5,
+    BR_COMMANDS            = 6,
+    BR_COMMANDED_BY        = 7,
+    BR_ADJUSTS             = 8,
+    BR_ADJUSTED_BY         = 9,
+    BR_INGRESS             = 10,
+    BR_EGRESS              = 11,
+    BR_SUPPLIES_AIR        = 12,
+    BR_RECEIVES_AIR        = 13,
+    BR_SUPPLIES_HOT_AIR    = 14,
+    BR_RECEIVES_HOT_AIR    = 15,
+    BR_SUPPLIES_COOL_AIR   = 16,
+    BR_RECEIVES_COOL_AIR   = 17,
+    BR_SUPPLIES_POWER      = 18,
+    BR_RECEIVES_POWER      = 19,
+    BR_SUPPLIES_GAS        = 20,
+    BR_RECEIVES_GAS        = 21,
+    BR_SUPPLIES_WATER      = 22,
+    BR_RECEIVES_WATER      = 23,
+    BR_SUPPLIES_HOT_WATER  = 24,
+    BR_RECEIVES_HOT_WATER  = 25,
+    BR_SUPPLIES_COOL_WATER = 26,
+    BR_RECEIVES_COOL_WATER = 27,
+    BR_SUPPLIES_STEAM      = 28,
+    BR_RECEIVES_STEAM      = 29,
+    BACSTAC_RELATIONSHIP_LAST = 29,
+    BACSTAC_RELATIONSHIP_PTY  = 1024,
+    BACSTAC_RELATIONSHIP_MAX  = 65535
+    BACSTAC_ENUM_COMPATIBLE(RELATIONSHIP)
+
+} BACSTAC_RELATIONSHIP;
+/* Add-135-2012am End */
+
+/* Add-135-2020cc Begin */
+typedef enum BACSTAC_SC_CONNECT_STATE
+{
+    BSCS_NOT_CONNECTED            = 0,
+    BSCS_CONNECTED                = 1,
+    BSCS_DISCONNECTED_WITH_ERRORS = 2,
+    BSCS_FAILED_TO_CONNECT        = 3,
+    BACSTAC_SC_CONNECT_STATE_MAX  = 3
+    BACSTAC_ENUM_COMPATIBLE(SC_CONNECT_STATE)
+} BACSTAC_SC_CONNECT_STATE;
+
+typedef enum BACSTAC_SC_HUB_CONNECTOR_STATE
+{
+    BSHCS_NO_HUB_CONNECTION     = 0,
+    BSHCS_CONNECTED_TO_PRIMARY  = 1,
+    BSHCS_CONNECTED_TO_FAILOVER = 2,
+    BACSTAC_SC_HUB_CONNECTOR_STATE_MAX  = 2
+    BACSTAC_ENUM_COMPATIBLE(SC_HUB_CONNECTOR_STATE)
+} BACSTAC_SC_HUB_CONNECTOR_STATE;
+/* Add-135-2020cc End */
+
+/* Add-135-2016bi Begin */
+typedef enum BACSTAC_AUDIT_LEVEL
+{
+    BAL_NONE         = 0,
+    BAL_AUDIT_ALL    = 1,
+    BAL_AUDIT_CONFIG = 2,
+    BAL_DEFAULT      = 3,
+    BACSTAC_AUDIT_LEVEL_LAST = 3,
+    BACSTAC_AUDIT_LEVEL_PTY  = 128,
+    BACSTAC_AUDIT_LEVEL_MAX  = 255
+    BACSTAC_ENUM_COMPATIBLE(AUDIT_LEVEL)
+} BACSTAC_AUDIT_LEVEL;
+
+typedef enum BACSTAC_AUDIT_OPERATION
+{
+    BAO_READ                = 0,
+    BAO_WRITE               = 1,
+    BAO_CREATE              = 2,
+    BAO_DELETE              = 3,
+    BAO_LIFE_SAFETY         = 4,
+    BAO_ACKNOWLEDGE_ALARM   = 5,
+    BAO_DEVICE_DISABLE_COMM = 6,
+    BAO_DEVICE_ENABLE_COMM  = 7,
+    BAO_DEVICE_RESET        = 8,
+    BAO_DEVICE_BACKUP       = 9,
+    BAO_DEVICE_RESTORE      = 10,
+    BAO_SUBSCRIPTION        = 11,
+    BAO_NOTIFICATION        = 12,
+    BAO_AUDITING_FAILURE    = 13,
+    BAO_NETWORK_CHANGES     = 14,
+    BAO_GENERAL             = 15,
+    BACSTAC_AUDIT_OPERATION_LAST = 15,
+    BACSTAC_AUDIT_OPERATION_PTY  = 32,
+    BACSTAC_AUDIT_OPERATION_MAX  = 63
+    BACSTAC_OTHER_ENUM(AUDIT_OPERATION)
+} BACSTAC_AUDIT_OPERATION;
+
+typedef enum BACSTAC_AUDIT_OPERATION_FLAGS
+{
+    BAOF_READ                = 0,
+    BAOF_WRITE               = 1,
+    BAOF_CREATE              = 2,
+    BAOF_DELETE              = 3,
+    BAOF_LIFE_SAFETY         = 4,
+    BAOF_ACKNOWLEDGE_ALARM   = 5,
+    BAOF_DEVICE_DISABLE_COMM = 6,
+    BAOF_DEVICE_ENABLE_COMM  = 7,
+    BAOF_DEVICE_RESET        = 8,
+    BAOF_DEVICE_BACKUP       = 9,
+    BAOF_DEVICE_RESTORE      = 10,
+    BAOF_SUBSCRIPTION        = 11,
+    BAOF_NOTIFICATION        = 12,
+    BAOF_AUDITING_FAILURE    = 13,
+    BAOF_NETWORK_CHANGES     = 14,
+    BAOF_GENERAL             = 15
+} BACSTAC_AUDIT_OPERATION_FLAGS;
+
+typedef enum BACSTAC_SUCCESS_FILTER
+{
+    BSF_ALL            = 0,
+    BSF_SUCCESSES_ONLY = 1,
+    BSF_FAILURES_ONLY  = 2,
+    BACSTAC_SUCCESS_FILTER_MAX  = 2
+    BACSTAC_OTHER_ENUM(SUCCESS_FILTER)
+} BACSTAC_SUCCESS_FILTER;
+
+typedef enum BACSTAC_PRIORITY_FILTER_BITS
+{
+    BPF_MANUAL_LIFE_SAFETY = 0,
+    BPF_AUTOMATIC_LIFE_SAFETY = 1,
+    BPF_PRIORITY_3 = 2,
+    BPF_PRIORITY_4 = 3,
+    BPF_CRITICAL_EQUIPMENT_CONTROLS = 4,
+    BPF_MINIMUM_ON_OFF = 5,
+    BPF_PRIORITY_7 = 6,
+    BPF_MANUAL_OPERATOR = 7,
+    BPF_PRIORITY_9 = 8,
+    BPF_PRIORITY_10 = 9,
+    BPF_PRIORITY_11 = 10,
+    BPF_PRIORITY_12 = 11,
+    BPF_PRIORITY_13 = 12,
+    BPF_PRIORITY_14 = 13,
+    BPF_PRIORITY_15 = 14,
+    BPF_PRIORITY_16 = 15
+} BACSTAC_PRIORITY_FILTER_BITS;
+
+/* Add-135-2016bi End */
+/* Add-135-2020ca Begin */
+
+typedef enum BACSTAC_COLOR_OPERATION
+{
+   BCO_NONE                    = 0,
+   BCO_FADE_TO_COLOR           = 1,
+   BCO_FADE_TO_CCT             = 2,
+   BCO_RAMP_TO_CCT             = 3,
+   BCO_STEP_UP_CCT             = 4,
+   BCO_STEP_DOWN_CCT           = 5,
+   BCO_STOP                    = 6,
+   BACSTAC_COLOR_OPERATION_MAX = 6
+   BACSTAC_OTHER_ENUM(COLOR_OPERATION)
+} BACSTAC_COLOR_OPERATION;
+
+typedef enum BACSTAC_COLOR_OPERATION_IN_PROGRESS
+{
+   BCOP_IDLE           = 0,
+   BCOP_FADE_ACTIVE    = 1,
+   BCOP_RAMP_ACTIVE    = 2,
+   BCOP_NOT_CONTROLLED = 3,
+   BCOP_OTHER          = 4,
+   BACSTAC_COLOR_OPERATION_IN_PROGRESS_MAX = 4
+   BACSTAC_ENUM_COMPATIBLE(COLOR_OPERATION_IN_PROGRESS)
+} BACSTAC_COLOR_OPERATION_IN_PROGRESS;
+
+typedef enum BACSTAC_COLOR_TRANSITION
+{
+   BCT_NONE                     = 0,
+   BCT_FADE                     = 1,
+   BCT_RAMP                     = 2,
+   BACSTAC_COLOR_TRANSITION_MAX = 2
+   BACSTAC_ENUM_COMPATIBLE(COLOR_TRANSITION)
+} BACSTAC_COLOR_TRANSITION;
+
+/* Add-135-2020ca End */
+
+#endif /* BNETDEF_H */

@@ -1,0 +1,30 @@
+{
+  "default_mode": "managed",
+  "common": {
+    "suite": "all",
+    "device_id": 1200,
+    "tpi_path": "model/cdu/[BTL]cdu.tpi",
+    "pics_docx_path": "model/cdu/[BTL]FUNC_CHECKLIST_CDU.docx",
+    "expected_response_time_ms": 200,
+    "gateway_config_dir": "./conf",
+    "vport_config_path": "../vport_release/vport.cfg"
+  },
+  "managed": {
+    "binaries": {
+      "gateway_bin": "./bacnet_ip_gateway",
+      "vport_bin": "../vport_release/vport",
+      "vport_test_bin": "../vport_release/vport_test",
+      "unit_test_bin": "./verification/unit/run_tests"
+    },
+    "bbmd_auto": true
+  },
+  "live": {
+    "target_ip": "10.20.7.25",
+    "target_port": 47808,
+    "allow_live_mutation": true,
+    "bbmd_endpoint": "",
+    "ssh_enabled": true,
+    "ssh_user": "root",
+    "ssh_port": 22
+  }
+}

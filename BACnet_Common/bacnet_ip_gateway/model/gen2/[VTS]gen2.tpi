@@ -1,0 +1,1015 @@
+PICS 0
+BACnet Protocol Implementation Conformance Statement
+
+Vendor Name: "LG Electronics"
+Product Name: "Chiller"
+Product Model Number: "GEN2"
+Product Description: "BACnet/IP implementation in LG Chiller Products."
+
+BIBBs Supported:
+{
+        DS-RP-B
+        DS-WP-B
+        DS-COV-B
+        DM-DDB-B
+        DM-DOB-B
+        DM-DCC-B
+}
+
+BACnet Standard Application Services Supported:
+{
+        ReadProperty               Execute
+        WriteProperty              Execute
+        SubscribeCOV               Execute
+        ConfirmedCOVNotification   Initiate
+        UnconfirmedCOVNotification Initiate
+        DeviceCommunicationControl Execute
+        Who-Has                    Execute
+        Who-Is                     Execute
+        I-Have                     Initiate
+        I-Am                       Initiate
+}
+
+Standard Object-Types Supported:
+{
+        Device
+        Analog Input
+        Analog Output
+        Binary Input
+        Binary Value
+        --Network Port
+}
+
+Data Link Layer Option:
+{
+        --BACnet/IP
+}
+
+Character Sets Supported:
+{
+        --ISO 10646 (UTF-8)
+}
+
+Special Functionality:
+{
+        Maximum APDU size in octets: 1476
+}
+
+List of Objects in test device:
+{
+  {
+         object-identifier: (device, 1200)
+         object-name: 'GEN2'
+         object-type: device
+         system-status: operational
+         vendor-name: "LG Electronics"
+         vendor-identifier: 432
+         model-name: "GEN2"
+         description: "BACnet/IP implementation in LG Chiller Products."
+         firmware-revision: "1.0"
+         application-software-version: "1.0"
+         protocol-version: 1
+         protocol-revision: 26
+         protocol-services-supported:
+         {
+                  F, F,  -- acknowledge-alarm, confirmed-cov-notification,
+                  F, F,  -- confirmed-event-notification, get-alarm-summary,
+                  F, T,  -- get-enrollment-summary, subscribe-cov,
+                  F, F,  -- atomic-read-file, atomic-write-file,
+                  F, F,  -- add-list-element, remove-list-element,
+                  F, F,  -- create-object, delete-object,
+                  T, F,  -- read-property, read-property-conditional,
+                  F, T,  -- read-property-multiple, write-property,
+                  F, T,  -- write-property-multiple, device-communication-control,
+                  F, F,  -- confirmed-private-transfer, confirmed-text-message,
+                  F, F,  -- reinitialize-device, vt-open,
+                  F, F,  -- vt-close, vt-data,
+                  F, F,  -- authenticate, request-key,
+                  F, F,  -- i-am, i-have,
+                  F, F,  -- unconfirmed-cov-notification, unconfirmed-event-notification,
+                  F, F,  -- unconfirmed-private-transfer, unconfirmed-text-message,
+                  F, T,  -- time-synchronization, who-has,
+                  T, F,  -- who-is, read-range,
+                  F, F,  -- utc-time-synchronization, life-safety-operation,
+                  F, F,  -- subscribe-cov-property, get-event-information,
+                  F, F,  -- write-group, subscribe-cov-property-multiple,
+                  F, F,  -- confirmed-cov-notification-multiple, unconfirmed-cov-notification-multiple
+                  F, F,  -- confirmed-audit-notification, audit-log-query,
+                  F, F,  -- unconfirmed-audit-notification, who-am-i,
+                  F      -- you-are
+         }
+
+         protocol-object-types-supported:
+         {
+                  T, T, F, T, F, T,        -- AI, AO, AV, BI, BO, BV
+                  F, F,                    -- calendar, command
+                  T, F,                    -- device, event enrollment
+                  F, F, F,                 -- file, group, loop
+                  F, F, F,                 -- MI, MO, notification class
+                  F, F,                    -- program, schedule
+                  F, F, F,                 -- averaging, multi-state-value, trend-log
+                  F, F,                    -- life-safety-point, life-safety-zone
+                  F, F,                    -- accumulator, pulse-converter
+                  F, F, F,                 -- event-log, global-group, trend-log-multiple
+                  F, F, F,                 -- load-control, structured-view, access-door
+                  F,                       -- timer,
+                  F, F, F,                 -- access-credential, access-point, access-rights,
+                  F, F, F,                 -- access-user, access-zone, credential-data-input
+                  F,                       -- network-security
+                  F, F, F,                 -- bitstring-value, characterstring-value, date-pattern-value
+                  F, F, F,                 -- date-value, datetime-pattern-value, datetime-value
+                  F, F, F,                 -- integer-value, large-analog-value, octetstring-value
+                  F, F, F,                 -- positive-Integer-value, time-pattern-value, time-value
+                  F, F,                    -- notification-forwarder, alert-enrollment
+                  F, F,                    -- channel,lighting-output
+                  F, T,                    -- binary-lighting-output, network-port
+                  F, F, F,                 -- elevator-group, escalator, lift
+                  F, F, F,                 -- staging, audit-log, audit-reporter
+                  F, F                     -- color, color-temperature
+         }
+
+         object-list: ?
+         max-APDU-length-accepted: 1476
+         segmentation-supported: no-segmentation
+         max-segments-accepted: 1
+         apdu-timeout: 6000
+         number-of-APDU-retries: 3
+         device-address-binding: ?
+         database-revision: ?
+         --device-uuid: ?
+         daylight-savings-status: F
+         active-cov-subscriptions: ?
+         local-time: ?
+         local-date: ?
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 1)
+         object-name: "Chiller_Run"
+         object-type: binary-value
+         present-value: ? W
+         description: "Chiller remote RUN command (Pulse, auto-clear by MICOM). Requires AO Remote_Mode"
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 2)
+         object-name: "Chiller_Stop"
+         object-type: binary-value
+         present-value: ? W
+         description: "Chiller remote STOP command (Pulse, auto-clear by MICOM)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 3)
+         object-name: "Chiller_Reset"
+         object-type: binary-value
+         present-value: ? W
+         description: "Chiller remote alarm RESET command (Pulse)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 4)
+         object-name: "A_Comp_Run"
+         object-type: binary-value
+         present-value: ? W
+         description: "A Compressor manual RUN command. Requires AO Comp_Mode_Sel=0(Manual)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 5)
+         object-name: "A_Comp_Stop"
+         object-type: binary-value
+         present-value: ? W
+         description: "A Compressor manual STOP command."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 6)
+         object-name: "B_Comp_Run"
+         object-type: binary-value
+         present-value: ? W
+         description: "B Compressor manual RUN command. Requires AO Comp_Mode_Sel=0(Manual)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-value, 7)
+         object-name: "B_Comp_Stop"
+         object-type: binary-value
+         present-value: ? W
+         description: "B Compressor manual STOP command."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 8)
+         object-name: "Chiller_Run_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "Chiller overall run status (1=Run, 0=Stop)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 9)
+         object-name: "Chilled_Water_Flow"
+         object-type: binary-input
+         present-value: ?
+         description: "Chilled water flow status (1=Flow, 0=No Flow)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 10)
+         object-name: "Buzzer_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "Buzzer status (1=On, 0=Off)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 11)
+         object-name: "Abnormal_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "Aggregate abnormal/fault status (1=Abnormal, 0=Normal)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 12)
+         object-name: "A_Comp_Run_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "A Compressor run status (1=Run, 0=Stop)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 13)
+         object-name: "B_Comp_Run_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "B Compressor run status (1=Run, 0=Stop)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 14)
+         object-name: "Remote_Mode_Status"
+         object-type: binary-input
+         present-value: ?
+         description: "Remote mode indicator (1=Remote, 0=Local)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 15)
+         object-name: "A_Comp_Fault"
+         object-type: binary-input
+         present-value: ?
+         description: "A Compressor fault lamp status (1=Fault, 0=Normal)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (binary-input, 16)
+         object-name: "B_Comp_Fault"
+         object-type: binary-input
+         present-value: ?
+         description: "B Compressor fault lamp status (1=Fault, 0=Normal)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         polarity: normal W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-output, 17)
+         object-name: "Chilled_Water_SetTemp"
+         object-type: analog-output
+         present-value: ? W
+         description: "Chilled water outlet temperature setpoint (Scale: x0.1 degC, Range: 3.0~50.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         priority-array: ?
+         relinquish-default: ?
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-output, 18)
+         object-name: "Chiller_RunTime_1"
+         object-type: analog-output
+         present-value: ? W
+         description: "Chiller total run-time accumulator 1 (unit: Hours, scale: x1.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-output, 19)
+         object-name: "Chiller_RunTime_2"
+         object-type: analog-output
+         present-value: ? W
+         description: "Chiller total run-time accumulator 2 (unit: Hours, scale: x1.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hours
+         cov-increment: 1 W
+         priority-array: ?
+         relinquish-default: ?
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 20)
+         object-name: "Normal_Message_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Normal/status message code (0~200). 1=PowerOff, 7=Run, 8=Stop, 19=SoftLoading..."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 21)
+         object-name: "Warning_Message_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Warning alarm message code (201~400). 222/262=Curr Limit, 238/278=Inv Warning..."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 22)
+         object-name: "Fault_Message_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Fault/trip message code (401~700). 401=EvapWTempLow, 402=PumpInterlock..."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 23)
+         object-name: "Warning_Clear_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Warning clear/recovery message code. Injected when a warning clears. (Hidden reg"
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 24)
+         object-name: "Fault_Level_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Top-priority fault level code when multiple faults occur. (Hidden register: msg_"
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 25)
+         object-name: "Caution_Message_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "Auxiliary caution/status code updated together with normal message. (Hidden regi"
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 26)
+         object-name: "Warning_Detail_Value"
+         object-type: analog-input
+         present-value: ?
+         description: "Detailed parameter value that triggered a warning (e.g. model code). (Hidden reg"
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 27)
+         object-name: "A_Comp_Fault_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "A Compressor individual fault message code (401~700)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 28)
+         object-name: "A_Evap_Temp"
+         object-type: analog-input
+         present-value: ?
+         description: "A Evaporator temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 29)
+         object-name: "A_Cond_Temp"
+         object-type: analog-input
+         present-value: ?
+         description: "A Condenser temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 30)
+         object-name: "A_DGR_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "A DGR (Guide Vane) opening rate (Scale: x1.0 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 31)
+         object-name: "A_ECO_Valve_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "A ECO valve opening rate (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 32)
+         object-name: "A_CON_Valve_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "A CON valve opening rate (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 33)
+         object-name: "A_Current"
+         object-type: analog-input
+         present-value: ?
+         description: "A Compressor motor current (Scale: x0.1 A, Range: 0~1999.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 34)
+         object-name: "B_Comp_Fault_Code"
+         object-type: analog-input
+         present-value: ?
+         description: "B Compressor individual fault message code (401~700)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 35)
+         object-name: "B_DGR_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "B DGR (Guide Vane) opening rate (Scale: x1.0 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 36)
+         object-name: "B_ECO_Valve_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "B ECO valve opening rate (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 37)
+         object-name: "B_CON_Valve_Opening"
+         object-type: analog-input
+         present-value: ?
+         description: "B CON valve opening rate (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 38)
+         object-name: "B_Current"
+         object-type: analog-input
+         present-value: ?
+         description: "B Compressor motor current (Scale: x0.1 A, Range: 0~1999.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 39)
+         object-name: "A_Inv_Cmd_Freq"
+         object-type: analog-input
+         present-value: ?
+         description: "A Inverter command frequency (Scale: x0.1 Hz, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hertz
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 40)
+         object-name: "A_Inv_Output_Current"
+         object-type: analog-input
+         present-value: ?
+         description: "A Inverter output current (Scale: x0.1 A, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 41)
+         object-name: "A_Inv_Output_Freq"
+         object-type: analog-input
+         present-value: ?
+         description: "A Inverter output frequency (Scale: x0.1 Hz, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hertz
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 42)
+         object-name: "A_Inv_DCLink_Voltage"
+         object-type: analog-input
+         present-value: ?
+         description: "A Inverter DC Link voltage (Scale: x1.0 V, Range: 0~65535)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 43)
+         object-name: "A_Inv_Heatsink_Temp"
+         object-type: analog-input
+         present-value: ?
+         description: "A Inverter heatsink temperature (Scale: x0.1 degC, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 44)
+         object-name: "B_Inv_Cmd_Freq"
+         object-type: analog-input
+         present-value: ?
+         description: "B Inverter command frequency (Scale: x0.1 Hz, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hertz
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 45)
+         object-name: "B_Inv_Output_Current"
+         object-type: analog-input
+         present-value: ?
+         description: "B Inverter output current (Scale: x0.1 A, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: amperes
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 46)
+         object-name: "B_Inv_Output_Freq"
+         object-type: analog-input
+         present-value: ?
+         description: "B Inverter output frequency (Scale: x0.1 Hz, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: hertz
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 47)
+         object-name: "B_Inv_DCLink_Voltage"
+         object-type: analog-input
+         present-value: ?
+         description: "B Inverter DC Link voltage (Scale: x1.0 V, Range: 0~65535)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: volts
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 48)
+         object-name: "B_Inv_Heatsink_Temp"
+         object-type: analog-input
+         present-value: ?
+         description: "B Inverter heatsink temperature (Scale: x0.1 degC, Range: 0.0~6553.5)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 49)
+         object-name: "Chilled_Water_InletTemp"
+         object-type: analog-input
+         present-value: ?
+         description: "Chilled water inlet temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 50)
+         object-name: "Chilled_Water_OutletTemp"
+         object-type: analog-input
+         present-value: ?
+         description: "Chilled water outlet temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 51)
+         object-name: "A_Comp_DischargeTemp"
+         object-type: analog-input
+         present-value: ?
+         description: "A Compressor discharge temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 52)
+         object-name: "A_Motor_WindingTemp_R"
+         object-type: analog-input
+         present-value: ?
+         description: "A Motor winding temperature R-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 53)
+         object-name: "A_Motor_WindingTemp_S"
+         object-type: analog-input
+         present-value: ?
+         description: "A Motor winding temperature S-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 54)
+         object-name: "A_Motor_WindingTemp_T"
+         object-type: analog-input
+         present-value: ?
+         description: "A Motor winding temperature T-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 55)
+         object-name: "B_Comp_DischargeTemp"
+         object-type: analog-input
+         present-value: ?
+         description: "B Compressor discharge temperature (Scale: x0.1 degC, Range: -40.0~160.0)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 56)
+         object-name: "B_Motor_WindingTemp_R"
+         object-type: analog-input
+         present-value: ?
+         description: "B Motor winding temperature R-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 57)
+         object-name: "B_Motor_WindingTemp_S"
+         object-type: analog-input
+         present-value: ?
+         description: "B Motor winding temperature S-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 58)
+         object-name: "B_Motor_WindingTemp_T"
+         object-type: analog-input
+         present-value: ?
+         description: "B Motor winding temperature T-phase (Scale: x0.1 degC). Option spec."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: degrees-celsius
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 59)
+         object-name: "A_Evap_Pressure"
+         object-type: analog-input
+         present-value: ?
+         description: "A Evaporator pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 60)
+         object-name: "A_Cond_Pressure"
+         object-type: analog-input
+         present-value: ?
+         description: "A Condenser pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 61)
+         object-name: "A_ECO_Level"
+         object-type: analog-input
+         present-value: ?
+         description: "A ECO level (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 62)
+         object-name: "A_CON_Level"
+         object-type: analog-input
+         present-value: ?
+         description: "A CON level (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 63)
+         object-name: "B_Evap_Pressure"
+         object-type: analog-input
+         present-value: ?
+         description: "B Evaporator pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 64)
+         object-name: "B_Cond_Pressure"
+         object-type: analog-input
+         present-value: ?
+         description: "B Condenser pressure (Scale: x0.01 Kg/cm2, Range: 0.00~50.00)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: no-units
+         cov-increment: 0.01 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 65)
+         object-name: "B_ECO_Level"
+         object-type: analog-input
+         present-value: ?
+         description: "B ECO level (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 66)
+         object-name: "B_CON_Level"
+         object-type: analog-input
+         present-value: ?
+         description: "B CON level (Scale: x0.1 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 0.1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 67)
+         object-name: "A_HotGas_Valve"
+         object-type: analog-input
+         present-value: ?
+         description: "A Hot-gas bypass valve opening rate (Scale: x1.0 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+         property-list: ?
+  },
+  {
+         object-identifier: (analog-input, 68)
+         object-name: "B_HotGas_Valve"
+         object-type: analog-input
+         present-value: ?
+         description: "B Hot-gas bypass valve opening rate (Scale: x1.0 %, Range: 0~100)."
+         status-flags: {F, F, F, F}
+         event-state: normal
+         out-of-service: F
+         units: percent
+         cov-increment: 1 W
+         property-list: ?
+  }
+}
+
+End of BACnet Protocol Implementation Conformance Statement
