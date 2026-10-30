@@ -5062,7 +5062,11 @@ async function tcInit() {
   tcLoadCases(); tcLoadHistory();
   // 페이지 새로고침 후에도 진행 중인 실행에 다시 붙음
   const s = await (await fetch('/api/tc-status')).json();
-  if (s.running || s.run_id) { tcApplyStatus(s); if (s.running) tcStartPoll(); }
+  if (s.running || s.run_id) {
+    tcApplyStatus(s);
+    if (s.running) tcStartPoll();
+    else await tcShowResult(s.run_id);   // 결과 상세 + 결과 폴더/엑셀 버튼 복원
+  }
 }
 
 async function tcSetRoot() {
@@ -5343,7 +5347,8 @@ async function tcGenerateReport() {
 async function tcOpenFolder() {
   const d = await (await fetch('/api/tc-open-folder', {method:'POST', headers:{'Content-Type':'application/json'},
                                                       body: JSON.stringify({run_id: tc.runId})})).json();
-  if (!d.success) alert(d.error);
+  if (!d.success) { alert(d.error); return; }
+  document.getElementById('tcProgressMsg').textContent = '결과 폴더 열림: ' + d.path;
 }
 
 </script>

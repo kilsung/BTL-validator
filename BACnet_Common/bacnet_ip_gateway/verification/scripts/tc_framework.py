@@ -642,7 +642,8 @@ def write_reports(results: Iterable[CaseResult], output_dir: Path, metadata: Dic
         step_lines.append("")
     (output_dir / "steps.log").write_text("\n".join(step_lines), encoding="utf-8")
 
-    with (output_dir / "steps.csv").open("w", encoding="utf-8", newline="") as stream:
+    # utf-8-sig(BOM): 한글 Windows Excel이 CP949로 오인해 한글이 깨지는 것을 방지
+    with (output_dir / "steps.csv").open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.writer(stream)
         writer.writerow(("tc_id", "srs_id", "tc_status", "step", "status", "label",
                          "expected", "actual", "message"))

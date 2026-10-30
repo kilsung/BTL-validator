@@ -318,7 +318,7 @@ def load_result(root: Path, run_id: str) -> Dict:
     steps: Dict[str, List[Dict]] = {}
     steps_csv = d / 'steps.csv'
     if steps_csv.is_file():
-        with steps_csv.open(encoding='utf-8', newline='') as f:
+        with steps_csv.open(encoding='utf-8-sig', newline='') as f:   # BOM 유무 모두 허용
             for row in csv.DictReader(f):
                 steps.setdefault(row['tc_id'], []).append({
                     'step': row.get('step'), 'status': row.get('status'),

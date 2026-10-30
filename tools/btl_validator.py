@@ -4585,6 +4585,49 @@ def api_tc_report():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+def _bring_explorer_to_front(folder: Path, timeout: float = 3.0):
+    """탐색기 창을 앞으로 가져옴 (Windows 전용).
+
+    백그라운드 서버 프로세스가 연 창은 Windows 포그라운드 잠금 때문에 브라우저 뒤에
+    열리므로, 제목이 폴더 이름(또는 '제목 표시줄에 전체 경로' 설정 시 전체 경로)인
+    탐색기(CabinetWClass) 창을 찾아 활성화한다.
+    """
+    import ctypes
+    from ctypes import wintypes
+    names = (folder.name, str(folder))   # Windows 11 제목: '<이름> - 파일 탐색기'
+    user32 = ctypes.windll.user32
+    enum_proc = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+
+    def find():
+        found = []
+        buf = ctypes.create_unicode_buffer(512)
+
+        def cb(hwnd, _):
+            user32.GetClassNameW(hwnd, buf, 512)
+            if buf.value == 'CabinetWClass':
+                user32.GetWindowTextW(hwnd, buf, 512)
+                if any(buf.value == n or buf.value.startswith(n + ' - ') for n in names):
+                    found.append(hwnd)
+                    return False
+            return True
+        user32.EnumWindows(enum_proc(cb), 0)
+        return found[0] if found else None
+
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        hwnd = find()
+        if hwnd:
+            SW_RESTORE, VK_MENU, KEYEVENTF_KEYUP = 9, 0x12, 0x0002
+            if user32.IsIconic(hwnd):
+                user32.ShowWindow(hwnd, SW_RESTORE)
+            # Alt 키 입력으로 포그라운드 잠금 해제 후 활성화 (표준 우회 방법)
+            user32.keybd_event(VK_MENU, 0, 0, 0)
+            user32.SetForegroundWindow(hwnd)
+            user32.keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0)
+            return
+        time.sleep(0.2)
+
+
 @app.route('/api/tc-open-folder', methods=['POST'])
 def api_tc_open_folder():
     """결과 폴더를 탐색기로 열기 (로컬 PC 전용)"""
@@ -4594,11 +4637,15 @@ def api_tc_open_folder():
         if run_id:
             folder = Path(tc_runner.load_result(_tc_require_root(), run_id)['dir'])
         if sys.platform == 'win32':
-            os.startfile(str(folder))
+            # os.startfile(ShellExecute)은 Flask 워커 스레드(COM 미초기화)에서 간헐적으로 무시됨
+            import subprocess
+            subprocess.Popen(['explorer.exe', str(folder)])
+            threading.Thread(target=_bring_explorer_to_front, args=(folder,),
+                             daemon=True).start()
         else:
             import subprocess
             subprocess.Popen(['xdg-open', str(folder)])
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'path': str(folder)})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
