@@ -1018,8 +1018,8 @@ def _write_test_bv(point: dict, addr: str, obj_long: str):
 
 
 def _write_test_ao(point: dict, addr: str, obj_long: str):
-    """AO: 현재값과 다른값 1회 쓰기. Pair AI가 있으면 pair 확인.
-    엑셀 minValue/maxValue가 있으면 write 값을 범위 내로 보정.
+    """AO: min/max가 있으면 MIN/mid/MAX, 없으면 현재값과 다른값을 검증한다.
+    Pair AI가 있으면 pair를 확인하고, 없으면 AO 자체를 readback한다.
     반환: (write_result, write_detail)
     """
 
@@ -1054,26 +1054,40 @@ def _write_test_ao(point: dict, addr: str, obj_long: str):
         cur_float = float(cur_val) if cur_err == 'OK' and cur_val is not None else 0.0
     except Exception:
         cur_float = 0.0
-    write_val = round(cur_float + 1.0, 1) if cur_float != 0.0 else 1.0
-
-    if ao_max is not None and write_val > ao_max:
-        write_val = ao_min
-    if ao_min is not None and write_val < ao_min:
-        write_val = ao_min
-
-    ok, w_err = bacnet_write(addr, obj_long, inst, write_val)
-    if not ok:
-        _relinquish_async(addr, obj_long, inst)
-        return 'FAIL', f'write:{w_err}'
-
     poll_to = _poll_timeout(point)
-    if pair_inst:
-        rb_passed, rb_err = _poll_float_readback(addr, pair_long, pair_inst, write_val, 1.0, poll_to)
+    if ao_min is not None and ao_max is not None and ao_min <= ao_max:
+        test_vals = [ao_min, round((ao_min + ao_max) / 2.0, 1), ao_max]
     else:
-        rb_passed, rb_err = _poll_float_readback(addr, obj_long, inst, write_val, 1.0, poll_to)
+        write_val = round(cur_float + 1.0, 1) if cur_float != 0.0 else 1.0
+        if ao_max is not None and write_val > ao_max:
+            write_val = ao_min
+        if ao_min is not None and write_val < ao_min:
+            write_val = ao_min
+        test_vals = [write_val]
 
-    _relinquish_async(addr, obj_long, inst)
-    return ('PASS' if rb_passed else 'FAIL'), f'write{write_val}→{"OK" if rb_passed else rb_err}'
+    sub_results = []
+    try:
+        for write_val in test_vals:
+            ok, w_err = bacnet_write(addr, obj_long, inst, write_val)
+            if not ok:
+                sub_results.append((write_val, False, f'write:{w_err}'))
+                continue
+
+            if pair_inst:
+                rb_passed, rb_err = _poll_float_readback(
+                    addr, pair_long, pair_inst, write_val, 1.0, poll_to)
+            else:
+                rb_passed, rb_err = _poll_float_readback(
+                    addr, obj_long, inst, write_val, 1.0, poll_to)
+            sub_results.append((write_val, rb_passed, rb_err))
+    finally:
+        _relinquish_async(addr, obj_long, inst)
+
+    detail = ', '.join(
+        f'{value}→{"OK" if passed else error}'
+        for value, passed, error in sub_results
+    )
+    return ('PASS' if all(passed for _, passed, _ in sub_results) else 'FAIL'), detail
 
 
 # ═══════════════════════════════════════════════════════
