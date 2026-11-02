@@ -197,6 +197,21 @@
       border-radius: 10px;
       transition: none;
     }
+    #progressText {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.5;
+    }
+    #progressPct {
+      flex-shrink: 0;
+      min-width: 4ch;
+      margin-left: 8px;
+      text-align: right;
+      line-height: 1.5;
+    }
 
     /* ── 요약 스탯 카드 ── */
     .stat-card {
@@ -2649,7 +2664,6 @@ const DEV_SHORT = {
   AWHP:'AWHP', General:'일반', EXPIO:'EXPIO', CDU:'CDU',
   Chiller:'칠러', Aircare:'공기청정'
 };
-const LIVE_ROW_LIMIT = 300;
 const LOG_LINE_LIMIT = 1000;
 const RESULT_PAGE_SIZE = 200;
 
@@ -2665,6 +2679,7 @@ function devBadge(devType, b2) {
 let g = {
   points: [],
   results: [],
+  displayRepeat: 0,
   chart: null,
   filterType: 'ALL',
   searchQ: '',
@@ -3279,6 +3294,7 @@ async function runDeviceAll(deviceKey) {
   g.results = [];
 
   document.getElementById('btnRun').disabled  = true;
+  g.displayRepeat = 0;
   document.getElementById('btnStop').disabled = false;
   appendLog('info', `▶ [All] ${deviceKey}  b2=${b2From}~${b2To}  (${unitCnt}대, ${repeatCount}회 반복)`);
 
@@ -3850,6 +3866,7 @@ async function startTests() {
   document.getElementById('logBox').innerHTML = '';
   document.getElementById('liveCounter').textContent = '0개 완료';
   g.results = [];
+  g.displayRepeat = 0;
   const repeatCount = Math.max(1, Math.min(100,
     parseInt(document.getElementById('repeatCount').value, 10) || 1));
   g.testEventQueue = [];
@@ -3917,6 +3934,7 @@ async function stopTests() {
 
 function handleStartEvent(ev) {
   const p = ev.point;
+  if (!selectTestDisplayRepeat(p.repeat_number)) return;
   setProgress(ev.current - 1, ev.total,
     `[${ev.current}/${ev.total}] ${p.object_type}:${p.instance} ${p.name} 검증 중...`);
 
@@ -3942,7 +3960,6 @@ function handleStartEvent(ev) {
     <td colspan="5"><span class="spinner-border spinner-border-sm text-primary me-1" style="width:.75rem;height:.75rem"></span>
       <span class="text-primary fw-semibold" style="font-size:0.8rem">진행 중...</span></td>
   `;
-  trimLiveRows(body);
   scheduleLiveScroll();
 }
 
@@ -3954,8 +3971,12 @@ function handleProgressEvent(ev) {
   g.results.push(r);
   setProgress(ev.current, ev.total,
     `검증 중: ${ev.current} / ${ev.total}`);
+  document.getElementById('liveCounter').textContent = `${ev.current}개 완료`;
+  const hasError = r.overall === 'FAIL' || Boolean(r.error);
+  const currentRepeat = selectTestDisplayRepeat(r.repeat_number);
+  if (!currentRepeat && !hasError) return;
 
-  appendLog(r.overall.toLowerCase(),
+  appendLog(hasError ? 'fail' : r.overall.toLowerCase(),
     `[${ev.current.toString().padStart(3)}/${ev.total}] ` +
     `[${r.repeat_number || 1}회차] ${r.object_type}:${r.instance} ${r.name} → ${r.overall}` +
     (r.error ? ` (${r.error})` : '') +
@@ -3973,6 +3994,7 @@ function handleProgressEvent(ev) {
     body.appendChild(tr);
   }
   tr.className = {'PASS':'row-pass','FAIL':'row-fail','SKIP':'row-skip'}[r.overall] || '';
+  tr.dataset.displayError = String(hasError);
   tr.innerHTML = `
     <td>${r.repeat_number || 1}회 · ${r.idx}</td>
     <td><code>${r.instance}</code></td>
@@ -3984,17 +4006,28 @@ function handleProgressEvent(ev) {
     <td title="${esc(r.write_detail||'')}">${badge(r.write_result)}${r.write_detail ? '<br><small class="text-muted" style="font-size:0.7rem">' + esc(r.write_detail) + '</small>' : ''}</td>
     <td>${badge(r.prop_result)}</td>
     <td style="max-width:160px"><small class="text-info" style="font-size:0.7rem;white-space:pre-wrap">${esc(r.condition||'')}</small></td>
-    <td>${badge(r.overall)}</td>
+    <td>${badge(r.overall)}${r.error ? '<br><small class="text-danger" style="white-space:pre-wrap">' + esc(r.error) + '</small>' : ''}</td>
   `;
-  trimLiveRows(body);
   scheduleLiveScroll();
   document.getElementById('liveCounter').textContent = `${ev.current}개 완료`;
 }
 
-function trimLiveRows(body) {
-  while (body.children.length > LIVE_ROW_LIMIT) {
-    body.firstElementChild?.remove();
+function selectTestDisplayRepeat(repeatNumber) {
+  const repeat = Number(repeatNumber) || 1;
+  if (repeat < g.displayRepeat) return false;
+  if (repeat > g.displayRepeat) {
+    if (g.displayRepeat > 0) {
+      document.querySelectorAll('#liveBody tr').forEach(row => {
+        if (row.dataset.displayError !== 'true') row.remove();
+      });
+      document.querySelectorAll('#logBox > *').forEach(line => {
+        if (!line.classList.contains('log-fail')) line.remove();
+      });
+      g.pendingLogs = g.pendingLogs.filter(line => line.classList.contains('log-fail'));
+    }
+    g.displayRepeat = repeat;
   }
+  return true;
 }
 
 async function handleCompleteEvent(ev) {
@@ -4597,6 +4630,7 @@ function renderProgress(cur, total) {
       ? `검증 중: ${Math.floor(cur)} / ${total}`
       : '대기 중'));
   pctEl.textContent = pctText;
+  txtEl.title = txtEl.textContent;
 }
 
 function setProgress(cur, total, status) {
@@ -4611,13 +4645,13 @@ function setProgressRunning(running) {
 }
 
 function appendLog(type, msg) {
-  const clsMap = {pass:'log-pass',fail:'log-fail',skip:'log-skip',info:'log-info',warning:'log-skip'};
+  const clsMap = {pass:'log-pass',fail:'log-fail',error:'log-fail',skip:'log-skip',info:'log-info',warning:'log-skip'};
   const ts = new Date().toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const div = document.createElement('div');
   div.className = clsMap[type] || 'log-info';
   div.textContent = `[${ts}] ${msg}`;
   g.pendingLogs.push(div);
-  if (g.pendingLogs.length > LOG_LINE_LIMIT) {
+  if (!g.displayRepeat && g.pendingLogs.length > LOG_LINE_LIMIT) {
     g.pendingLogs.splice(0, g.pendingLogs.length - LOG_LINE_LIMIT);
   }
   if (g.logFlushTimer !== null) return;
@@ -4627,7 +4661,7 @@ function appendLog(type, msg) {
     g.pendingLogs.forEach(line => fragment.appendChild(line));
     g.pendingLogs = [];
     box.appendChild(fragment);
-    while (box.childElementCount > LOG_LINE_LIMIT) {
+    while (!g.displayRepeat && box.childElementCount > LOG_LINE_LIMIT) {
       box.firstElementChild?.remove();
     }
     g.logFlushTimer = null;
@@ -4641,6 +4675,7 @@ function appendLog(type, msg) {
 }
 
 function clearLog() {
+  g.pendingLogs = [];
   document.getElementById('logBox').innerHTML = '';
 }
 
