@@ -928,6 +928,17 @@
                 </tbody>
               </table>
             </div>
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+              <small id="failPageInfo" class="text-muted">0개</small>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" id="failPrevBtn" onclick="changeResultPage('fail', -1)" disabled aria-label="이전 FAIL 페이지">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-secondary" id="failNextBtn" onclick="changeResultPage('fail', 1)" disabled aria-label="다음 FAIL 페이지">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1038,6 +1049,17 @@
                 </tbody>
               </table>
             </div>
+              <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                <small id="allResultPageInfo" class="text-muted">0개</small>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-secondary" id="allResultPrevBtn" onclick="changeResultPage('all', -1)" disabled aria-label="이전 결과 페이지">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                  <button class="btn btn-outline-secondary" id="allResultNextBtn" onclick="changeResultPage('all', 1)" disabled aria-label="다음 결과 페이지">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
           </div>
         </div>
 
@@ -2627,6 +2649,9 @@ const DEV_SHORT = {
   AWHP:'AWHP', General:'일반', EXPIO:'EXPIO', CDU:'CDU',
   Chiller:'칠러', Aircare:'공기청정'
 };
+const LIVE_ROW_LIMIT = 300;
+const LOG_LINE_LIMIT = 1000;
+const RESULT_PAGE_SIZE = 200;
 
 function devBadge(devType, b2) {
   const label = DEV_SHORT[devType] || devType || '';
@@ -2663,6 +2688,11 @@ let g = {
   liveScrollTimer: null,
   uploadedFilepath: '',     // 업로드된 파일 서버 경로
   autoLoadAttempted: false, // 자동 로드 시도 여부 (페이지당 1회)
+  _resultRows: {ALL: [], PASS: [], FAIL: [], SKIP: []},
+  _failRows: [],
+  _resultPageSize: RESULT_PAGE_SIZE,
+  _allResultPage: 0,
+  _failResultPage: 0,
 };
 
 // ═══════════════════════════════════════════════════════
@@ -3912,6 +3942,7 @@ function handleStartEvent(ev) {
     <td colspan="5"><span class="spinner-border spinner-border-sm text-primary me-1" style="width:.75rem;height:.75rem"></span>
       <span class="text-primary fw-semibold" style="font-size:0.8rem">진행 중...</span></td>
   `;
+  trimLiveRows(body);
   scheduleLiveScroll();
 }
 
@@ -3955,8 +3986,15 @@ function handleProgressEvent(ev) {
     <td style="max-width:160px"><small class="text-info" style="font-size:0.7rem;white-space:pre-wrap">${esc(r.condition||'')}</small></td>
     <td>${badge(r.overall)}</td>
   `;
+  trimLiveRows(body);
   scheduleLiveScroll();
   document.getElementById('liveCounter').textContent = `${ev.current}개 완료`;
+}
+
+function trimLiveRows(body) {
+  while (body.children.length > LIVE_ROW_LIMIT) {
+    body.firstElementChild?.remove();
+  }
 }
 
 async function handleCompleteEvent(ev) {
@@ -4050,40 +4088,102 @@ function updateReportTab(ev) {
   // 차트 업데이트
   updateChart(ev.pass, ev['fail'], ev.skip);
 
-  // FAIL 상세 테이블 (인스턴스 번호 오름차순)
-  const fails = g.results.filter(r => r.overall === 'FAIL').slice().sort((a, b) => a.instance - b.instance);
-  const fb = document.getElementById('failBody');
-  if (!fails.length) {
-    fb.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">
-      <i class="bi bi-check-all me-1"></i>FAIL 항목 없음 🎉</td></tr>`;
-  } else {
-    fb.innerHTML = fails.map(r => `
-      <tr class="row-fail" id="fail-row-${r.instance}">
-        <td><code>${r.instance}</code></td>
-        <td>${devBadge(r.device_type || '', r.device_b2)}</td>
-        <td><span class="type-badge type-${r.object_type}">${r.object_type}</span></td>
-        <td>${esc(r.name)}</td>
-        <td>${badge(r.read_result)}</td>
-        <td title="${esc(r.write_detail||'')}">${badge(r.write_result)}</td>
-        <td>${badge(r.prop_result)}</td>
-        <td><small class="text-danger">${esc(r.missing_props.join(', ') || r.error || r.write_detail || '–')}</small></td>
-        <td><button class="btn btn-outline-primary btn-xs"
-              onclick="retestFailPoint(${r.instance})"
-              id="fail-btn-${r.instance}"
-              title="${esc(r.name)} 개별 재검증">
-              <i class="bi bi-arrow-clockwise"></i>
-            </button></td>
-      </tr>
-    `).join('');
-  }
-
-  // 전체 결과 테이블 초기 렌더 (필터: ALL)
+  _prepareReportRows();
+  renderFailResults();
   g._allResultFilter = 'ALL';
   renderAllResults();
 }
 
+function _prepareReportRows(resetPages = true) {
+  const sorted = g.results.slice().sort((a, b) =>
+    (Number(a.repeat_number) || 1) - (Number(b.repeat_number) || 1)
+      || a.instance - b.instance
+      || (Number(a.run_index) || 0) - (Number(b.run_index) || 0));
+  const firstRepeat = Number(sorted[0]?.repeat_number) || 1;
+  const firstRepeatCount = sorted.filter(
+    result => (Number(result.repeat_number) || 1) === firstRepeat
+  ).length;
+  g._resultPageSize = g.results.length >= 1000 && firstRepeatCount
+    ? firstRepeatCount
+    : RESULT_PAGE_SIZE;
+  g._resultRows = {
+    ALL: sorted,
+    PASS: sorted.filter(r => r.overall === 'PASS'),
+    FAIL: sorted.filter(r => r.overall === 'FAIL'),
+    SKIP: sorted.filter(r => r.overall === 'SKIP'),
+  };
+  g._failRows = g._resultRows.FAIL;
+  if (resetPages) {
+    g._allResultPage = 0;
+    g._failResultPage = 0;
+  }
+}
+
+function _updateResultPager(kind, total, page) {
+  const isFail = kind === 'fail';
+  const pageSize = g._resultPageSize || RESULT_PAGE_SIZE;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const info = document.getElementById(isFail ? 'failPageInfo' : 'allResultPageInfo');
+  const prev = document.getElementById(isFail ? 'failPrevBtn' : 'allResultPrevBtn');
+  const next = document.getElementById(isFail ? 'failNextBtn' : 'allResultNextBtn');
+  const first = total ? page * pageSize + 1 : 0;
+  const last = Math.min(total, (page + 1) * pageSize);
+  if (info) info.textContent = total ? `${first}-${last} / ${total}개` : '0개';
+  if (prev) prev.disabled = page <= 0;
+  if (next) next.disabled = page >= pageCount - 1;
+}
+
+function changeResultPage(kind, delta) {
+  const pageSize = g._resultPageSize || RESULT_PAGE_SIZE;
+  if (kind === 'fail') {
+    const pageCount = Math.max(1, Math.ceil(g._failRows.length / pageSize));
+    g._failResultPage = Math.max(0, Math.min(pageCount - 1, g._failResultPage + delta));
+    renderFailResults();
+  } else {
+    const rows = g._resultRows[g._allResultFilter || 'ALL'] || [];
+    const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+    g._allResultPage = Math.max(0, Math.min(pageCount - 1, g._allResultPage + delta));
+    renderAllResults();
+  }
+}
+
+function renderFailResults() {
+  const body = document.getElementById('failBody');
+  if (!body) return;
+  const rows = g._failRows || [];
+  const pageSize = g._resultPageSize || RESULT_PAGE_SIZE;
+  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  g._failResultPage = Math.min(g._failResultPage || 0, pageCount - 1);
+  const page = g._failResultPage;
+  _updateResultPager('fail', rows.length, page);
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-3">
+      <i class="bi bi-check-all me-1"></i>FAIL 항목 없음</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.slice(page * pageSize, (page + 1) * pageSize).map(r => `
+    <tr class="row-fail" id="fail-row-${r.instance}">
+      <td><code>${r.instance}</code></td>
+      <td>${devBadge(r.device_type || '', r.device_b2)}</td>
+      <td><span class="type-badge type-${r.object_type}">${r.object_type}</span></td>
+      <td>${esc(r.name)}</td>
+      <td>${badge(r.read_result)}</td>
+      <td title="${esc(r.write_detail||'')}">${badge(r.write_result)}</td>
+      <td>${badge(r.prop_result)}</td>
+      <td><small class="text-danger">${esc((r.missing_props || []).join(', ') || r.error || r.write_detail || '–')}</small></td>
+      <td><button class="btn btn-outline-primary btn-xs"
+            onclick="retestFailPoint(${r.instance})"
+            id="fail-btn-${r.instance}"
+            title="${esc(r.name)} 개별 재검증">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button></td>
+    </tr>
+  `).join('');
+}
+
 function filterAllResults(filter) {
   g._allResultFilter = filter;
+  g._allResultPage = 0;
   ['filterAll','filterPass','filterFail','filterSkip'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.classList.remove('active');
@@ -4098,15 +4198,19 @@ function renderAllResults() {
   const body = document.getElementById('allResultBody');
   if (!body) return;
   const filter = g._allResultFilter || 'ALL';
-  const rows = (filter === 'ALL' ? g.results : g.results.filter(r => r.overall === filter))
-    .slice().sort((a, b) => a.instance - b.instance);
+  const rows = g._resultRows[filter] || [];
+  const pageSize = g._resultPageSize || RESULT_PAGE_SIZE;
+  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  g._allResultPage = Math.min(g._allResultPage || 0, pageCount - 1);
+  const page = g._allResultPage;
+  _updateResultPager('all', rows.length, page);
 
   if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-3">결과 없음</td></tr>`;
+    body.innerHTML = `<tr><td colspan="11" class="text-center text-muted py-3">결과 없음</td></tr>`;
     return;
   }
 
-    body.innerHTML = rows.map(r => {
+  body.innerHTML = rows.slice(page * pageSize, (page + 1) * pageSize).map((r, index) => {
     const rowCls = {PASS:'row-pass', FAIL:'row-fail', SKIP:'row-skip'}[r.overall] || '';
     // Read 셀: 결과 배지 + 읽은 값 표시
     const readCell = r.read_result === 'PASS'
@@ -4129,7 +4233,7 @@ function renderAllResults() {
       : '';
     return `
       <tr class="${rowCls}" id="allres-row-${r.instance}">
-        <td>${r.idx}</td>
+        <td>${page * pageSize + index + 1}</td>
         <td><code>${r.instance}</code></td>
         <td>${devBadge(r.device_type || '', r.device_b2)}</td>
         <td><span class="type-badge type-${r.object_type}">${r.object_type}</span></td>
@@ -4249,12 +4353,9 @@ function _refreshSummaryCounters() {
     `PASS <strong>${pct}%</strong> &nbsp;|&nbsp; ` +
     `FAIL <strong style="color:var(--danger)">${total ? Math.round(fail/total*100) : 0}%</strong>`;
   updateChart(pass, fail, skip);
-  // FAIL 없으면 상세 테이블 빈 메시지
-  if (fail === 0) {
-    document.getElementById('failBody').innerHTML =
-      `<tr><td colspan="8" class="text-center text-muted py-3">
-         <i class="bi bi-check-all me-1"></i>FAIL 항목 없음 🎉</td></tr>`;
-  }
+  _prepareReportRows(false);
+  renderFailResults();
+  renderAllResults();
 }
 
 // ── FAIL 재검증 섹션 끝 ────────────────────────────────────────────────────
@@ -4516,6 +4617,9 @@ function appendLog(type, msg) {
   div.className = clsMap[type] || 'log-info';
   div.textContent = `[${ts}] ${msg}`;
   g.pendingLogs.push(div);
+  if (g.pendingLogs.length > LOG_LINE_LIMIT) {
+    g.pendingLogs.splice(0, g.pendingLogs.length - LOG_LINE_LIMIT);
+  }
   if (g.logFlushTimer !== null) return;
   g.logFlushTimer = setTimeout(() => {
     const box = document.getElementById('logBox');
@@ -4523,6 +4627,9 @@ function appendLog(type, msg) {
     g.pendingLogs.forEach(line => fragment.appendChild(line));
     g.pendingLogs = [];
     box.appendChild(fragment);
+    while (box.childElementCount > LOG_LINE_LIMIT) {
+      box.firstElementChild?.remove();
+    }
     g.logFlushTimer = null;
     if (g.logScrollTimer === null) {
       g.logScrollTimer = setTimeout(() => {
