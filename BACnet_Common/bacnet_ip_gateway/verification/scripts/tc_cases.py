@@ -1110,9 +1110,39 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
     ssh_port = getattr(ctx.options, "ssh_port", 22) or 22
     ssh_pass = getattr(ctx.options, "ssh_pass", None) or os.environ.get("SSH_PASS")
 
+    if sys.platform == "win32" and ssh_pass:
+        client = None
+        try:
+            import paramiko
+
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(
+                hostname=ip, port=int(ssh_port), username=ssh_user,
+                password=ssh_pass, look_for_keys=False, allow_agent=False,
+                timeout=timeout, auth_timeout=timeout, banner_timeout=timeout,
+            )
+            stdin, stdout, stderr = client.exec_command(script, timeout=timeout)
+            stdin.close()
+            output = stdout.read().decode("utf-8", errors="replace")
+            error = stderr.read().decode("utf-8", errors="replace")
+            returncode = stdout.channel.recv_exit_status()
+            if returncode != 0:
+                ctx._ssh_last_error = error.strip() or f"exit code {returncode}"
+            return returncode, output, error
+        except ImportError:
+            ctx._ssh_last_error = "Windows SSH 암호 인증에 paramiko가 필요합니다 (pip install paramiko)."
+            return None
+        except Exception as error:
+            ctx._ssh_last_error = str(error)
+            return None
+        finally:
+            if client is not None:
+                client.close()
+
     base_cmd = [
         "ssh",
-        "-F", "/dev/null",
+        "-F", os.devnull,
         "-o", "BatchMode=yes" if not ssh_pass else "BatchMode=no",
         # 암호 지정 시 공개키 인증을 배제하여 run_test.sh 접속 테스트와 동일한 방식으로 인증
         *(["-o", "PubkeyAuthentication=no",
@@ -1120,7 +1150,7 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
            "-o", "NumberOfPasswordPrompts=1"] if ssh_pass else []),
         "-o", "ConnectTimeout=5",
         "-o", "StrictHostKeyChecking=no",
-        "-o", "UserKnownHostsFile=/dev/null",
+        "-o", f"UserKnownHostsFile={os.devnull}",
         "-o", "LogLevel=ERROR",
         "-o", "HostKeyAlgorithms=+ssh-rsa",
         "-o", "PubkeyAcceptedKeyTypes=+ssh-rsa",
