@@ -1134,57 +1134,147 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
             single_status, single_val = send_and_recv(apdu_single, invoke_id)
             single_elapsed = time.time() - t0
 
-            # APDU Timeout 설정 연동 (gateway.json 에서 로드, 기본값: 6000ms)
+            # APDU Timeout / Retry 설정 연동
+            # 1순위: 장비 Device 객체 APDU_Timeout(11) / Number_Of_APDU_Retries(73) 실측값
+            #        (보드에 실제 적용된 값, EPICS 선언값과 동일해야 함)
+            # 2순위: gateway.json 의 bacnet.apdu_timeout_ms / bacnet.apdu_retries
+            #        (구 키 apdu_timeout 도 호환), 기본값 6000ms / 3회 (config_loader.cpp 기본값과 동일)
             apdu_timeout_ms = 6000
+            apdu_retries = 3
+            rtu_timeout_ms = 500
+            timeout_src = "default"
+            retries_src = "default"
             for cfg_candidate in ['conf/gateway.json', './gateway.json', '../conf/gateway.json']:
                 if os.path.exists(cfg_candidate):
                     try:
                         with open(cfg_candidate, 'r') as gf:
                             gj = json.load(gf)
-                            apdu_timeout_ms = gj.get('bacnet', {}).get('apdu_timeout', 6000)
-                            break
+                        b_cfg = gj.get('bacnet', {})
+                        if 'apdu_timeout_ms' in b_cfg or 'apdu_timeout' in b_cfg:
+                            apdu_timeout_ms = int(b_cfg.get('apdu_timeout_ms', b_cfg.get('apdu_timeout')))
+                            timeout_src = cfg_candidate
+                        if 'apdu_retries' in b_cfg:
+                            apdu_retries = int(b_cfg['apdu_retries'])
+                            retries_src = cfg_candidate
+                        rtu_timeout_ms = int(gj.get('modbus', {}).get('rtu_timeout_ms', 500))
+                        break
                     except Exception:
                         pass
 
+            for prop_id, prop_name in ((11, "APDU_Timeout"), (73, "Number_Of_APDU_Retries")):
+                invoke_id = (invoke_id + 1) % 256
+                try:
+                    p_status, p_val = send_and_recv(
+                        build_read_property_apdu(8, gateway_dev_id, invoke_id, property_id=prop_id), invoke_id)
+                except Exception:
+                    p_status, p_val = "TIMEOUT", None
+                if p_status == "SUCCESS" and isinstance(p_val, int) and not isinstance(p_val, bool):
+                    if prop_id == 11 and p_val > 0:
+                        apdu_timeout_ms = p_val
+                        timeout_src = "Device.APDU_Timeout"
+                    elif prop_id == 73:
+                        apdu_retries = p_val
+                        retries_src = "Device.Number_Of_APDU_Retries"
+                else:
+                    print(f"    ├─ [WARN] Device {prop_name} read failed ({p_status}); using {apdu_timeout_ms if prop_id == 11 else apdu_retries}")
+
             apdu_timeout_sec = apdu_timeout_ms / 1000.0
-            print(f"    ├─ APDU Timeout Setting: {apdu_timeout_ms}ms (Effective Queue Aging Limit: {max(1000, apdu_timeout_ms - 500)}ms)")
+            # 게이트웨이 Aging 한도 = max(1000, request_timeout - rtu_timeout_ms) (modbus_client.cpp)
+            aging_limit_ms = max(1000, apdu_timeout_ms - rtu_timeout_ms) if apdu_timeout_ms > rtu_timeout_ms else 1000
+            print(f"    ├─ APDU Timeout Setting: {apdu_timeout_ms}ms [{timeout_src}] (Effective Queue Aging Limit: {aging_limit_ms}ms)")
+            print(f"    ├─ APDU Retries Setting: {apdu_retries} [{retries_src}] (client retransmission per BACnet 5.4.4.3)")
             print(f"    ├─ Single Request Latency: {single_elapsed*1000:.1f}ms (Status: {single_status})")
 
             # 2. Burst Write Load Test (Queue Limit = 32 items, 60 concurrent barrier-synchronized requests)
             burst_count = 60
             burst_results = []
+            burst_strays = []
+            burst_retries = []  # (w_idx, inv, local_port, retry_count, recovered, send_times)
+            STRAY_STATUSES = {"ERROR_INVOKE_ID_MISMATCH", "ERROR_NETWORK_LAYER_MSG",
+                              "ERROR_UNKNOWN_PDU_TYPE"}
             threads = []
             barrier = threading.Barrier(burst_count)
 
             def burst_worker(w_idx):
                 inv = (invoke_id + 1 + w_idx) % 256
-                s_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s_sock.settimeout(apdu_timeout_sec + 2.0)
-                s_sock.bind((bind_ip, 0))
+                s_sock = None
+                setup_error = None
+                pkt = b""
+                # 소켓 생성/bind/패킷 생성 실패 시 스레드가 결과 없이 죽으면
+                # (traceback 은 stderr 로만 출력되어 로그에 남지 않음) 합계가 조용히 줄어든다.
+                # 예외를 WORKER_EXCEPTION 으로 기록하여 Unclassified 로 집계되도록 한다.
+                try:
+                    s_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    s_sock.settimeout(apdu_timeout_sec + 2.0)
+                    s_sock.bind((bind_ip, 0))
 
-                if is_bin:
-                    apdu_b = build_write_property_apdu(obj_type, obj_inst, inv, 1, is_binary=True, priority=16)
-                else:
-                    v = target_obj.get('min_value', 10.0)
-                    apdu_b = build_write_property_apdu(obj_type, obj_inst, inv, v, is_binary=False, priority=16)
+                    if is_bin:
+                        apdu_b = build_write_property_apdu(obj_type, obj_inst, inv, 1, is_binary=True, priority=16)
+                    else:
+                        v = target_obj.get('min_value', 10.0)
+                        apdu_b = build_write_property_apdu(obj_type, obj_inst, inv, v, is_binary=False, priority=16)
 
-                pkt = build_bacnet_ip_packet(dnet, dadr, inv, apdu_b)
+                    pkt = build_bacnet_ip_packet(dnet, dadr, inv, apdu_b)
+                except Exception as ex:
+                    setup_error = f"setup: {type(ex).__name__}: {ex}"
 
                 # Wait for all threads to be ready for an exact simultaneous burst
+                # (setup 실패 스레드도 barrier 에 참여하여 나머지 스레드의 동시 전송을 유지)
                 try:
                     barrier.wait(timeout=max(5.0, apdu_timeout_sec))
                 except threading.BrokenBarrierError:
                     pass
 
+                if setup_error is not None:
+                    burst_results.append(("WORKER_EXCEPTION", setup_error, 0.0))
+                    if s_sock is not None:
+                        s_sock.close()
+                    return
+
                 start_t = time.time()
+                local_port = s_sock.getsockname()[1]
+                send_times = []
                 try:
-                    s_sock.sendto(pkt, (target_ip, target_port))
-                    resp, _ = s_sock.recvfrom(2048)
-                    elapsed = time.time() - start_t
-                    st, parsed_v = parse_bacnet_response(resp, inv)
-                    burst_results.append((st, str(parsed_v), elapsed))
-                except Exception as ex:
+                    # BACnet 클라이언트 TSM(5.4.4.3 AWAIT_CONFIRMATION) 동작과 동일하게
+                    # APDU_Timeout 동안 응답이 없으면 같은 invoke ID 로 최대 apdu_retries 회 재전송한다.
+                    # 마지막 시도에만 2초 여유를 둔다.
+                    max_attempts = 1 + max(0, apdu_retries)
+                    got_response = False
+                    for attempt in range(max_attempts):
+                        send_times.append(time.time())
+                        s_sock.sendto(pkt, (target_ip, target_port))
+                        slack = 2.0 if attempt == max_attempts - 1 else 0.0
+                        deadline = time.time() + apdu_timeout_sec + slack
+                        # Stray 패킷(invoke ID 불일치, 네트워크 계층 메시지, Unconfirmed 요청 등)은
+                        # 기록만 하고 자신의 응답을 deadline 까지 계속 기다린다.
+                        while True:
+                            remaining = deadline - time.time()
+                            if remaining <= 0:
+                                break
+                            s_sock.settimeout(remaining)
+                            try:
+                                resp, src = s_sock.recvfrom(2048)
+                            except socket.timeout:
+                                break
+                            st, parsed_v = parse_bacnet_response(resp, inv)
+                            if st in STRAY_STATUSES:
+                                burst_strays.append((w_idx, inv, src, st, str(parsed_v), resp.hex()))
+                                continue
+                            burst_results.append((st, str(parsed_v), time.time() - start_t))
+                            got_response = True
+                            break
+                        if got_response:
+                            break
+                    if len(send_times) > 1:
+                        burst_retries.append((w_idx, inv, local_port, len(send_times) - 1,
+                                              got_response, list(send_times)))
+                    if not got_response:
+                        raise socket.timeout(f"no response after {len(send_times)} attempt(s)")
+                except socket.timeout as ex:
                     burst_results.append(("TIMEOUT_EXCEPTION", str(ex), time.time() - start_t))
+                except Exception as ex:
+                    burst_results.append(("WORKER_EXCEPTION", f"io: {type(ex).__name__}: {ex}",
+                                          time.time() - start_t))
                 finally:
                     s_sock.close()
 
@@ -1205,6 +1295,10 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
             abort_res = sum(1 for st, _, _ in burst_results if st == "BACNET_ABORT_PDU")
             timeout_res = sum(1 for st, _, _ in burst_results if st == "TIMEOUT_EXCEPTION")
             max_elapsed = max((el for _, _, el in burst_results), default=0.0)
+            unclassified = [(st, v) for st, v, _ in burst_results
+                            if st not in ("SUCCESS", "BACNET_ABORT_PDU", "TIMEOUT_EXCEPTION")
+                            and not (st == "BACNET_ERROR_PDU" and
+                                     ("NO_SPACE_TO_WRITE_PROPERTY" in v or "OPERATIONAL_PROBLEM" in v))]
 
             print(f"    ├─ Burst Test Results ({burst_count} simultaneous requests with Barrier):")
             print(f"    │   ├─ Processed / Simple-ACK                  : {success_res}")
@@ -1212,25 +1306,48 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
             print(f"    │   ├─ Aging / Operational Problem             : {op_prob_res}")
             if abort_res > 0:
                 print(f"    │   ├─ Stack Aborted Requests                  : {abort_res}")
+            recovered = [r for r in burst_retries if r[4]]
+            if burst_retries:
+                print(f"    │   ├─ Recovered by APDU Retry                 : {len(recovered)} "
+                      f"(retried workers={len(burst_retries)})")
+                for w_i, w_inv, w_port, w_cnt, w_ok, w_times in burst_retries:
+                    t_str = ", ".join(time.strftime('%H:%M:%S', time.localtime(t)) + f".{int((t % 1) * 1000):03d}"
+                                      for t in w_times)
+                    print(f"    │   │   ├─ worker={w_i} inv={w_inv} local_port={w_port} "
+                          f"retries={w_cnt} {'RECOVERED' if w_ok else 'NO RESPONSE'} sends=[{t_str}]")
             print(f"    │   ├─ Client Socket Timeouts                  : {timeout_res}")
+            if unclassified:
+                print(f"    │   ├─ Unclassified Responses                  : {len(unclassified)} {unclassified}")
+            if len(burst_results) != burst_count:
+                print(f"    │   ├─ Missing Worker Results                  : {burst_count - len(burst_results)} "
+                      f"(results={len(burst_results)}/{burst_count})")
+            if burst_strays:
+                print(f"    │   ├─ Ignored Stray Packets                   : {len(burst_strays)}")
+                for w_i, w_inv, w_src, w_st, w_v, w_hex in burst_strays:
+                    print(f"    │   │   ├─ worker={w_i} inv={w_inv} from={w_src[0]}:{w_src[1]} "
+                          f"{w_st} ({w_v}) raw={w_hex}")
             print(f"    │   └─ Max Latency                             : {max_elapsed*1000:.1f}ms")
 
+            retry_note = (f", {len(recovered)} recovered by APDU retry"
+                          if recovered else "")
+
             # Verification:
-            # - No client socket timeouts (gateway/stack responded to 100% of requests)
+            # - No client socket timeouts after APDU retries (gateway/stack responded to 100% of requests;
+            #   transient network loss recovered by client retransmission is allowed per BACnet 5.4.4.3)
             # - Queue Full (NO_SPACE_TO_WRITE_PROPERTY) must be triggered when burst > 32
             # - Total responses must account for all 60 requests
             total_handled = success_res + q_full_res + op_prob_res + abort_res
             if timeout_res == 0 and q_full_res > 0 and total_handled == burst_count:
                 if op_prob_res > 0 or abort_res > 0:
-                    print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Queue Full [{q_full_res}] & Aging Protection [{op_prob_res + abort_res}] verified without timeouts)")
+                    print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Queue Full [{q_full_res}] & Aging Protection [{op_prob_res + abort_res}] verified without timeouts{retry_note})")
                 else:
-                    print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Queue Full [{q_full_res}] verified & all queued requests processed within APDU timeout)")
+                    print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Queue Full [{q_full_res}] verified & all queued requests processed within APDU timeout{retry_note})")
                 success_count += 1
             elif timeout_res == 0 and success_res + op_prob_res == burst_count:
-                print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Fast processing drained all requests without queue accumulation)")
+                print(f"    └─ Queue Full & APDU Aging Validation: SUCCESS (Fast processing drained all requests without queue accumulation{retry_note})")
                 success_count += 1
             else:
-                print(f"    └─ Queue Full & APDU Aging Validation: FAILED (Timeouts={timeout_res}, QueueFullCount={q_full_res}, OpProblemCount={op_prob_res}, Aborts={abort_res})")
+                print(f"    └─ Queue Full & APDU Aging Validation: FAILED (Timeouts={timeout_res}, QueueFullCount={q_full_res}, OpProblemCount={op_prob_res}, Aborts={abort_res}, Unclassified={len(unclassified)} {unclassified}, APDURetries={apdu_retries}, Recovered={len(recovered)})")
                 failure_count += 1
         else:
             print("    └─ Queue Full & Timed Wait Validation: SKIPPED (No suitable target object found)")

@@ -4333,11 +4333,11 @@ code {
   <div class="req-body">
     <div class="element-group">
       <div class="element-title">📌 Summary (요구사항 요약)</div>
-      <div class="element-content"><p>시스템은 설정 오류, 홀드 상태, 포트 연결/재연결, 초기 동기화 진행 상황, 클램핑 적용, Modbus 통신 실패, BACnet 서비스 상태 전이를 운영자가 명확히 식별할 수 있는 표준 로그로 제공해야 한다. 장기 통신 장애 시 로그 폭주(Busy-loop log flooding)로 인한 디스크 고갈을 방지하도록 출력 rate를 엄격히 제한해야 한다.</p></div>
+      <div class="element-content"><p>시스템은 설정 오류, 홀드 상태, 포트 연결/재연결, 초기 동기화 진행 상황, 클램핑 적용, Modbus 통신 실패, BACnet 서비스 상태 전이를 운영자가 명확히 식별할 수 있는 표준 로그로 제공해야 한다. 장기 통신 장애 시 로그 폭주(Busy-loop log flooding)로 인한 디스크 고갈을 방지하도록 출력 rate를 엄격히 제한해야 한다. 또한 운용 로그는 콘솔과 파일에 동시에 영구 보존되어야 하며, 각 로그는 발생 시각(밀리초)과 구분을 포함하고 설정된 용량 한도를 초과하지 않도록 자동 순환 백업(Log Rotation)을 지원해야 한다.</p></div>
     </div>
     <div class="element-group">
       <div class="element-title">🔄 Input / Output Relationship (입출력 관계)</div>
-      <div class="element-content"><p>- <strong>입력 (Input)</strong>: 게이트웨이 내부 상태 변경 이벤트, 예외 및 에러 이벤트</p><p>- <strong>출력 (Output)</strong>: 표준 출력(stdout/stderr) 및 로그 파일 메시지 (<code>[INFO]</code>, <code>[WARN]</code>, <code>[ERROR]</code>, <code>[FATAL]</code>)</p><p>- <strong>진단 토큰</strong>: <code>FATAL CONFIG ERROR</code>, <code>entering HOLD</code>, <code>BACnet IP Gateway started</code>, <code>clamped: raw=X -&gt; final=Y</code></p></div>
+      <div class="element-content"><p>- <strong>입력 (Input)</strong>: 게이트웨이 내부 상태 변경 이벤트, 예외 및 에러 이벤트</p><p>- <strong>출력 (Output)</strong>: 표준 출력(stdout/stderr) 및 순환 백업 로그 파일 메시지 (밀리초 타임스탬프 및 스트림 구분자 부여)</p><p>- <strong>진단 토큰</strong>: <code>FATAL CONFIG ERROR</code>, <code>entering HOLD</code>, <code>BACnet IP Gateway started</code>, <code>clamped: raw=X -&gt; final=Y</code></p></div>
     </div>
     <div class="element-group">
       <div class="element-title">⚡ Normal / Alternative Flow (정상 / 대안 동작)</div>

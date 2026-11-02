@@ -54,6 +54,8 @@ bacnet_ip_gateway/
 │   │   ├── modbus_client.cpp/h    # 2단계 우선순위 큐 기반 비동기 Modbus RTU 마스터 엔진
 │   │   ├── cov_manager.cpp/h      # Change of Value 구독 관리 및 실시간 변경 통지 디스패처
 │   │   ├── config_loader.cpp/h    # conf/ 디렉터리 JSON 파서 및 레지스터 매핑 캐시
+│   │   ├── fd_monitor.cpp/h       # Foreign Device BBMD 등록 감시 및 주기적 재등록
+│   │   ├── file_logger.cpp/h      # Tee 방식 콘솔/파일 동시 출력 및 크기 제한 순환 백업 로거
 │   │   ├── tpi_exporter.cpp/h     # BTL 인증 제출용 EPICS/TPI 자동 생성기
 │   │   └── main.cpp               # 시그널 핸들러, 라이프사이클 관리 및 메인 루프
 │   └── common/                    # 공통 인프라스트럭처
@@ -186,6 +188,24 @@ graph TB
 ./bacnet_ip_gateway ./conf
 ```
 * 실행 로그에서 설정된 관제점 개수, Modbus 포트 바인딩, BACnet UDP 47808 바인딩을 확인할 수 있습니다.
+* **로그 파일**: 콘솔(stdout/stderr) 출력은 기본적으로 `/var/log/bacnet_ip_gateway.log` 에도 함께 기록됩니다.
+  * 각 줄 앞에 `YYYY-MM-DD HH:MM:SS.mmm I|E` (I: stdout, E: stderr) 시각/구분이 붙습니다.
+  * 크기 제한: 현재 파일이 한도의 절반을 넘으면 `bacnet_ip_gateway.log.1` 로 교체하고 새 파일에 기록하여, 두 파일 합계가 한도 이하로 유지되고 최신 내용이 보존됩니다.
+  * Network Port 설정 변경에 따른 자체 재시작(execv) 후에도 같은 파일에 이어서 기록됩니다.
+  * BACstac 라이브러리 자체 메시지(`bip: ... bound to` 등)는 syslog(`/var/log/messages`)에 기록됩니다.
+  * 오류·이상 상황(Modbus timeout/응답 검증 실패, 시리얼 포트 오류, `[Modbus Queue Full]`, `[Modbus Worker] Job Timed Out`, `[Modbus Error] Write failed`, `ReadProperty Error: Modbus read failed for '<객체명>'`)은 `BACNET_LOG` 설정과 무관하게 항상 stderr(`E`)로 기록됩니다. `BACNET_LOG=1` 은 정상 송수신/프레임 추적 로그만 추가합니다.
+
+  | 환경 변수 | 기본값 | 설명 |
+  |---|---|---|
+  | `BACNET_LOG` | (미설정) | `1` 이면 BACnet/Modbus 송수신 상세 로그 출력 |
+  | `BACNET_LOG_FILE` | `/var/log/bacnet_ip_gateway.log` | 로그 파일 경로. 빈 문자열 또는 `none` 이면 파일 로그 비활성화 |
+  | `BACNET_LOG_MAX_KB` | `1024` | 로그 파일 총 크기 한도(KB, 현재 파일 + `.1`). 최소 32 |
+
+  ```bash
+  # 상세 로그를 켜고 로그 파일 한도를 4MB 로 지정하여 실행
+  BACNET_LOG=1 BACNET_LOG_MAX_KB=4096 ./bacnet_ip_gateway ./conf
+  ```
+  파일을 열 수 없으면(권한 없음 등) `[Log] File logging disabled ...` 경고를 출력하고 콘솔 전용으로 계속 동작합니다.
 
 #### Step 3. 통신 동작 확인
 상위 BACnet 클라이언트 도구(예: `bacpypes3`, Yabe, BACnet Scan 등)를 통해 Who-Is 및 관제점 ReadProperty 조회가 가능합니다.

@@ -279,6 +279,111 @@ def _record_bacnet_rx(ctx, packet, sender, note="", parsed=None, status="respons
     )
 
 
+# ---------------------------------------------------------------------------
+# BACnet client APDU retry policy (BACnet 5.4.4.3 AWAIT_CONFIRMATION)
+# ---------------------------------------------------------------------------
+# Confirmed 요청은 APDU_Timeout 동안 응답이 없으면 같은 invoke ID 로 최대
+# Number_Of_APDU_Retries 회 재전송한다.  원격(WAN) 구간의 일시적 UDP 유실을
+# 클라이언트 재전송으로 복구하고, 재전송 후에도 무응답이면 기존과 같이 실패로 판정한다.
+# 값은 IUT Device 객체에서 한 번 읽어 endpoint 별로 캐시하며, 읽기 실패 시
+# 게이트웨이 기본값(config_loader.cpp: 6000ms / 3회)을 사용한다.
+_DEFAULT_APDU_TIMEOUT_MS = 6000
+_DEFAULT_APDU_RETRIES = 3
+_APDU_POLICY_CACHE = {}
+
+
+def _read_device_unsigned_once(ctx, property_id, invoke_id, timeout=2.0):
+    packet = build_bacnet_ip_packet(
+        None, None, invoke_id,
+        build_read_property_apdu(8, ctx.options.device_id, invoke_id, property_id))
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.settimeout(timeout)
+            sock.bind((_client_bind_ip(ctx), 0))
+            sock.sendto(packet, _endpoint(ctx))
+            response, _ = sock.recvfrom(4096)
+    except (OSError, socket.timeout):
+        return None
+    status, value = parse_bacnet_response(response, invoke_id)
+    if status == "SUCCESS" and isinstance(value, int) and not isinstance(value, bool):
+        return value
+    return None
+
+
+def _apdu_policy(ctx):
+    """Return (apdu_timeout_sec, apdu_retries, source) for the IUT endpoint."""
+    key = tuple(_endpoint(ctx))
+    cached = _APDU_POLICY_CACHE.get(key)
+    if cached is not None:
+        return cached
+    ctx_cached = getattr(ctx, "_apdu_policy_fallback", None)
+    if ctx_cached is not None:
+        return ctx_cached
+    timeout_ms = _read_device_unsigned_once(ctx, 11, 250)
+    retries = _read_device_unsigned_once(ctx, 73, 251)
+    if timeout_ms is not None and timeout_ms > 0 and retries is not None:
+        policy = (timeout_ms / 1000.0, max(0, retries), "Device")
+        _APDU_POLICY_CACHE[key] = policy
+        return policy
+    policy = (_DEFAULT_APDU_TIMEOUT_MS / 1000.0, _DEFAULT_APDU_RETRIES, "default")
+    ctx._apdu_policy_fallback = policy
+    return policy
+
+
+def _note_apdu_retry(ctx, invoke_id, note, attempt, total, recovered=None):
+    events = ctx.evidence.details.setdefault("apdu_retries", [])
+    events.append({
+        "invoke_id": invoke_id, "note": note, "attempt": attempt,
+        "max_attempts": total, "recovered": recovered,
+        "time": time.strftime("%H:%M:%S", time.localtime()),
+    })
+
+
+def _response_invoke_matches(packet, invoke_id):
+    index = _bacnet_apdu_offset(packet)
+    if index is None or index + 2 > len(packet):
+        return False
+    return (packet[index] & 0xF0) in (0x20, 0x30, 0x50, 0x60, 0x70) and packet[index + 1] == invoke_id
+
+
+def _confirmed_exchange(ctx, packet, invoke_id, note, timeout=None, retries=None):
+    """Send one confirmed request on a fresh socket with BACnet APDU retries.
+
+    timeout: 시도당 대기 시간(초). None 이면 IUT APDU_Timeout 사용.
+    retries: 재전송 횟수. None 이면 IUT Number_Of_APDU_Retries 사용.
+    Returns (response, sender). Raises socket.timeout when every attempt timed out.
+    """
+    policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    per_attempt = policy_timeout if timeout is None else timeout
+    total = 1 + (policy_retries if retries is None else max(0, retries))
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.bind((_client_bind_ip(ctx), 0))
+        for attempt in range(total):
+            tx_note = note if attempt == 0 else f"{note} (APDU retry {attempt}/{total - 1})"
+            if attempt:
+                _note_apdu_retry(ctx, invoke_id, note, attempt, total)
+            _record_bacnet_tx(ctx, packet, note=tx_note)
+            sock.sendto(packet, _endpoint(ctx))
+            deadline = time.monotonic() + per_attempt
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    break
+                sock.settimeout(remaining)
+                try:
+                    response, sender = sock.recvfrom(4096)
+                except socket.timeout:
+                    break
+                if not _response_invoke_matches(response, invoke_id):
+                    _record_bacnet_rx(ctx, response, sender,
+                                      note=f"{note}: ignored unrelated datagram")
+                    continue
+                if attempt:
+                    _note_apdu_retry(ctx, invoke_id, note, attempt, total, recovered=True)
+                return response, sender
+    raise socket.timeout(f"{note} invoke {invoke_id}: no response after {total} attempt(s)")
+
+
 def _who_is(ctx, low=None, high=None, expect=True):
     packet = build_bacnet_ip_packet(None, None, 0, build_who_is_apdu(low, high))
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -350,13 +455,11 @@ def _read_property(ctx, object_type, instance, property_id, invoke_id=None,
     apdu = build_read_property_apdu(object_type, instance, invoke_id, property_id)
     packet = build_bacnet_ip_packet(None, None, invoke_id, apdu)
     delay_sec = (getattr(ctx.options, "expected_response_time_ms", 0) or 0) / 1000.0
-    effective_timeout = timeout if timeout is not None else max(3.0, 3.0 + delay_sec * 10.0)
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(effective_timeout)
-        sock.bind((_client_bind_ip(ctx), 0))
-        _record_bacnet_tx(ctx, packet, note="ReadProperty")
-        sock.sendto(packet, _endpoint(ctx))
-        response, sender = sock.recvfrom(4096)
+    if timeout is None:
+        # 시도당 대기: IUT APDU_Timeout 과 응답 지연 설정 기반 값 중 큰 값
+        timeout = max(_apdu_policy(ctx)[0], 3.0 + delay_sec * 10.0)
+    response, sender = _confirmed_exchange(ctx, packet, invoke_id, "ReadProperty",
+                                           timeout=timeout)
     status, value = parse_bacnet_response(response, invoke_id)
     _record_bacnet_rx(
         ctx, response, sender, note="ReadProperty response",
@@ -369,22 +472,18 @@ def _read_property(ctx, object_type, instance, property_id, invoke_id=None,
     return value if status == "SUCCESS" else {"status": status, "value": value}
 
 
-def _read_enum_list(ctx, object_type, instance, property_id, invoke_id, timeout=1.0):
+def _read_enum_list(ctx, object_type, instance, property_id, invoke_id, timeout=None):
     """Read an array of Enumerated values (e.g. Property_List) and decode every element."""
     invoke_id &= 0xFF
     packet = build_bacnet_ip_packet(
         None, None, invoke_id,
         build_read_property_apdu(object_type, instance, invoke_id, property_id),
     )
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(timeout)
-        sock.bind((_client_bind_ip(ctx), 0))
-        _record_bacnet_tx(ctx, packet, note="ReadProperty enum list")
-        try:
-            sock.sendto(packet, _endpoint(ctx))
-            response, sender = sock.recvfrom(4096)
-        except (OSError, socket.timeout) as exc:
-            return {"status": "TIMEOUT", "value": str(exc)}
+    try:
+        response, sender = _confirmed_exchange(ctx, packet, invoke_id,
+                                               "ReadProperty enum list", timeout=timeout)
+    except (OSError, socket.timeout) as exc:
+        return {"status": "TIMEOUT", "value": str(exc)}
     status, first = parse_bacnet_response(response, invoke_id)
     _record_bacnet_rx(ctx, response, sender, note="ReadProperty enum list response",
                       parsed={"parse_status": status, "parsed_value": first})
@@ -457,12 +556,8 @@ def _write_property(ctx, object_type, instance, value, is_binary, property_id=85
             priority=priority,
         )
     packet = build_bacnet_ip_packet(None, None, invoke_id, apdu)
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(2.0)
-        sock.bind((_client_bind_ip(ctx), 0))
-        _record_bacnet_tx(ctx, packet, note="WriteProperty")
-        sock.sendto(packet, _endpoint(ctx))
-        response, sender = sock.recvfrom(4096)
+    # 시도당 대기: 기존 2초 → IUT APDU_Timeout (재전송 포함)
+    response, sender = _confirmed_exchange(ctx, packet, invoke_id, "WriteProperty")
     status, response_value = parse_bacnet_response(response, invoke_id)
     _record_bacnet_rx(
         ctx, response, sender, note="WriteProperty response",
@@ -588,13 +683,41 @@ def _open_observer_socket(ctx):
     return sock
 
 
-def _send_observed_request(ctx, sock, invoke_id, apdu, cov_counts=None, timeout=3.0):
+def _observed_exchange(ctx, sock, packet, invoke_id, note, cov_counts=None,
+                       timeout=None, retries=None):
+    """Confirmed request on a shared observer socket with BACnet APDU retries.
+
+    COV notification 수신/ACK 처리는 _recv_bacnet_response_observed 가 그대로 담당한다.
+    timeout/retries 가 None 이면 IUT APDU_Timeout / Number_Of_APDU_Retries 를 사용한다.
+    Raises AssertionError when every attempt timed out (기존 동작과 동일).
+    """
+    policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    per_attempt = policy_timeout if timeout is None else timeout
+    total = 1 + (policy_retries if retries is None else max(0, retries))
+    for attempt in range(total):
+        tx_note = note if attempt == 0 else f"{note} (APDU retry {attempt}/{total - 1})"
+        if attempt:
+            _note_apdu_retry(ctx, invoke_id, note, attempt, total)
+        _record_bacnet_tx(ctx, packet, note=tx_note)
+        sock.sendto(packet, _endpoint(ctx))
+        try:
+            result = _recv_bacnet_response_observed(
+                sock, invoke_id, cov_counts=cov_counts, ctx=ctx, timeout=per_attempt,
+                return_sender=True)
+        except AssertionError:
+            continue
+        if attempt:
+            _note_apdu_retry(ctx, invoke_id, note, attempt, total, recovered=True)
+        return result
+    raise AssertionError(f"BACnet response invoke {invoke_id} timed out after {total} attempt(s)")
+
+
+def _send_observed_request(ctx, sock, invoke_id, apdu, cov_counts=None, timeout=None,
+                           retries=None):
     packet = build_bacnet_ip_packet(None, None, invoke_id, apdu)
-    _record_bacnet_tx(ctx, packet, note="observed BACnet request")
-    sock.sendto(packet, (ctx.options.target_ip, ctx.options.target_port))
-    response, sender = _recv_bacnet_response_observed(
-        sock, invoke_id, cov_counts=cov_counts, ctx=ctx, timeout=timeout,
-        return_sender=True)
+    response, sender = _observed_exchange(
+        ctx, sock, packet, invoke_id, "observed BACnet request",
+        cov_counts=cov_counts, timeout=timeout, retries=retries)
     status, value = parse_bacnet_response(response, invoke_id)
     _record_bacnet_rx(
         ctx, response, sender,
@@ -991,6 +1114,10 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
         "ssh",
         "-F", "/dev/null",
         "-o", "BatchMode=yes" if not ssh_pass else "BatchMode=no",
+        # 암호 지정 시 공개키 인증을 배제하여 run_test.sh 접속 테스트와 동일한 방식으로 인증
+        *(["-o", "PubkeyAuthentication=no",
+           "-o", "PreferredAuthentications=password,keyboard-interactive",
+           "-o", "NumberOfPasswordPrompts=1"] if ssh_pass else []),
         "-o", "ConnectTimeout=5",
         "-o", "StrictHostKeyChecking=no",
         "-o", "UserKnownHostsFile=/dev/null",
@@ -1009,10 +1136,6 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
         import shutil
         if shutil.which("sshpass"):
             cmd = ["sshpass", "-p", ssh_pass] + base_cmd
-        elif sys.platform == "win32":
-            import win_compat
-            env[win_compat.ASKPASS_ENV] = ssh_pass
-            askpass_file = win_compat.make_windows_askpass(env)
         else:
             try:
                 import tempfile
@@ -1773,10 +1896,8 @@ def _read_active_cov(ctx, sock, invoke_id):
         None, None, invoke_id,
         build_read_property_apdu(8, ctx.options.device_id, invoke_id, property_id=152),
     )
-    _record_bacnet_tx(ctx, packet, note="ReadProperty Active_COV_Subscriptions")
-    sock.sendto(packet, _endpoint(ctx))
-    response, sender = _recv_bacnet_response_observed(
-        sock, invoke_id, ctx=ctx, return_sender=True)
+    response, sender = _observed_exchange(
+        ctx, sock, packet, invoke_id, "ReadProperty Active_COV_Subscriptions")
     status, value = parse_active_cov_subscriptions(response, invoke_id)
     _record_bacnet_rx(
         ctx, response, sender, note="Active_COV_Subscriptions parsed response",
@@ -1979,7 +2100,7 @@ def _dcc_case(ctx, initiation_only=False):
             blocked_response = _send_observed_request(
                 ctx, sock, read_invoke,
                 build_read_property_apdu(obj["type"], obj["instance"], read_invoke),
-                timeout=1.0,
+                timeout=1.0, retries=0,  # 무응답이 정상인 검사: 재전송하지 않음
             )
             read_status, read_value = parse_bacnet_response(blocked_response, read_invoke)
             communication_blocked = read_status != "SUCCESS"
@@ -2636,20 +2757,22 @@ def _bip_mode_case(ctx):
                             message="requires --long (about 6 minutes)")
 
 
-def _read_value_bytes(ctx, object_type, instance, property_id, invoke_id, timeout=2.0):
-    """ReadProperty and return the raw ASN.1 bytes inside the PropertyValue tag (None on error)."""
+def _read_value_bytes(ctx, object_type, instance, property_id, invoke_id, timeout=None,
+                      retries=None):
+    """ReadProperty and return the raw ASN.1 bytes inside the PropertyValue tag (None on error).
+
+    timeout/retries 가 None 이면 IUT APDU_Timeout / Number_Of_APDU_Retries 를 사용한다.
+    재기동 대기 polling 처럼 빠른 단발 probe 가 필요한 곳은 retries=0 과 짧은 timeout 을 지정한다.
+    """
     invoke_id &= 0xFF
     packet = build_bacnet_ip_packet(
         None, None, invoke_id,
         build_read_property_apdu(object_type, instance, invoke_id, property_id))
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(timeout)
-        sock.bind((_client_bind_ip(ctx), 0))
-        try:
-            sock.sendto(packet, _endpoint(ctx))
-            response, _ = sock.recvfrom(4096)
-        except (OSError, socket.timeout):
-            return None
+    try:
+        response, _ = _confirmed_exchange(ctx, packet, invoke_id, "ReadProperty value bytes",
+                                          timeout=timeout, retries=retries)
+    except (OSError, socket.timeout):
+        return None
     status, _ = parse_bacnet_response(response, invoke_id)
     if status != "SUCCESS":
         return None
@@ -2772,7 +2895,7 @@ def _bac_network_port_runtime_case(ctx):
         check_step(ctx, f"WriteProperty NetworkPort prop={prop}", "SUCCESS", status,
                    status == "SUCCESS", f"write failed: {status} ({value})")
         ctx.wait_for(lambda: started() > before, 90.0, "gateway restart after Network Port write")
-        ctx.wait_for(lambda: _read_value_bytes(ctx, 56, 1, 416, 105) is not None, 30.0,
+        ctx.wait_for(lambda: _read_value_bytes(ctx, 56, 1, 416, 105, timeout=2.0, retries=0) is not None, 30.0,
                      "BACnet responses after restart")
 
     def wait_entry(bbmd, label, timeout=30.0):

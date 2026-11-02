@@ -5,8 +5,6 @@ import struct
 import sys
 import math as _math
 
-import win_compat  # noqa: F401 - Windows UDP semantics shim (no-op on POSIX)
-
 # ===========================================================================
 # BACnet Protocol Constants & Mappings
 # ===========================================================================

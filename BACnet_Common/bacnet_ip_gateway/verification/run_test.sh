@@ -164,6 +164,51 @@ except Exception as e:
 " 2>/dev/null || true
 }
 
+# Detect TCs that have 60s/10min duration or special --long branches
+# - TC-CFG-006: min > max 모순 설정 후 reload (60초 재검증)
+# - TC-CFG-008: HOLD 61초 유지 후 단일 기동 복구
+# - TC-BAC-012: SubscribeCOV 1초 lifetime 만료 검증
+# - TC-BAC-015: DCC timed Disable 61초 만료 대기
+# - TC-OBS-003: 600초(10분) Main 무응답 안정성 관찰
+# - TC-BIP-002: BBMD 600초 TTL 설정 및 300초 주기 재등록 확인
+detect_applicable_long_tcs() {
+    MATCHED_LONG_TCS=()
+    local ALL_LONG=("TC-CFG-006" "TC-CFG-008" "TC-BAC-012" "TC-BAC-015" "TC-OBS-003" "TC-BIP-002")
+
+    if [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
+        MATCHED_LONG_TCS=("${ALL_LONG[@]}")
+    elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
+        for long_tc in "${ALL_LONG[@]}"; do
+            for pat in ${CASE_NAME//,/ }; do
+                if [[ "$long_tc" == $pat ]]; then
+                    MATCHED_LONG_TCS+=("$long_tc")
+                    break
+                fi
+            done
+        done
+    fi
+}
+
+# Detect TCs that utilize remote SSH OS resource monitoring
+# - TC-AVL-004: 12시간 전체 관제점 장기 연속 운용 신뢰성 (Soak Test)
+detect_applicable_ssh_tcs() {
+    MATCHED_SSH_TCS=()
+    local ALL_SSH=("TC-AVL-004")
+
+    if [ "$SUITE_CHOICE" = "3" ] || [ "$SUITE_CHOICE" = "4" ]; then
+        MATCHED_SSH_TCS=("${ALL_SSH[@]}")
+    elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
+        for ssh_tc in "${ALL_SSH[@]}"; do
+            for pat in ${CASE_NAME//,/ }; do
+                if [[ "$ssh_tc" == $pat ]] || [[ "$pat" == *"soak"* ]]; then
+                    MATCHED_SSH_TCS+=("$ssh_tc")
+                    break
+                fi
+            done
+        done
+    fi
+}
+
 # Ensure Docker image exists or build it
 ensure_docker_image() {
     if ! docker image inspect "$DOCKER_IMAGE" >/dev/null 2>&1; then
@@ -345,6 +390,10 @@ else
     SUITE="quick"
 fi
 
+# Detect applicable TCs for conditional interactive prompts
+detect_applicable_long_tcs
+detect_applicable_ssh_tcs
+
 # 3. Common Local PC Configuration & Specification file paths
 echo ""
 echo "[3] 설정 및 명세서 경로 확인 (로컬 PC):"
@@ -421,33 +470,25 @@ if [ "$MODE" = "managed" ]; then
     ALLOW_BUILD_ARG=""
     ALLOW_BUILD_STATUS="제외"
     if [ "$SUITE" != "soak" ]; then
-        # Step 5: Long tests option
-        has_long_tc=0
-        if [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
-            has_long_tc=1
-        elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
-            for tc_item in ${CASE_NAME//,/ }; do
-                case "$tc_item" in
-                    TC-CFG-006|TC-CFG-008|TC-BAC-012|TC-BAC-015|TC-OBS-003|\
-                    TC-CFG*|TC-BAC*|TC-OBS*|TC-*|*)
-                        has_long_tc=1
-                        break
-                        ;;
-                esac
-            done
-        fi
-
-        if [ "$has_long_tc" = "1" ]; then
+        # Step 5: Long tests option (only prompted if applicable TCs are selected)
+        if [ ${#MATCHED_LONG_TCS[@]} -gt 0 ]; then
+            LONG_LIST_STR=$(IFS=', '; echo "${MATCHED_LONG_TCS[*]}")
             echo ""
             echo "[5] 장시간(60초/10분) 소요 스트레스 테스트 포함 여부:"
-            echo "    (DCC 만료 60초, 설정 재검증 60초, 10분 포트 무응답 시험 등 총 5개 TC, 약 15분 소요)"
+            echo "    * 현재 테스트 대상 중 적용되는 TC (${#MATCHED_LONG_TCS[@]}개):"
+            echo "      -> $LONG_LIST_STR"
+            echo "    (미포함 시 해당 TC들은 BLOCKED 처리되거나 장기 대기 단계가 생략됩니다.)"
             read -p "    포함하시겠습니까? (y/N, 기본: N): " INPUT_LONG
             INPUT_LONG=${INPUT_LONG:-N}
 
             if [ "$INPUT_LONG" = "y" ] || [ "$INPUT_LONG" = "Y" ] || [ "$INPUT_LONG" = "yes" ]; then
                 LONG_ARG="--long"
-                LONG_STATUS="포함 (60초/10분 장기 시험 실행)"
+                LONG_STATUS="포함 ($LONG_LIST_STR 실행)"
+            else
+                LONG_STATUS="제외"
             fi
+        else
+            LONG_STATUS="해당 없음 (선택된 스위트에 장시간 소요 TC 미포함)"
         fi
 
         # Step 6: Host build option (TC-ENV-001)
@@ -532,35 +573,34 @@ else
             LIVE_MUTATION_STATUS="차단 (안전 모드 - 조회 전용)"
         fi
 
-        # 7. Long tests option for Live mode
-        echo ""
-        echo "[7] 장시간(60초/10분) 소요 스트레스 테스트 포함 여부:"
-        echo "    (DCC 만료 60초 대기 등)"
-        read -p "    포함하시겠습니까? (y/N, 기본: N): " INPUT_LONG
-        INPUT_LONG=${INPUT_LONG:-N}
+        # 7. Long tests option for Live mode (only prompted if applicable TCs are selected)
+        if [ ${#MATCHED_LONG_TCS[@]} -gt 0 ]; then
+            LONG_LIST_STR=$(IFS=', '; echo "${MATCHED_LONG_TCS[*]}")
+            echo ""
+            echo "[7] 장시간(60초/10분) 소요 스트레스 테스트 포함 여부:"
+            echo "    * 현재 테스트 대상 중 적용되는 TC (${#MATCHED_LONG_TCS[@]}개):"
+            echo "      -> $LONG_LIST_STR"
+            echo "    (미포함 시 해당 TC들은 BLOCKED 처리되거나 장기 대기 단계가 생략됩니다.)"
+            read -p "    포함하시겠습니까? (y/N, 기본: N): " INPUT_LONG
+            INPUT_LONG=${INPUT_LONG:-N}
 
-        if [ "$INPUT_LONG" = "y" ] || [ "$INPUT_LONG" = "Y" ] || [ "$INPUT_LONG" = "yes" ]; then
-            LONG_ARG="--long"
-            LONG_STATUS="포함"
+            if [ "$INPUT_LONG" = "y" ] || [ "$INPUT_LONG" = "Y" ] || [ "$INPUT_LONG" = "yes" ]; then
+                LONG_ARG="--long"
+                LONG_STATUS="포함 ($LONG_LIST_STR 실행)"
+            else
+                LONG_STATUS="제외"
+            fi
         else
-            LONG_STATUS="제외"
+            LONG_STATUS="해당 없음 (선택된 스위트에 장시간 소요 TC 미포함)"
         fi
     fi
 
     # 8. SSH remote connection and resource monitoring option for Live mode
-    echo ""
-    echo "[8] 원격 SSH 접속 및 OS 자원(메모리/FD/vport) 모니터링 옵션:"
-    echo "    (Live 검증 시 프로세스 생존 및 메모리/FD 누수 여부를 실시간 모니터링하기 위해 SSH 접속을 사용합니다.)"
-    DEFAULT_SSH_STR="N"
-    if [ "$LIVE_SSH_ENABLED" = "True" ] || [ "$LIVE_SSH_ENABLED" = "true" ]; then
-        DEFAULT_SSH_STR="Y"
-    fi
-    read -p "    원격 SSH 접속을 활성화하시겠습니까? (y/N, 기본: $DEFAULT_SSH_STR): " INPUT_SSH
-    INPUT_SSH=${INPUT_SSH:-$DEFAULT_SSH_STR}
-
     SSH_ARG=""
     SAVED_SSH_ENABLED="False"
     CURRENT_SSH_PASS=""
+    CURRENT_SSH_USER="$LIVE_SSH_USER"
+    CURRENT_SSH_PORT="$LIVE_SSH_PORT"
 
     test_ssh_connection() {
         local u="$1"
@@ -570,16 +610,31 @@ else
         local ssh_out=""
         local ret=0
 
+        # 암호 입력 시: 공개키 인증을 배제하고 암호/keyboard-interactive 만 허용한다.
+        # (공개키가 먼저 성공하면 틀린 암호로도 접속 성공으로 판정되는 문제 방지)
+        # LogLevel=DEBUG1 은 실제 사용된 인증 방식("Authenticated ... using" 로그)을 확인하기 위함이다.
+        # OpenSSH 는 -o 옵션의 첫 값을 사용하므로 LogLevel 은 한 번만 지정한다.
+        local pw_opts=(-o PubkeyAuthentication=no -o PreferredAuthentications=password,keyboard-interactive -o NumberOfPasswordPrompts=1 -o LogLevel=DEBUG1)
+
         set +e
         if [ -n "$pass" ]; then
             if command -v sshpass >/dev/null 2>&1; then
-                ssh_out=$(sshpass -p "$pass" ssh -p "$port" -o BatchMode=no -o ConnectTimeout=4 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1 "$u@$ip" "echo SSH_TEST_OK" 2>&1)
+                ssh_out=$(sshpass -p "$pass" ssh -p "$port" -o BatchMode=no "${pw_opts[@]}" -o ConnectTimeout=4 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1 "$u@$ip" "echo SSH_TEST_OK" 2>&1)
                 ret=$?
             else
                 ssh_out=$(python3 -c "
 import os, sys, tempfile, subprocess
 
 u, ip, port, password = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+
+def has_ok_line(data):
+    # DEBUG1 로그의 'Sending command: echo SSH_TEST_OK' 줄과 구분하기 위해 줄 전체 일치만 인정
+    return any(l.strip() == b'SSH_TEST_OK' for l in data.splitlines())
+
+def print_auth_lines(text):
+    for l in text.splitlines():
+        if 'Authenticated to' in l or 'Authentication succeeded' in l:
+            print(l.strip())
 
 def try_askpass():
     askpass_file = None
@@ -592,10 +647,11 @@ def try_askpass():
         env['SSH_ASKPASS'] = askpass_file
         env['SSH_ASKPASS_REQUIRE'] = 'force'
         env['DISPLAY'] = ':0'
-        cmd = ['ssh', '-p', str(port), '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=4', '-o', 'LogLevel=ERROR', '-o', 'HostKeyAlgorithms=+ssh-rsa', '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa', '-o', 'KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1', '-o', 'BatchMode=no', f'{u}@{ip}', 'echo SSH_TEST_OK']
+        cmd = ['ssh', '-p', str(port), '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=4', '-o', 'LogLevel=DEBUG1', '-o', 'PubkeyAuthentication=no', '-o', 'PreferredAuthentications=password,keyboard-interactive', '-o', 'NumberOfPasswordPrompts=1', '-o', 'HostKeyAlgorithms=+ssh-rsa', '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa', '-o', 'KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1', '-o', 'BatchMode=no', f'{u}@{ip}', 'echo SSH_TEST_OK']
         res = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=6)
         if 'SSH_TEST_OK' in res.stdout:
             print('SSH_TEST_OK')
+            print_auth_lines(res.stderr or '')
             return 0
         err = (res.stderr or res.stdout).strip()
         lines = [l for l in err.splitlines() if 'password:' not in l.lower()]
@@ -614,7 +670,7 @@ if code is not None:
 
 try:
     import pty, select, time
-    cmd = ['ssh', '-p', str(port), '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=4', '-o', 'LogLevel=ERROR', '-o', 'HostKeyAlgorithms=+ssh-rsa', '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa', '-o', 'KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1', f'{u}@{ip}', 'echo SSH_TEST_OK']
+    cmd = ['ssh', '-p', str(port), '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=4', '-o', 'LogLevel=DEBUG1', '-o', 'PubkeyAuthentication=no', '-o', 'PreferredAuthentications=password,keyboard-interactive', '-o', 'NumberOfPasswordPrompts=1', '-o', 'HostKeyAlgorithms=+ssh-rsa', '-o', 'PubkeyAcceptedKeyTypes=+ssh-rsa', '-o', 'KexAlgorithms=+diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1', f'{u}@{ip}', 'echo SSH_TEST_OK']
     pid, fd = pty.fork()
     if pid == 0:
         os.execvp(cmd[0], cmd)
@@ -635,12 +691,13 @@ try:
                         pass_sent = True
                 except OSError:
                     break
-            if b'SSH_TEST_OK' in buf: break
+            if has_ok_line(buf): break
         os.close(fd)
         _, status = os.waitpid(pid, 0)
         out = buf.decode(errors='replace').strip()
-        if b'SSH_TEST_OK' in buf:
+        if has_ok_line(buf):
             print('SSH_TEST_OK')
+            print_auth_lines(out)
             sys.exit(0)
         else:
             lines = [l for l in out.splitlines() if 'password:' not in l.lower()]
@@ -664,64 +721,102 @@ except Exception as e:
         fi
         set -e
 
-        if [ $ret -eq 0 ] && [[ "$ssh_out" == *"SSH_TEST_OK"* ]]; then
+        # DEBUG1 로그의 'Sending command: echo SSH_TEST_OK' 와 구분하기 위해 줄 전체 일치만 인정
+        if [ $ret -eq 0 ] && printf '%s\n' "$ssh_out" | tr -d '\r' | grep -qx 'SSH_TEST_OK'; then
+            if [ -n "$pass" ]; then
+                # 실제 사용된 인증 방식 확인 (신규 OpenSSH: Authenticated ... using "x",
+                # 구버전: Authentication succeeded (x))
+                if echo "$ssh_out" | grep -Eq 'using "(password|keyboard-interactive)"|Authentication succeeded \((password|keyboard-interactive)\)'; then
+                    return 0
+                elif echo "$ssh_out" | grep -Eq 'using "none"|Authentication succeeded \(none\)'; then
+                    # 보드 계정에 암호가 없어 none 인증으로 통과 — 입력 암호는 검증되지 않음
+                    echo "SSH_AUTH_NONE"
+                    return 0
+                fi
+                echo "SSH_AUTH_UNVERIFIED"
+            fi
             return 0
         else
-            echo "$ssh_out"
+            # DEBUG1 로그는 제외하고 실제 오류 메시지만 전달
+            echo "$ssh_out" | grep -v -E '^(debug[0-9]?:|OpenSSH_|Authenticated to|Transferred:|Bytes per second)' | grep -v -i 'password:'
             return 1
         fi
     }
 
-    if [ "$INPUT_SSH" = "y" ] || [ "$INPUT_SSH" = "Y" ] || [ "$INPUT_SSH" = "yes" ]; then
-        SAVED_SSH_ENABLED="True"
-        while true; do
-            read -p "    SSH 접속 계정 [기본값: $LIVE_SSH_USER]: " INPUT_SSH_USER
-            CURRENT_SSH_USER=${INPUT_SSH_USER:-$LIVE_SSH_USER}
-            read -p "    SSH 접속 포트 [기본값: $LIVE_SSH_PORT]: " INPUT_SSH_PORT
-            CURRENT_SSH_PORT=${INPUT_SSH_PORT:-$LIVE_SSH_PORT}
-
-            read -s -p "    SSH 접속 암호 (Enter: 키 기반 무암호 인증, 암호 사용 시 직접 입력): " INPUT_SSH_PASS
-            echo ""
-            CURRENT_SSH_PASS="$INPUT_SSH_PASS"
-
-            echo -n "    [SSH] 원격 보드($CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT) 접속 테스트 중... "
-            set +e
-            SSH_TEST_ERR=$(test_ssh_connection "$CURRENT_SSH_USER" "$TARGET_IP" "$CURRENT_SSH_PORT" "$CURRENT_SSH_PASS")
-            SSH_TEST_CODE=$?
-            set -e
-
-            if [ $SSH_TEST_CODE -eq 0 ]; then
-                echo "성공!"
-                echo "    [SSH 접속 확인] $CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT 인증 및 연결 확인 완료"
-                break
-            else
-                echo "실패!"
-                echo "    [오류] 원격 SSH 접속 실패: 암호 불일치, 키 인증 실패 또는 호스트 접근 불가"
-                [ -n "$SSH_TEST_ERR" ] && echo "    (상세: $(echo "$SSH_TEST_ERR" | tr '\n' ' ' | head -c 120))"
-                read -p "    SSH 접속 정보를 다시 입력하시겠습니까? (Y/n, 기본: Y): " RETRY_SSH
-                RETRY_SSH=${RETRY_SSH:-Y}
-                if [ "$RETRY_SSH" != "y" ] && [ "$RETRY_SSH" != "Y" ]; then
-                    echo "    [주의] SSH 접속 실패 상태로 진행합니다. (관련 모니터링 TC는 BLOCKED 처리됩니다.)"
-                    break
-                fi
-                echo ""
-            fi
-        done
-
-        SSH_ARG="--ssh-enable --ssh-user $CURRENT_SSH_USER --ssh-port $CURRENT_SSH_PORT"
-        if [ -n "$CURRENT_SSH_PASS" ]; then
-            AUTH_DESC="암호 인증"
-            SSH_ARG="$SSH_ARG --ssh-pass $CURRENT_SSH_PASS"
-            export SSH_PASS="$CURRENT_SSH_PASS"
-        else
-            AUTH_DESC="키/무암호 인증"
+    if [ ${#MATCHED_SSH_TCS[@]} -gt 0 ]; then
+        SSH_LIST_STR=$(IFS=', '; echo "${MATCHED_SSH_TCS[*]}")
+        echo ""
+        echo "[8] 원격 SSH 접속 및 OS 자원(메모리/FD/vport) 모니터링 옵션:"
+        echo "    * 현재 테스트 대상에 실시간 OS 자원 모니터링 대상 TC가 포함되어 있습니다."
+        echo "      -> $SSH_LIST_STR (장기 연속 운용 신뢰성 검증)"
+        echo "    (Live 검증 시 프로세스 생존 및 메모리/FD 누수 여부를 실시간 모니터링하기 위해 SSH 접속을 사용합니다.)"
+        DEFAULT_SSH_STR="N"
+        if [ "$LIVE_SSH_ENABLED" = "True" ] || [ "$LIVE_SSH_ENABLED" = "true" ]; then
+            DEFAULT_SSH_STR="Y"
         fi
-        SSH_STATUS="활성화 ($CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT, $AUTH_DESC - OS 자원 실시간 모니터링)"
+        read -p "    원격 SSH 접속을 활성화하시겠습니까? (y/N, 기본: $DEFAULT_SSH_STR): " INPUT_SSH
+        INPUT_SSH=${INPUT_SSH:-$DEFAULT_SSH_STR}
+
+        if [ "$INPUT_SSH" = "y" ] || [ "$INPUT_SSH" = "Y" ] || [ "$INPUT_SSH" = "yes" ]; then
+            SAVED_SSH_ENABLED="True"
+            while true; do
+                read -p "    SSH 접속 계정 [기본값: $LIVE_SSH_USER]: " INPUT_SSH_USER
+                CURRENT_SSH_USER=${INPUT_SSH_USER:-$LIVE_SSH_USER}
+                read -p "    SSH 접속 포트 [기본값: $LIVE_SSH_PORT]: " INPUT_SSH_PORT
+                CURRENT_SSH_PORT=${INPUT_SSH_PORT:-$LIVE_SSH_PORT}
+
+                read -s -p "    SSH 접속 암호 (Enter: 키 기반 무암호 인증, 암호 사용 시 직접 입력): " INPUT_SSH_PASS
+                echo ""
+                CURRENT_SSH_PASS="$INPUT_SSH_PASS"
+
+                echo -n "    [SSH] 원격 보드($CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT) 접속 테스트 중... "
+                set +e
+                SSH_TEST_ERR=$(test_ssh_connection "$CURRENT_SSH_USER" "$TARGET_IP" "$CURRENT_SSH_PORT" "$CURRENT_SSH_PASS")
+                SSH_TEST_CODE=$?
+                set -e
+
+                if [ $SSH_TEST_CODE -eq 0 ]; then
+                    echo "성공!"
+                    echo "    [SSH 접속 확인] $CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT 인증 및 연결 확인 완료"
+                    if [[ "$SSH_TEST_ERR" == *"SSH_AUTH_NONE"* ]]; then
+                        echo "    [주의] 보드 계정($CURRENT_SSH_USER)에 암호가 설정되어 있지 않아 무암호(none) 인증으로 접속되었습니다."
+                        echo "           입력한 암호는 검증되지 않았습니다."
+                    elif [[ "$SSH_TEST_ERR" == *"SSH_AUTH_UNVERIFIED"* ]]; then
+                        echo "    [주의] 사용된 SSH 인증 방식을 확인할 수 없어 입력한 암호의 검증 여부가 불확실합니다."
+                    fi
+                    break
+                else
+                    echo "실패!"
+                    echo "    [오류] 원격 SSH 접속 실패: 암호 불일치, 키 인증 실패 또는 호스트 접근 불가"
+                    [ -n "$SSH_TEST_ERR" ] && echo "    (상세: $(echo "$SSH_TEST_ERR" | tr '\n' ' ' | head -c 120))"
+                    read -p "    SSH 접속 정보를 다시 입력하시겠습니까? (Y/n, 기본: Y): " RETRY_SSH
+                    RETRY_SSH=${RETRY_SSH:-Y}
+                    if [ "$RETRY_SSH" != "y" ] && [ "$RETRY_SSH" != "Y" ]; then
+                        echo "    [주의] SSH 접속 실패 상태로 진행합니다. (관련 모니터링 TC는 BLOCKED 처리됩니다.)"
+                        break
+                    fi
+                    echo ""
+                fi
+            done
+
+            SSH_ARG="--ssh-enable --ssh-user $CURRENT_SSH_USER --ssh-port $CURRENT_SSH_PORT"
+            if [ -n "$CURRENT_SSH_PASS" ]; then
+                AUTH_DESC="암호 인증"
+                SSH_ARG="$SSH_ARG --ssh-pass $CURRENT_SSH_PASS"
+                export SSH_PASS="$CURRENT_SSH_PASS"
+            else
+                AUTH_DESC="키/무암호 인증"
+            fi
+            SSH_STATUS="활성화 ($CURRENT_SSH_USER@$TARGET_IP:$CURRENT_SSH_PORT, $AUTH_DESC - OS 자원 실시간 모니터링)"
+        else
+            CURRENT_SSH_USER="$LIVE_SSH_USER"
+            CURRENT_SSH_PORT="$LIVE_SSH_PORT"
+            CURRENT_SSH_PASS=""
+            SSH_STATUS="비활성화 (BACnet 네트워크 응답 지표로 대체 감시)"
+        fi
     else
-        CURRENT_SSH_USER="$LIVE_SSH_USER"
-        CURRENT_SSH_PORT="$LIVE_SSH_PORT"
-        CURRENT_SSH_PASS=""
-        SSH_STATUS="비활성화 (BACnet 네트워크 응답 지표로 대체 감시)"
+        SAVED_SSH_ENABLED="$LIVE_SSH_ENABLED"
+        SSH_STATUS="해당 없음 (선택된 스위트에 OS 자원 모니터링 대상 TC(TC-AVL-004) 미포함)"
     fi
 
     # In Live mode, binaries are not executed on host, so binary flags & preflight are omitted

@@ -1831,10 +1831,9 @@ BACSTAC_HOOK_STATUS BacnetGateway::handleReadPresentValue(
     }
     bool read_ok = instance_->modbus_->readValue(*mapping, raw_val);
     if (!read_ok) {
-        if (instance_->enable_log_) {
-            std::cout << "[" << ModbusClient::getMsTimestamp() << "][BACnet TX] ReadProperty Error: Modbus read failed for '"
-                      << mapping->name << "'" << std::endl;
-        }
+        // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+        std::cerr << "[" << ModbusClient::getMsTimestamp() << "][BACnet TX] ReadProperty Error: Modbus read failed for '"
+                  << mapping->name << "' (Instance=" << mapping->instance << ")" << std::endl;
         return sendServiceError(hTsm, ERR_CLASS_DEVICE, ERR_CODE_OPERATIONAL_PROBLEM);
     }
 

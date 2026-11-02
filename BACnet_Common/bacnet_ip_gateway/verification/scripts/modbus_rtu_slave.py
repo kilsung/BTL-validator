@@ -25,12 +25,6 @@ import signal
 from datetime import datetime
 import struct
 import argparse
-try:
-    import termios
-    import tty
-    import fcntl
-except ImportError:  # Windows: serial/PTY simulator unavailable, CRC/frame helpers still usable
-    termios = tty = fcntl = None
 import select
 import array
 import json
@@ -445,17 +439,6 @@ def handle_request(data: bytes, memory: SlaveMemory, slave_id: int) -> bytes:
 # ---------------------------------------------------------------------------
 import ctypes
 
-BAUD_MAP = {
-    1200:   termios.B1200,
-    2400:   termios.B2400,
-    4800:   termios.B4800,
-    9600:   termios.B9600,
-    19200:  termios.B19200,
-    38400:  termios.B38400,
-    57600:  termios.B57600,
-    115200: termios.B115200,
-} if termios is not None else {}
-
 class InotifyPortWatcher:
     """Linux inotify-based directory watcher for serial/PTY port nodes."""
     def __init__(self, device_path: str):
@@ -503,12 +486,25 @@ class InotifyPortWatcher:
 
 def open_serial_safe(port: str, baudrate: int) -> int:
     try:
+        import fcntl
+        import termios
+
+        baud_map = {
+            1200: termios.B1200,
+            2400: termios.B2400,
+            4800: termios.B4800,
+            9600: termios.B9600,
+            19200: termios.B19200,
+            38400: termios.B38400,
+            57600: termios.B57600,
+            115200: termios.B115200,
+        }
         fd = os.open(port, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
         flags = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
 
         attrs = termios.tcgetattr(fd)
-        baud = BAUD_MAP.get(baudrate, termios.B19200)
+        baud = baud_map.get(baudrate, termios.B19200)
         attrs[4] = baud
         attrs[5] = baud
         attrs[2] = (termios.CS8 | termios.CLOCAL | termios.CREAD)

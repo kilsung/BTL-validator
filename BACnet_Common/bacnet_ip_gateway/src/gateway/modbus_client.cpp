@@ -221,11 +221,10 @@ bool ModbusClient::enqueueWrite(const ObjectMapping&      mapping,
         return false;
     }
     if (job_queue_.size() >= kMaxJobQueueSize) {
-        if (enable_log_) {
-            std::cout << "[" << getMsTimestamp() << "][Modbus Queue Full] Write job rejected for '"
-                      << mapping.name << "' (Queue=" << job_queue_.size()
-                      << " >= " << kMaxJobQueueSize << ")" << std::endl;
-        }
+        // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+        std::cerr << "[" << getMsTimestamp() << "][Modbus Queue Full] Write job rejected for '"
+                  << mapping.name << "' (Queue=" << job_queue_.size()
+                  << " >= " << kMaxJobQueueSize << ")" << std::endl;
         return false;
     }
 
@@ -263,7 +262,14 @@ std::shared_ptr<ModbusReadHandle> ModbusClient::submitRead(
 
     {
         std::lock_guard<std::mutex> lock(job_queue_mutex_);
-        if (!running_ || job_queue_.size() >= kMaxJobQueueSize) {
+        if (!running_) {
+            return nullptr;
+        }
+        if (job_queue_.size() >= kMaxJobQueueSize) {
+            // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+            std::cerr << "[" << getMsTimestamp() << "][Modbus Queue Full] Read job rejected for '"
+                      << mapping.name << "' (Queue=" << job_queue_.size()
+                      << " >= " << kMaxJobQueueSize << ")" << std::endl;
             return nullptr;
         }
         job_queue_.push(std::move(job));
@@ -427,11 +433,10 @@ void ModbusClient::executorThread()
         auto wait_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
             now - job.enqueued_time).count();
         if (static_cast<uint32_t>(wait_ms) > job_timeout_ms_) {
-            if (enable_log_) {
-                std::cout << "[" << getMsTimestamp() << "][Modbus Worker] Job Timed Out in Queue ("
-                          << wait_ms << "ms > " << job_timeout_ms_ << "ms) for '"
-                          << (job.mapping ? job.mapping->name : "Unknown") << "'" << std::endl;
-            }
+            // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+            std::cerr << "[" << getMsTimestamp() << "][Modbus Worker] Job Timed Out in Queue ("
+                      << wait_ms << "ms > " << job_timeout_ms_ << "ms) for '"
+                      << (job.mapping ? job.mapping->name : "Unknown") << "'" << std::endl;
             if (job.job_type == ModbusJobType::WRITE_ASYNC && job.callback) {
                 try {
                     job.callback(false);
@@ -451,10 +456,9 @@ void ModbusClient::executorThread()
 
             bool ok = (job.mapping != nullptr) && serialWrite(*job.mapping, job.write_value);
             if (!ok) {
-                if (enable_log_) {
-                    std::cout << "[" << getMsTimestamp() << "][Modbus Error] Write failed for '"
-                              << (job.mapping ? job.mapping->name : "Unknown") << "'" << std::endl;
-                }
+                // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+                std::cerr << "[" << getMsTimestamp() << "][Modbus Error] Write failed for '"
+                          << (job.mapping ? job.mapping->name : "Unknown") << "'" << std::endl;
                 if (port_ && !port_->isOpen()) {
                     is_connected_ = false;
                 }

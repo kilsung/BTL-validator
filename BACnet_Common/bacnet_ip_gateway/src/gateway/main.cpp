@@ -1,4 +1,5 @@
 #include "bacnet_gateway.h"
+#include "file_logger.h"
 #include <iostream>
 #include <csignal>
 #include <atomic>
@@ -33,6 +34,10 @@ static void signalHandler(int sig) {
  *   ./bacnet_ip_gateway /etc/gateway/conf
  */
 int main(int argc, char* argv[]) {
+    // 콘솔 출력을 /var/log 로그 파일(크기 제한, 최신 내용 유지)에도 기록한다.
+    // 경로/크기: BACNET_LOG_FILE, BACNET_LOG_MAX_KB 환경 변수 (file_logger.h 참조)
+    gateway::FileLogger::installFromEnvironment();
+
     std::string config_dir = "./conf";
     if (argc > 1) {
         config_dir = argv[1];
@@ -143,6 +148,7 @@ int main(int argc, char* argv[]) {
         gateway.stop();
         std::cout.flush();
         std::cerr.flush();
+        gateway::FileLogger::uninstall(); // 로그 fd 는 O_CLOEXEC, 재실행 후 같은 파일에 이어서 기록
         execv("/proc/self/exe", argv);
         std::cerr << "[Main] Failed to restart gateway (execv errno=" << errno << ": "
                   << std::strerror(errno) << "). Exiting with code 1." << std::endl;
@@ -152,6 +158,7 @@ int main(int argc, char* argv[]) {
     std::cout << "\n[Main] Shutdown signal received. Stopping gateway..." << std::endl;
     gateway.stop();
     std::cout << "[Main] gateway.stop() completed. Exiting main." << std::endl;
+    gateway::FileLogger::uninstall();
 
     return 0;
 }

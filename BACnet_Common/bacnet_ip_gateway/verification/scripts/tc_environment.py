@@ -636,6 +636,10 @@ class TestEnvironment:
         self._process_generations[generation_key] = generation
         suffix = "" if generation == 1 else f"_{generation}"
         log_path = self.output_dir / f"{prefix}_{name}{suffix}.log"
+        # Managed 검증에서 기동하는 게이트웨이는 콘솔 출력을 위 log_path 로 수집하므로
+        # 게이트웨이 자체 파일 로그(/var/log, file_logger.h)는 끈다. 명시 지정 시 그 값을 따른다.
+        env = dict(os.environ if env is None else env)
+        env.setdefault("BACNET_LOG_FILE", "none")
         proc = OwnedProcess(name, command, cwd or self.workspace or GATEWAY_ROOT,
                             log_path, env=env)
         self.processes[name] = proc
