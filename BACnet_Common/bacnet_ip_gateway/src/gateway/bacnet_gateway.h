@@ -20,6 +20,7 @@
 #include "modbus_client.h"
 #include "cov_manager.h"
 #include "fd_monitor.h"
+#include "net_watcher.h"
 #include "../common/iserial_port.h"
 
 #include <string>
@@ -178,6 +179,18 @@ private:
 
     /// BACstac 서버 초기화 (BIP 설정, APDU 설정 포함)
     bool initBACstacServer(BACSTAC_SRV_INIT& srv_init);
+
+    /**
+     * @brief BACstacCfgLoadBipConfig() 직후 실제 바인딩할 IPv4/netmask 를 확정합니다.
+     *        - bip.cfg 에 iface=<이름> 이 있으면 그 인터페이스의 현재 IPv4 를 사용 (다중 NIC 고정)
+     *        - 없으면 기존 ip= (BACstac 자동 대체 포함)를 사용하고 실제 netmask 로 subnet 보정
+     *        사용 가능한 IPv4 가 없으면(링크 다운, DHCP 지연) 생길 때까지 대기(HOLD)합니다.
+     * @return 종료 신호로 대기가 중단되면 false
+     */
+    bool resolveBipAddress();
+
+    /// NetworkWatcher 시작 (B/IP 바인딩 인터페이스 링크/IPv4 감시)
+    void startNetworkWatcher();
 
     /// 디바이스 객체 속성 설정 (name, model, description, services supported)
     bool configureDeviceObject(BACSTAC_HOBJECT hDevObj);
@@ -396,6 +409,9 @@ private:
     uint32_t    fd_reg_timeout_ms_   = 3000;  ///< bip.cfg.fd fd.reg_timeout (재접속 주기)
 
     std::unique_ptr<FdMonitor> fd_monitor_;   ///< FD 모드에서 BBMD 연결 상태 로그 출력
+    std::unique_ptr<NetworkWatcher> net_watcher_; ///< B/IP 인터페이스 링크/IPv4 변경 감시
+    std::string bip_iface_;                   ///< bip.cfg iface= (비어 있으면 ip= 방식)
+    const std::atomic<bool>* startup_running_ = nullptr; ///< 기동 중 네트워크 대기 중단 신호
     std::atomic<bool> restart_requested_{false};
 
     std::atomic<bool> running_{false};

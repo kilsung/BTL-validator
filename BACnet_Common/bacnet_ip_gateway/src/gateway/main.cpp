@@ -141,10 +141,11 @@ int main(int argc, char* argv[]) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // Network Port 설정(BACnet_IP_Mode, FD_BBMD_Address, FD_Subscription_Lifetime) 변경 반영:
+    // B/IP 설정 변경 반영: Network Port 쓰기(BACnet_IP_Mode, FD_BBMD_Address, FD_Subscription_Lifetime)
+    // 또는 바인딩 인터페이스의 IPv4 변경(NetworkWatcher).
     // BACstac은 실행 중 B/IP 설정을 바꿀 수 없으므로 같은 인자로 자기 자신을 재실행한다.
     if (g_running && gateway.isRestartRequested()) {
-        std::cout << "[Main] Network Port configuration changed. Restarting gateway..." << std::endl;
+        std::cout << "[Main] BACnet/IP configuration changed. Restarting gateway..." << std::endl;
         gateway.stop();
         std::cout.flush();
         std::cerr.flush();

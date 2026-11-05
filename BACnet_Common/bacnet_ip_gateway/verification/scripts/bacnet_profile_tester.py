@@ -128,6 +128,59 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
         return parse_bacnet_response(resp, inv_id)
 
     # -------------------------------------------------------------------
+    # BACnet client APDU retry policy (모든 Confirmed 요청 공통)
+    # -------------------------------------------------------------------
+    # APDU Timeout / Retry 설정 연동
+    # 1순위: 장비 Device 객체 APDU_Timeout(11) / Number_Of_APDU_Retries(73) 실측값
+    #        (보드에 실제 적용된 값, EPICS 선언값과 동일해야 함)
+    # 2순위: gateway.json 의 bacnet.apdu_timeout_ms / bacnet.apdu_retries
+    #        (구 키 apdu_timeout 도 호환), 기본값 6000ms / 3회 (config_loader.cpp 기본값과 동일)
+    apdu_timeout_ms = 6000
+    apdu_retries = 3
+    rtu_timeout_ms = 500
+    timeout_src = "default"
+    retries_src = "default"
+    for cfg_candidate in ['conf/gateway.json', './gateway.json', '../conf/gateway.json']:
+        if os.path.exists(cfg_candidate):
+            try:
+                with open(cfg_candidate, 'r') as gf:
+                    gj = json.load(gf)
+                b_cfg = gj.get('bacnet', {})
+                if 'apdu_timeout_ms' in b_cfg or 'apdu_timeout' in b_cfg:
+                    apdu_timeout_ms = int(b_cfg.get('apdu_timeout_ms', b_cfg.get('apdu_timeout')))
+                    timeout_src = cfg_candidate
+                if 'apdu_retries' in b_cfg:
+                    apdu_retries = int(b_cfg['apdu_retries'])
+                    retries_src = cfg_candidate
+                rtu_timeout_ms = int(gj.get('modbus', {}).get('rtu_timeout_ms', 500))
+                break
+            except Exception:
+                pass
+
+    for prop_id, prop_name in ((11, "APDU_Timeout"), (73, "Number_Of_APDU_Retries")):
+        invoke_id = (invoke_id + 1) % 256
+        try:
+            p_status, p_val = send_and_recv(
+                build_read_property_apdu(8, gateway_dev_id, invoke_id, property_id=prop_id), invoke_id)
+        except Exception:
+            p_status, p_val = "TIMEOUT", None
+        if p_status == "SUCCESS" and isinstance(p_val, int) and not isinstance(p_val, bool):
+            if prop_id == 11 and p_val > 0:
+                apdu_timeout_ms = p_val
+                timeout_src = "Device.APDU_Timeout"
+            elif prop_id == 73:
+                apdu_retries = p_val
+                retries_src = "Device.Number_Of_APDU_Retries"
+        else:
+            print(f"    ├─ [WARN] Device {prop_name} read failed ({p_status}); using {apdu_timeout_ms if prop_id == 11 else apdu_retries}")
+
+    # 이후 모든 Confirmed 요청(send_and_recv)은 IUT 선언값으로 재전송한다 (BACnet 5.4.4.3).
+    sock.apdu_timeout = apdu_timeout_ms / 1000.0
+    sock.apdu_retries = apdu_retries
+    print(f"[*] APDU Policy: timeout={apdu_timeout_ms}ms [{timeout_src}], retries={apdu_retries} [{retries_src}]")
+    print()
+
+    # -------------------------------------------------------------------
     # BTL 7.3.2.10.3 Database_Revision increment after CreateObject
     # -------------------------------------------------------------------
     print("[*] Testing BTL 7.3.2.10.3 (Database_Revision increment after object creation):")
@@ -1134,50 +1187,7 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
             single_status, single_val = send_and_recv(apdu_single, invoke_id)
             single_elapsed = time.time() - t0
 
-            # APDU Timeout / Retry 설정 연동
-            # 1순위: 장비 Device 객체 APDU_Timeout(11) / Number_Of_APDU_Retries(73) 실측값
-            #        (보드에 실제 적용된 값, EPICS 선언값과 동일해야 함)
-            # 2순위: gateway.json 의 bacnet.apdu_timeout_ms / bacnet.apdu_retries
-            #        (구 키 apdu_timeout 도 호환), 기본값 6000ms / 3회 (config_loader.cpp 기본값과 동일)
-            apdu_timeout_ms = 6000
-            apdu_retries = 3
-            rtu_timeout_ms = 500
-            timeout_src = "default"
-            retries_src = "default"
-            for cfg_candidate in ['conf/gateway.json', './gateway.json', '../conf/gateway.json']:
-                if os.path.exists(cfg_candidate):
-                    try:
-                        with open(cfg_candidate, 'r') as gf:
-                            gj = json.load(gf)
-                        b_cfg = gj.get('bacnet', {})
-                        if 'apdu_timeout_ms' in b_cfg or 'apdu_timeout' in b_cfg:
-                            apdu_timeout_ms = int(b_cfg.get('apdu_timeout_ms', b_cfg.get('apdu_timeout')))
-                            timeout_src = cfg_candidate
-                        if 'apdu_retries' in b_cfg:
-                            apdu_retries = int(b_cfg['apdu_retries'])
-                            retries_src = cfg_candidate
-                        rtu_timeout_ms = int(gj.get('modbus', {}).get('rtu_timeout_ms', 500))
-                        break
-                    except Exception:
-                        pass
-
-            for prop_id, prop_name in ((11, "APDU_Timeout"), (73, "Number_Of_APDU_Retries")):
-                invoke_id = (invoke_id + 1) % 256
-                try:
-                    p_status, p_val = send_and_recv(
-                        build_read_property_apdu(8, gateway_dev_id, invoke_id, property_id=prop_id), invoke_id)
-                except Exception:
-                    p_status, p_val = "TIMEOUT", None
-                if p_status == "SUCCESS" and isinstance(p_val, int) and not isinstance(p_val, bool):
-                    if prop_id == 11 and p_val > 0:
-                        apdu_timeout_ms = p_val
-                        timeout_src = "Device.APDU_Timeout"
-                    elif prop_id == 73:
-                        apdu_retries = p_val
-                        retries_src = "Device.Number_Of_APDU_Retries"
-                else:
-                    print(f"    ├─ [WARN] Device {prop_name} read failed ({p_status}); using {apdu_timeout_ms if prop_id == 11 else apdu_retries}")
-
+            # APDU Timeout / Retry 값은 시작 시 resolve 된 apdu_timeout_ms / apdu_retries 사용
             apdu_timeout_sec = apdu_timeout_ms / 1000.0
             # 게이트웨이 Aging 한도 = max(1000, request_timeout - rtu_timeout_ms) (modbus_client.cpp)
             aging_limit_ms = max(1000, apdu_timeout_ms - rtu_timeout_ms) if apdu_timeout_ms > rtu_timeout_ms else 1000
@@ -1364,6 +1374,8 @@ def _run_btl_tests_impl(target_ip, target_port, configs, bind_ip, delay, tracker
     print(f" Successful           : {success_count}")
     print(f" Skipped (Not Supp.)  : {skipped_count}")
     print(f" Failed / Errors      : {failure_count}")
+    print(f" APDU Retries         : {sock.retry_count} resent, {sock.recovered_count} recovered "
+          f"(policy {apdu_timeout_ms}ms x {apdu_retries}, burst test excluded)")
     if tracker.failed_tests:
         print("-----------------------------------------------------------------------")
         print(" Failed Tests Details:")

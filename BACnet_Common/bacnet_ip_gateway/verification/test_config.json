@@ -19,12 +19,12 @@
     "bbmd_auto": true
   },
   "live": {
-    "target_ip": "10.20.7.77",
+    "target_ip": "192.168.1.31",
     "target_port": 47808,
-    "allow_live_mutation": true,
+    "allow_live_mutation": false,
     "bbmd_endpoint": "",
     "ssh_enabled": true,
-    "ssh_user": "root",
+    "ssh_user": "chulvx",
     "ssh_port": 22
   }
 }

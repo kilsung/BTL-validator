@@ -1,6 +1,6 @@
 # BACnet Gateway Verification Package
 
-`run_gateway_tcs.py`는 SRS에 정의된 88개 TC를 한 진입점에서 선택·실행하고
+`run_gateway_tcs.py`는 SRS에 정의된 94개 TC를 한 진입점에서 선택·실행하고
 TC별 단계 로그(기대값/수신값/PASS·FAIL), 채널별 packet evidence, CSV, JSON, JUnit 결과를 생성한다.
 상세 TC 정의 및 검증 기준은 `verification/docs/specs/bacnet_gateway_test_spec.md`를 따른다.
 
@@ -80,7 +80,8 @@ python3 verification/scripts/run_gateway_tcs.py --suite full --mode managed \
   --bbmd-auto
 ```
 
-기본 suite 수는 quick 54개, full 84개, audit 3개, soak 1개이며 all은 88개이다.
+기본 suite 수는 quick 54개, full 90개, audit 3개, soak 1개이며 all은 94개이다.
+네트워크 장애 TC(`TC-NET-*`, full/all 포함)는 root·독립 네트워크 컨테이너에서만 실행되며 `run_test.sh` 가 자동 구성한다.
 여러 `--case`는 OR 조건이고 끝의 `*`만 prefix wildcard로 해석한다.
 
 managed 시험을 처음 실행하는 호스트에서 필요한 제품/host 실행 파일은 별도로

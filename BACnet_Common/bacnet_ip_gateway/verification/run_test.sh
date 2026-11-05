@@ -177,7 +177,7 @@ detect_applicable_long_tcs() {
 
     if [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
         MATCHED_LONG_TCS=("${ALL_LONG[@]}")
-    elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
+    elif ([ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ]) && [ -n "$CASE_NAME" ]; then
         for long_tc in "${ALL_LONG[@]}"; do
             for pat in ${CASE_NAME//,/ }; do
                 if [[ "$long_tc" == $pat ]]; then
@@ -195,16 +195,59 @@ detect_applicable_ssh_tcs() {
     MATCHED_SSH_TCS=()
     local ALL_SSH=("TC-AVL-004")
 
-    if [ "$SUITE_CHOICE" = "3" ] || [ "$SUITE_CHOICE" = "4" ]; then
+    if [ -n "$SOAK_ARG" ]; then
         MATCHED_SSH_TCS=("${ALL_SSH[@]}")
-    elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
-        for ssh_tc in "${ALL_SSH[@]}"; do
+    fi
+}
+
+# Detect TCs that perform write/mutation on live target
+# - TC-BAC-007~015, TC-BAC-019, TC-BAC-020, TC-MAP-007
+detect_applicable_mutation_tcs() {
+    MATCHED_MUTATION_TCS=()
+    local ALL_MUTATING=("TC-BAC-007" "TC-BAC-008" "TC-BAC-009" "TC-BAC-010" "TC-BAC-011" "TC-BAC-012" "TC-BAC-013" "TC-BAC-014" "TC-BAC-015" "TC-BAC-019" "TC-BAC-020" "TC-MAP-007")
+
+    if [ "$SUITE_CHOICE" = "1" ] || [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
+        MATCHED_MUTATION_TCS=("${ALL_MUTATING[@]}")
+    elif ([ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ]) && [ -n "$CASE_NAME" ]; then
+        for mut_tc in "${ALL_MUTATING[@]}"; do
             for pat in ${CASE_NAME//,/ }; do
-                if [[ "$ssh_tc" == $pat ]] || [[ "$pat" == *"soak"* ]]; then
-                    MATCHED_SSH_TCS+=("$ssh_tc")
+                if [[ "$mut_tc" == $pat ]]; then
+                    MATCHED_MUTATION_TCS+=("$mut_tc")
                     break
                 fi
             done
+        done
+    fi
+}
+
+# Check if selected TCs require BTL specification documents (TPI / PICS)
+# - TC-BTL-001 ~ TC-BTL-006
+check_need_btl_specs() {
+    NEED_BTL_SPECS=0
+    if [ "$SUITE_CHOICE" = "1" ] || [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
+        NEED_BTL_SPECS=1
+    elif ([ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ]) && [ -n "$CASE_NAME" ]; then
+        for pat in ${CASE_NAME//,/ }; do
+            if [[ "$pat" == *"BTL"* ]] || [ "$pat" = "TC-*" ] || [ "$pat" = "*" ]; then
+                NEED_BTL_SPECS=1
+                break
+            fi
+        done
+    fi
+}
+
+# Check if selected TCs require BBMD Foreign Device options
+# - TC-BIP-001, TC-BIP-002, TC-BAC-020
+check_need_bbmd() {
+    NEED_BBMD=0
+    if [ "$SUITE_CHOICE" = "1" ] || [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
+        NEED_BBMD=1
+    elif ([ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ]) && [ -n "$CASE_NAME" ]; then
+        for pat in ${CASE_NAME//,/ }; do
+            if [[ "$pat" == *"BIP"* ]] || [[ "$pat" == *"BBMD"* ]] || [[ "$pat" == *"TC-BAC-020"* ]] || [ "$pat" = "TC-*" ] || [ "$pat" = "*" ]; then
+                NEED_BBMD=1
+                break
+            fi
         done
     fi
 }
@@ -297,6 +340,39 @@ ensure_binaries() {
     fi
 }
 
+# ---------------------------------------------------------------------------
+# Docker 실행 권한/네트워크 선택
+# - 네트워크 장애 TC(TC-NET-*)는 컨테이너 안에서 netns/veth 를 만들고 링크 DOWN/UP,
+#   IPv4 변경을 주입하므로 root 권한과 호스트와 분리된 네트워크(--net=host 미사용)가 필요하다.
+#   이 경우 호스트 네트워크에는 영향이 없고, 결과 파일 소유권은 run_gateway_tcs.py 가
+#   종료 시 HOST_UID/HOST_GID 로 되돌린다.
+# - 그 외(live 포함)는 기존과 같이 일반 사용자 + --net=host 로 실행한다.
+# 인자: $1=mode(managed|live) $2=suite $3=case 패턴(쉼표/공백 구분, 비어 있을 수 있음)
+# 결과: DOCKER_RUNTIME_OPTS, NET_FAULT_RUN(0|1)
+# ---------------------------------------------------------------------------
+select_docker_runtime() {
+    local mode="$1" suite="$2" cases="$3"
+    NET_FAULT_RUN=0
+    if [ "$mode" = "managed" ]; then
+        if [ -n "$cases" ]; then
+            for pat in ${cases//,/ }; do
+                if [[ "TC-NET-001" == $pat ]] || [[ "$pat" == *NET* ]]; then
+                    NET_FAULT_RUN=1
+                    break
+                fi
+            done
+        elif [ "$suite" = "full" ] || [ "$suite" = "all" ]; then
+            NET_FAULT_RUN=1
+        fi
+    fi
+    if [ "$NET_FAULT_RUN" = "1" ]; then
+        DOCKER_RUNTIME_OPTS="--privileged --user 0:0 -e HOME=/root -e HOST_UID=$(id -u) -e HOST_GID=$(id -g)"
+        echo "    [Docker] 네트워크 장애 TC(TC-NET-*) 포함: root 권한 + 독립 네트워크(netns)로 컨테이너를 실행합니다 (호스트 네트워크 영향 없음)."
+    else
+        DOCKER_RUNTIME_OPTS="--net=host --privileged --user $(id -u):$(id -g)"
+    fi
+}
+
 # If CLI arguments are provided, bypass interactive mode
 if [ $# -gt 0 ]; then
     # Auto-build binaries if not explicitly running live mode
@@ -308,8 +384,24 @@ if [ $# -gt 0 ]; then
     [ -d "$HOME/.ssh" ] && SSH_CLI_VOL="-v $HOME/.ssh:/root/.ssh:ro -v $HOME/.ssh:$HOME/.ssh:ro"
     USER_MAP_OPT=""
     [ -f "/etc/passwd" ] && USER_MAP_OPT="-v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro"
-    exec docker run --rm -it --net=host --privileged \
-        --user "$(id -u):$(id -g)" \
+    CLI_MODE="managed"; CLI_SUITE="quick"; CLI_CASES=""
+    CLI_PREV=""
+    for CLI_ARG in "$@"; do
+        case "$CLI_PREV" in
+            --mode|-m) CLI_MODE="$CLI_ARG" ;;
+            --suite) CLI_SUITE="$CLI_ARG" ;;
+            --case) CLI_CASES="$CLI_CASES $CLI_ARG" ;;
+        esac
+        case "$CLI_ARG" in
+            --mode=*) CLI_MODE="${CLI_ARG#--mode=}" ;;
+            --suite=*) CLI_SUITE="${CLI_ARG#--suite=}" ;;
+            --case=*) CLI_CASES="$CLI_CASES ${CLI_ARG#--case=}" ;;
+        esac
+        CLI_PREV="$CLI_ARG"
+    done
+    select_docker_runtime "$CLI_MODE" "$CLI_SUITE" "$CLI_CASES"
+    # shellcheck disable=SC2086
+    exec docker run --rm -it $DOCKER_RUNTIME_OPTS \
         -e PYTHONDONTWRITEBYTECODE=1 \
         -e SSH_PASS="${SSH_PASS:-}" \
         -v "$GATEWAY_ROOT/..":/workspace \
@@ -345,45 +437,82 @@ fi
 echo ""
 echo "[2] 테스트 스위트를 선택하십시오:"
 echo "    1) quick (기본 기능 54개 빠른 검증) [기본값]"
-echo "    2) full (기능/성능 84개 정밀 검증)"
-echo "    3) all (감사/빌드 포함 88개 전체 검증)"
-echo "    4) soak (12시간 전체 관제점 장기 연속 운용 신뢰성)"
-echo "    5) case 지정 (예: TC-BAC-004, TC-BTL-*, TC-AVL-004)"
-read -p "선택 (1/2/3/4/5, 기본: 1): " SUITE_CHOICE
+echo "    2) full (기능/성능 90개 정밀 검증)"
+echo "    3) all (감사/빌드 포함 94개 전체 검증)"
+echo "    4) case 지정 (예: TC-BAC-004, TC-BTL-*, TC-AVL-004)"
+read -p "선택 (1/2/3/4, 기본: 1): " SUITE_CHOICE
 SUITE_CHOICE=${SUITE_CHOICE:-1}
 
 CASE_ARG=""
 SOAK_ARG=""
 SOAK_HOURS=""
 SOAK_INTERVAL=""
+
+configure_soak_options() {
+    echo ""
+    echo "    [설정] 장기 연속 운용 신뢰성 시험(TC-AVL-004, Soak Test) 매개변수:"
+    echo "           (소수점 시간 입력 지원, 예: 0.5=30분, 1=1시간, 12=12시간)"
+    while true; do
+        read -p "           신뢰성 시험 시간 (시간 단위, 소수점 가능) [기본값: 12.0]: " INPUT_SOAK_HOURS
+        INPUT_SOAK_HOURS=${INPUT_SOAK_HOURS:-12.0}
+        if python3 -c "h = float('$INPUT_SOAK_HOURS'); exit(0 if h > 0 else 1)" 2>/dev/null; then
+            SOAK_HOURS="$INPUT_SOAK_HOURS"
+            SOAK_DESC=$(python3 -c "
+h = float('$SOAK_HOURS')
+m = h * 60
+if h < 1.0:
+    print(f'{h}시간 ({m:.1f}분)'.replace('.0분', '분'))
+else:
+    print(f'{h}시간 ({m:.0f}분)' if h != 12.0 else '12.0시간')
+" 2>/dev/null || echo "$SOAK_HOURS 시간")
+            echo "           -> 시험 지속 시간: $SOAK_DESC 설정됨"
+            break
+        else
+            echo "           [오류] 0보다 큰 숫자(정수 또는 소수점, 예: 0.5, 1, 12.0)를 입력하십시오."
+        fi
+    done
+
+    while true; do
+        read -p "           전체 관제점 순환 질의 주기 (초 단위) [기본값: 15.0]: " INPUT_SOAK_INTERVAL
+        INPUT_SOAK_INTERVAL=${INPUT_SOAK_INTERVAL:-15.0}
+        if python3 -c "s = float('$INPUT_SOAK_INTERVAL'); exit(0 if s >= 0.5 else 1)" 2>/dev/null; then
+            SOAK_INTERVAL="$INPUT_SOAK_INTERVAL"
+            break
+        else
+            echo "           [오류] 0.5초 이상의 숫자를 입력하십시오."
+        fi
+    done
+    SOAK_ARG="--soak --soak-hours $SOAK_HOURS --soak-interval $SOAK_INTERVAL"
+}
+
 if [ "$SUITE_CHOICE" = "2" ]; then
     SUITE="full"
 elif [ "$SUITE_CHOICE" = "3" ]; then
     SUITE="all"
-elif [ "$SUITE_CHOICE" = "4" ]; then
-    SUITE="soak"
-    CASE_ARG="--case TC-AVL-004"
     echo ""
-    read -p "    신뢰성 시험 시간 (시간 단위) [기본값: 12.0]: " INPUT_SOAK_HOURS
-    SOAK_HOURS=${INPUT_SOAK_HOURS:-12.0}
-    read -p "    전체 관제점 순환 질의 주기 (초 단위) [기본값: 15.0]: " INPUT_SOAK_INTERVAL
-    SOAK_INTERVAL=${INPUT_SOAK_INTERVAL:-15.0}
-    SOAK_ARG="--soak --soak-hours $SOAK_HOURS --soak-interval $SOAK_INTERVAL"
-elif [ "$SUITE_CHOICE" = "5" ]; then
+    echo "    [선택] 장기 연속 운용 신뢰성 시험(TC-AVL-004, Soak Test) 포함 여부:"
+    echo "           (전체 관제점 장기 순환 질의 및 메모리/FD 누수 감시, 기본: 12시간 / 임의 시간 지정 가능)"
+    read -p "           포함하시겠습니까? (y/N, 기본: N): " INPUT_INCLUDE_SOAK
+    INPUT_INCLUDE_SOAK=${INPUT_INCLUDE_SOAK:-N}
+    if [ "$INPUT_INCLUDE_SOAK" = "y" ] || [ "$INPUT_INCLUDE_SOAK" = "Y" ] || [ "$INPUT_INCLUDE_SOAK" = "yes" ]; then
+        configure_soak_options
+    fi
+elif [ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ] || [ "$SUITE_CHOICE" = "TC-AVL-004" ]; then
     SUITE="all"
-    read -p "실행할 TC ID 또는 패턴을 입력하십시오 (예: TC-BAC-004, TC-AVL-004): " CASE_NAME
-    if [ -n "$CASE_NAME" ]; then
-        CASE_ARG=""
-        for tc_item in ${CASE_NAME//,/ }; do
-            CASE_ARG="$CASE_ARG --case $tc_item"
-        done
-        if [[ "$CASE_NAME" =~ "TC-AVL-004" ]] || [[ "$CASE_NAME" =~ "soak" ]]; then
-            echo ""
-            read -p "    신뢰성 시험 시간 (시간 단위) [기본값: 12.0]: " INPUT_SOAK_HOURS
-            SOAK_HOURS=${INPUT_SOAK_HOURS:-12.0}
-            read -p "    전체 관제점 순환 질의 주기 (초 단위) [기본값: 15.0]: " INPUT_SOAK_INTERVAL
-            SOAK_INTERVAL=${INPUT_SOAK_INTERVAL:-15.0}
-            SOAK_ARG="--soak --soak-hours $SOAK_HOURS --soak-interval $SOAK_INTERVAL"
+    if [ "$SUITE_CHOICE" = "soak" ] || [ "$SUITE_CHOICE" = "TC-AVL-004" ]; then
+        CASE_NAME="TC-AVL-004"
+        CASE_ARG="--case TC-AVL-004"
+        configure_soak_options
+    else
+        read -p "실행할 TC ID 또는 패턴을 입력하십시오 (예: TC-BAC-004, soak, TC-AVL-004): " CASE_NAME
+        if [ -n "$CASE_NAME" ]; then
+            CASE_ARG=""
+            for tc_item in ${CASE_NAME//,/ }; do
+                CASE_ARG="$CASE_ARG --case $tc_item"
+            done
+            if [[ "$CASE_NAME" =~ "TC-AVL" ]] || [[ "$CASE_NAME" =~ "soak" ]]; then
+                configure_soak_options
+            fi
         fi
     fi
 else
@@ -393,11 +522,14 @@ fi
 # Detect applicable TCs for conditional interactive prompts
 detect_applicable_long_tcs
 detect_applicable_ssh_tcs
+detect_applicable_mutation_tcs
+check_need_btl_specs
+check_need_bbmd
 
 # 3. Common Local PC Configuration & Specification file paths
 echo ""
 echo "[3] 설정 및 명세서 경로 확인 (로컬 PC):"
-echo "    (검증 대상에 적용된 설정 파일 및 BTL/TPI 명세서 경로를 확인합니다.)"
+echo "    (검증 대상에 적용된 설정 파일 및 명세서 경로를 확인합니다.)"
 read -p "    Gateway 설정 디렉터리        [기본값: $GATEWAY_CONFIG_DIR]: " INPUT_GW_CONF
 GATEWAY_CONFIG_DIR="$(normalize_path "${INPUT_GW_CONF:-$GATEWAY_CONFIG_DIR}")"
 
@@ -405,11 +537,11 @@ read -p "    vport 설정 경로 (파일/폴더)  [기본값: $VPORT_CONFIG_PATH
 VPORT_CONFIG_PATH="$(normalize_path "${INPUT_VP_CONF:-$VPORT_CONFIG_PATH}")"
 
 DEFAULT_TPI="${TPI_PATH:-./model/cdu/[BTL]cdu.tpi}"
-read -p "    TPI (EPICS) 파일 경로        [기본값: $DEFAULT_TPI]: " INPUT_TPI
-TPI_PATH="$(normalize_path "${INPUT_TPI:-$DEFAULT_TPI}")"
-
 PICS_ARG=""
-if [ "$SUITE" = "all" ] || [ "$SUITE" = "full" ] || [[ "$CASE_NAME" =~ "BTL" ]]; then
+if [ "$NEED_BTL_SPECS" = "1" ]; then
+    read -p "    TPI (EPICS) 파일 경로        [기본값: $DEFAULT_TPI]: " INPUT_TPI
+    TPI_PATH="$(normalize_path "${INPUT_TPI:-$DEFAULT_TPI}")"
+
     DEFAULT_PICS="${PICS_DOCX_PATH:-./model/cdu/[BTL]FUNC_CHECKLIST_CDU.docx}"
     read -p "    BTL 기능 체크리스트(PICS) 경로 [기본값: $DEFAULT_PICS]: " INPUT_PICS
     ACTUAL_PICS="$(normalize_path "${INPUT_PICS:-$DEFAULT_PICS}")"
@@ -417,6 +549,8 @@ if [ "$SUITE" = "all" ] || [ "$SUITE" = "full" ] || [[ "$CASE_NAME" =~ "BTL" ]];
         PICS_ARG="--pics-doc $ACTUAL_PICS"
         PICS_DOCX_PATH="$ACTUAL_PICS"
     fi
+else
+    TPI_PATH="$(normalize_path "$DEFAULT_TPI")"
 fi
 
 if [ ! -d "$GATEWAY_ROOT/$GATEWAY_CONFIG_DIR" ] && [ ! -d "$GATEWAY_CONFIG_DIR" ]; then
@@ -426,11 +560,13 @@ if [ ! -f "$GATEWAY_ROOT/$VPORT_CONFIG_PATH" ] && [ ! -f "$VPORT_CONFIG_PATH" ] 
    [ ! -f "$GATEWAY_ROOT/$VPORT_CONFIG_PATH/vport.cfg" ] && [ ! -f "$VPORT_CONFIG_PATH/vport.cfg" ]; then
     echo "    [주의] vport 설정 경로(파일 또는 디렉터리)를 찾을 수 없습니다: $VPORT_CONFIG_PATH"
 fi
-if [ ! -f "$GATEWAY_ROOT/$TPI_PATH" ] && [ ! -f "$TPI_PATH" ]; then
-    echo "    [주의] TPI 전자 명세서 파일을 찾을 수 없습니다: $TPI_PATH"
-fi
-if [ -n "$PICS_ARG" ] && [ ! -f "$GATEWAY_ROOT/$PICS_DOCX_PATH" ] && [ ! -f "$PICS_DOCX_PATH" ]; then
-    echo "    [주의] BTL 기능 체크리스트(PICS) 문서를 찾을 수 없습니다: $PICS_DOCX_PATH"
+if [ "$NEED_BTL_SPECS" = "1" ]; then
+    if [ ! -f "$GATEWAY_ROOT/$TPI_PATH" ] && [ ! -f "$TPI_PATH" ]; then
+        echo "    [주의] TPI 전자 명세서 파일을 찾을 수 없습니다: $TPI_PATH"
+    fi
+    if [ -n "$PICS_ARG" ] && [ ! -f "$GATEWAY_ROOT/$PICS_DOCX_PATH" ] && [ ! -f "$PICS_DOCX_PATH" ]; then
+        echo "    [주의] BTL 기능 체크리스트(PICS) 문서를 찾을 수 없습니다: $PICS_DOCX_PATH"
+    fi
 fi
 
 # 4. Mode-specific configuration
@@ -442,7 +578,7 @@ if [ "$MODE" = "managed" ]; then
     LONG_ARG=""
     LONG_STATUS="제외 (일반 빠른 실행)"
 
-    if [ "$SUITE" != "soak" ]; then
+    if [ "$NEED_BBMD" = "1" ]; then
         # BBMD option for Managed mode
         echo ""
         echo "[4] BBMD (Foreign Device) 옵션:"
@@ -495,7 +631,7 @@ if [ "$MODE" = "managed" ]; then
         has_env_001=0
         if [ "$SUITE_CHOICE" = "3" ]; then
             has_env_001=1
-        elif [ "$SUITE_CHOICE" = "5" ] && [ -n "$CASE_NAME" ]; then
+        elif ([ "$SUITE_CHOICE" = "4" ] || [ "$SUITE_CHOICE" = "soak" ]) && [ -n "$CASE_NAME" ]; then
             for tc_item in ${CASE_NAME//,/ }; do
                 if [ "$tc_item" = "TC-ENV-001" ] || [ "$tc_item" = "TC-ENV*" ] || [ "$tc_item" = "TC-*" ] || [ "$tc_item" = "*" ]; then
                     has_env_001=1
@@ -536,7 +672,7 @@ else
     LIVE_MUTATION_STATUS="해당 없음 (조회 전용)"
     LONG_STATUS="해당 없음 (Soak 전용)"
 
-    if [ "$SUITE" != "soak" ]; then
+    if [ "$NEED_BBMD" = "1" ]; then
         # 5. BBMD option for Live mode
         echo ""
         echo "[5] BBMD 옵션:"
@@ -554,10 +690,15 @@ else
                 BBMD_ARG="--bbmd-auto"
             fi
         fi
+    fi
 
-        # 6. Live mutation option (WriteProperty / DCC / SubscribeCOV)
+    # 6. Live mutation option (WriteProperty / DCC / SubscribeCOV)
+    if [ ${#MATCHED_MUTATION_TCS[@]} -gt 0 ]; then
+        MUTATION_LIST_STR=$(IFS=', '; echo "${MATCHED_MUTATION_TCS[*]}")
         echo ""
         echo "[6] Live 장비 상태 변경(Mutation) 테스트 허용 여부:"
+        echo "    * 현재 테스트 대상 중 적용되는 제어/쓰기 TC (${#MATCHED_MUTATION_TCS[@]}개):"
+        echo "      -> $MUTATION_LIST_STR"
         echo "    (WriteProperty 쓰기 제어, DCC 통신 차단, COV 구독 등 실제 장비의 값을 변경하는 TC)"
         DEFAULT_MUTATION_STR="N"
         if [ "$LIVE_ALLOW_MUTATION" = "True" ] || [ "$LIVE_ALLOW_MUTATION" = "true" ]; then
@@ -572,6 +713,9 @@ else
         else
             LIVE_MUTATION_STATUS="차단 (안전 모드 - 조회 전용)"
         fi
+    else
+        LIVE_MUTATION_STATUS="해당 없음 (선택된 TC에 상태 변경 미포함)"
+    fi
 
         # 7. Long tests option for Live mode (only prompted if applicable TCs are selected)
         if [ ${#MATCHED_LONG_TCS[@]} -gt 0 ]; then
@@ -593,7 +737,6 @@ else
         else
             LONG_STATUS="해당 없음 (선택된 스위트에 장시간 소요 TC 미포함)"
         fi
-    fi
 
     # 8. SSH remote connection and resource monitoring option for Live mode
     SSH_ARG=""
@@ -831,32 +974,43 @@ echo " - Mode          : $MODE"
 echo " - Suite         : $SUITE $CASE_ARG"
 echo " - Target IP     : $TARGET_IP:$TARGET_PORT"
 echo " - Response Time : ${EXPECTED_RESPONSE_TIME_MS} ms (Main 응답 지연 기준)"
-if [ "$SUITE" = "soak" ]; then
-    echo " - Soak Test     : 활성화 ($SOAK_HOURS 시간, $SOAK_INTERVAL 초 주기)"
+if [ -n "$SOAK_ARG" ]; then
+    SOAK_SUMMARY_DESC=$(python3 -c "
+h = float('$SOAK_HOURS')
+m = h * 60
+if h < 1.0:
+    print(f'{h}시간 ({m:.1f}분)'.replace('.0분', '분'))
+else:
+    print(f'{h}시간 ({m:.0f}분)' if h != 12.0 else '12.0시간')
+" 2>/dev/null || echo "$SOAK_HOURS 시간")
+    echo " - Soak Test     : 활성화 ($SOAK_SUMMARY_DESC, $SOAK_INTERVAL 초 주기)"
 else
-    echo " - Long Tests    : $LONG_STATUS"
-    if [ -n "$ALLOW_BUILD_ARG" ]; then
-        echo " - Host Build    : $ALLOW_BUILD_STATUS"
-    fi
-    if [ "$MODE" = "managed" ]; then
-        echo " - Gateway Bin   : $GATEWAY_BIN"
-        echo " - vport Bin     : $VPORT_BIN"
-        echo " - Gateway Config: $GATEWAY_CONFIG_DIR (로컬 PC)"
-        echo " - vport Config  : $VPORT_CONFIG_PATH (로컬 PC)"
-        echo " - BBMD          : $([ "$BBMD_ARG" = "--bbmd-auto" ] && echo '내장 BBMD 자동 구동 (UDP 47809)' || echo "$BBMD_ARG")"
-    else
-        echo " - Mutation      : $LIVE_MUTATION_STATUS"
-        echo " - Gateway Config: $GATEWAY_CONFIG_DIR (로컬 PC)"
-        echo " - vport Config  : $VPORT_CONFIG_PATH (로컬 PC)"
-        echo " - BBMD          : $([ "$BBMD_ARG" = "--bbmd-auto" ] && echo '내장 BBMD 자동 구동 (UDP 47809)' || echo "$BBMD_ARG")"
-    fi
+    echo " - Soak Test     : 제외"
+fi
+echo " - Long Tests    : $LONG_STATUS"
+if [ -n "$ALLOW_BUILD_ARG" ]; then
+    echo " - Host Build    : $ALLOW_BUILD_STATUS"
+fi
+if [ "$MODE" = "managed" ]; then
+    echo " - Gateway Bin   : $GATEWAY_BIN"
+    echo " - vport Bin     : $VPORT_BIN"
+    echo " - Gateway Config: $GATEWAY_CONFIG_DIR (로컬 PC)"
+    echo " - vport Config  : $VPORT_CONFIG_PATH (로컬 PC)"
+    echo " - BBMD          : $([ "$BBMD_ARG" = "--bbmd-auto" ] && echo '내장 BBMD 자동 구동 (UDP 47809)' || echo "$BBMD_ARG")"
+else
+    echo " - Mutation      : $LIVE_MUTATION_STATUS"
+    echo " - Gateway Config: $GATEWAY_CONFIG_DIR (로컬 PC)"
+    echo " - vport Config  : $VPORT_CONFIG_PATH (로컬 PC)"
+    echo " - BBMD          : $([ "$BBMD_ARG" = "--bbmd-auto" ] && echo '내장 BBMD 자동 구동 (UDP 47809)' || echo "$BBMD_ARG")"
 fi
 if [ "$MODE" = "live" ]; then
     echo " - Remote SSH    : $SSH_STATUS"
 fi
-echo " - TPI Path      : $TPI_PATH"
-if [ -n "$PICS_ARG" ]; then
-    echo " - PICS Doc      : $PICS_DOCX_PATH"
+if [ "$NEED_BTL_SPECS" = "1" ]; then
+    echo " - TPI Path      : $TPI_PATH"
+    if [ -n "$PICS_ARG" ]; then
+        echo " - PICS Doc      : $PICS_DOCX_PATH"
+    fi
 fi
 echo "======================================================="
 echo ""
@@ -895,13 +1049,16 @@ add_extra_volume() {
 }
 add_extra_volume "$GATEWAY_CONFIG_DIR"
 add_extra_volume "$VPORT_CONFIG_PATH"
-add_extra_volume "$TPI_PATH"
-if [ -n "$PICS_ARG" ]; then
-    add_extra_volume "$PICS_DOCX_PATH"
+if [ "$NEED_BTL_SPECS" = "1" ]; then
+    add_extra_volume "$TPI_PATH"
+    if [ -n "$PICS_ARG" ]; then
+        add_extra_volume "$PICS_DOCX_PATH"
+    fi
 fi
 
-docker run --rm -it --net=host --privileged \
-    --user "$(id -u):$(id -g)" \
+select_docker_runtime "$MODE" "$SUITE" "$CASE_NAME"
+# shellcheck disable=SC2086
+docker run --rm -it $DOCKER_RUNTIME_OPTS \
     -e PYTHONDONTWRITEBYTECODE=1 \
     -e SSH_PASS="$CURRENT_SSH_PASS" \
     -v "$ES_ROOT":/workspace \

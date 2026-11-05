@@ -5,10 +5,18 @@
 #
 # NOTE: Use actual interface IP address (e.g. 192.168.1.3), not 0.0.0.0
 #       Different systems may have different UDP socket binding behavior.
+#
+# iface=<name> (권장: 네트워크 인터페이스가 2개 이상인 장비)
+#   지정하면 ip= 보다 우선한다. 게이트웨이는 그 인터페이스의 현재 IPv4/netmask 로 바인딩하고,
+#   링크 DOWN->UP 은 자동 복구, IPv4 변경 시에는 재시작하여 같은 인터페이스의 새 IPv4 로 다시 바인딩한다.
+#   다른 인터페이스로는 넘어가지 않는다. 기동 시 IPv4 가 없으면 생길 때까지 대기한다.
+#   예) iface=eth0
 
 # FD (Foreign Device) mode example
 mode=fd
-fd.ip=192.168.1.31
+
+iface=eth0
+#ifd.ip=192.168.1.31
 fd.port=47808
 fd.bbmd_ip=192.168.1.31
 fd.bbmd_port=47809

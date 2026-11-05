@@ -188,6 +188,11 @@ graph TB
 ./bacnet_ip_gateway ./conf
 ```
 * 실행 로그에서 설정된 관제점 개수, Modbus 포트 바인딩, BACnet UDP 47808 바인딩을 확인할 수 있습니다.
+* **바인딩 인터페이스 지정 (`bip.cfg` / `bip.cfg.fd`의 `iface=<이름>`)**: 네트워크 인터페이스가 2개 이상이면 `iface=eth0`처럼 지정합니다. 지정하면 `ip=`보다 우선하고, 그 인터페이스의 현재 IPv4와 실제 netmask로 바인딩합니다. 다른 인터페이스로는 넘어가지 않습니다.
+  * 링크 DOWN→UP(같은 IPv4): 재시작 없이 자동 복구합니다(`[Net] Link down` / `[Net] Link up`).
+  * 운용 중 IPv4 변경: `[Net] IPv4 changed <old> -> <new>` 후 자체 재시작으로 새 IPv4에 다시 바인딩합니다.
+  * 기동 시 IPv4 없음(링크 다운, DHCP 지연): 종료하지 않고 `[Main] Waiting for network ...`를 남기며 대기합니다.
+  * FD 모드: 링크가 복구되면 즉시 BBMD에 재등록합니다.
 * **로그 파일**: 콘솔(stdout/stderr) 출력은 기본적으로 `/var/log/bacnet_ip_gateway.log` 에도 함께 기록됩니다.
   * 각 줄 앞에 `YYYY-MM-DD HH:MM:SS.mmm I|E` (I: stdout, E: stderr) 시각/구분이 붙습니다.
   * 크기 제한: 현재 파일이 한도의 절반을 넘으면 `bacnet_ip_gateway.log.1` 로 교체하고 새 파일에 기록하여, 두 파일 합계가 한도 이하로 유지되고 최신 내용이 보존됩니다.
@@ -220,7 +225,7 @@ graph TB
 프로젝트의 모든 요구사항과 설계를 웹 브라우저에서 인터랙티브하게 열람할 수 있는 통합 사양 뷰어입니다.
 * **주요 기능**:
   - 실시간 요구사항 키워드 검색 및 상태 필터링
-  - 27개 SRS 요구사항 ↔ HLD/LLD 설계 ↔ 88개 TC ↔ 소스코드 **100% 양방향 추적 연계 내장**
+  - 28개 SRS 요구사항 ↔ HLD/LLD 설계 ↔ 94개 TC ↔ 소스코드 **100% 양방향 추적 연계 내장**
   - BTL 테스트 체크리스트 카드 제공
   - 다크/라이트 테마 원클릭 전환
 
@@ -235,10 +240,10 @@ graph TB
 ### 🏛 공식 심사 및 제출 사양서 ([specs/](verification/docs/specs/))
 | 구분 | 문서 파일명 | 문서 식별자 | 주요 내용 및 목적 |
 | :--- | :--- | :--- | :--- |
-| **SRS** | [bacnet_ip_gateway_srs.docx](verification/docs/specs/bacnet_ip_gateway_srs.docx) | `SRS-BIG-001` | **소프트웨어 요구사항 명세서** (ISO/IEC/IEEE 29148 기준 27개 원자 요구사항) |
+| **SRS** | [bacnet_ip_gateway_srs.docx](verification/docs/specs/bacnet_ip_gateway_srs.docx) | `SRS-BIG-001` | **소프트웨어 요구사항 명세서** (ISO/IEC/IEEE 29148 기준 28개 원자 요구사항) |
 | **HLD** | [bacnet_ip_gateway_hld.docx](verification/docs/specs/bacnet_ip_gateway_hld.docx) | `HLD-BIG-001` | **상위/기본설계서** (3계층 격리, 프로세스 상태 머신, 시퀀스) |
 | **LLD** | [bacnet_ip_gateway_lld.docx](verification/docs/specs/bacnet_ip_gateway_lld.docx) | `LLD-BIG-001` | **하위/상세설계서** (11개 C++ 모듈, 2단계 큐 알고리즘, 세부 구조체) |
-| **TC Spec** | [bacnet_gateway_test_spec.md](verification/docs/specs/bacnet_gateway_test_spec.md) | `TCS-BIG-001` | **테스트 케이스 명세서** (88개 TC별 사전조건, 패킷 교환 절차, 기대값) |
+| **TC Spec** | [bacnet_gateway_test_spec.md](verification/docs/specs/bacnet_gateway_test_spec.md) | `TCS-BIG-001` | **테스트 케이스 명세서** (94개 TC별 사전조건, 패킷 교환 절차, 기대값) |
 
 ### 🛠 실무 환경 및 운영 가이드
 | 문서 파일명 | 주요 내용 |
@@ -258,7 +263,7 @@ graph TB
 ### 5.1 Managed 모드: PC 로컬 가상 시뮬레이션 (전체 자동 검증) [기본값]
 
 * **개념 및 특징**:
-  - 실물 하드웨어나 RS-485 배선이 없는 개발 PC 환경에서도 **88개 전체 TC를 100% 자동 검증**합니다.
+  - 실물 하드웨어나 RS-485 배선이 없는 개발 PC 환경에서도 **94개 전체 TC를 100% 자동 검증**합니다.
   - Docker 컨테이너가 `vport`(가상 PTY 시리얼 버스), `modbus_rtu_slave.py`(Main 시뮬레이터), `bacnet_ip_gateway`를 백그라운드 프로세스로 직접 기동하고 라이프사이클을 관리합니다.
   - **결함 주입 (Fault Injection) 완전 지원**: 시뮬레이터 강제 지연, CRC 오류 주입, 프로세스 강제 종료/재기동 복구 등 침습적 한계 시험을 안전하게 자동 수행합니다.
 * **실행 방법**:
@@ -345,7 +350,7 @@ graph TB
 ---
 
 ### 5.5 웹 브라우저 심층 증적 뷰어 (Allure Dashboard)
-웹 브라우저에서 `http://localhost:5050`에 접속하면, 88개 TC의 세부 실행 결과와 증적을 정밀 분석할 수 있습니다.
+웹 브라우저에서 `http://localhost:5050`에 접속하면, 94개 TC의 세부 실행 결과와 증적을 정밀 분석할 수 있습니다.
 * **주요 확인 항목**:
   - **스텝별 Assertion**: 각 TC의 STEP별 기대값(Expected)과 수신값(Actual) 일치 여부
   - **실시간 패킷 로그 (`packet_exchanges.jsonl`)**: 전송/수신된 모든 BACnet/Modbus 바이트 단위 패킷 트랜잭션
@@ -357,12 +362,12 @@ graph TB
 
 ---
 
-### 5.6 테스트 스위트 구분 (88개 전수 TC)
+### 5.6 테스트 스위트 구분 (94개 전수 TC)
 | 스위트 명 | TC 개수 | 설명 |
 | :--- | :---: | :--- |
 | **quick** | 54개 | 핵심 BACnet/IP 통신, 읽기/쓰기, 우선순위, COV 기본 기능 신속 검증 (약 15초 소요) |
-| **full** | 84개 | BTL 전수 적합성, 다중 디바이스 부하 및 응답 지연시간(RTT) 정밀 검증 |
-| **all** | 88개 | 전체 기능/성능 TC 및 빌드 거버넌스(`TC-ENV-001`), 정적 감사(`audit`) 포함 |
+| **full** | 90개 | BTL 전수 적합성, 다중 디바이스 부하, 응답 지연시간(RTT), 네트워크 장애 복구(`TC-NET-*`, root 컨테이너) 정밀 검증 |
+| **all** | 94개 | 전체 기능/성능 TC 및 빌드 거버넌스(`TC-ENV-001`), 정적 감사(`audit`) 포함 |
 | **soak** | 1개 | **TC-AVL-004**: 12시간 전체 관제점 순환 질의 장기 연속 운용 신뢰성 및 메모리/FD 누수 검증 |
 
 ---

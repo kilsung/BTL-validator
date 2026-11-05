@@ -325,6 +325,7 @@ bool BacnetGateway::start(const std::atomic<bool>* external_running)
         return false;
     }
     external_running_ = external_running;
+    startup_running_  = external_running;
 
     std::cout << std::unitbuf; // Enable unbuffered logging
 
@@ -437,6 +438,9 @@ bool BacnetGateway::start(const std::atomic<bool>* external_running)
         fd_monitor_ = std::unique_ptr<FdMonitor>(new FdMonitor());
         fd_monitor_->start(fd_bbmd_ip_, fd_bbmd_port_, fd_ttl_, fd_reg_timeout_ms_);
     }
+
+    // 9. B/IP 인터페이스 링크/IPv4 감시 (IPv4 변경 시 재시작으로 재바인딩, 링크 복구 시 FD 즉시 재등록)
+    startNetworkWatcher();
 
 #ifdef ENABLE_TPI_EXPORT
     exportCurrentDeviceTpi("current_device.tpi");
@@ -698,6 +702,12 @@ bool BacnetGateway::initBACstacServer(BACSTAC_SRV_INIT& srv_init)
         return false;
     }
 
+    // iface= 지정 인터페이스 IPv4 확정, 네트워크 미준비 시 대기, 실제 netmask 로 subnet 보정
+    if (!resolveBipAddress()) {
+        std::cout << "[Gateway] Network wait aborted by shutdown signal." << std::endl;
+        return false;
+    }
+
     // BACstac exposes foreign-device state directly, but BBMD mode is a
     // configuration-level choice.  Preserve that choice for the Network Port
     // IP_Mode property instead of reporting every non-FD mode as normal.
@@ -752,50 +762,68 @@ bool BacnetGateway::initBACstacServer(BACSTAC_SRV_INIT& srv_init)
 
 void BacnetGateway::detectNetworkInfo()
 {
-    // 1. MAC Address 탐지 (ip_address_str_와 일치하는 인터페이스 우선 검색)
-    struct ifaddrs* ifaddr = nullptr;
-    if (getifaddrs(&ifaddr) == 0) {
-        std::string target_ifname;
-        for (struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
-            if (ifa->ifa_addr == nullptr || ifa->ifa_addr->sa_family != AF_INET) {
-                continue;
-            }
-            if ((ifa->ifa_flags & IFF_LOOPBACK) != 0) {
-                continue;
-            }
-            char host[INET_ADDRSTRLEN];
-            auto* sa = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr);
-            inet_ntop(AF_INET, &(sa->sin_addr), host, INET_ADDRSTRLEN);
-            if (ip_address_str_ == host) {
-                target_ifname = ifa->ifa_name;
-                break;
-            }
-            if (target_ifname.empty()) {
-                target_ifname = ifa->ifa_name;
-            }
-        }
-        freeifaddrs(ifaddr);
+    // 1. MAC Address 탐지
+    // iface= 지정 인터페이스가 있으면 IP 역추적 없이 해당 인터페이스를 직접 사용하고,
+    // 지정이 없을 때(기존 ip= 방식)만 ip_address_str_와 일치하는 인터페이스를 검색한다.
+    std::string target_ifname = bip_iface_;
 
-        if (!target_ifname.empty()) {
-            int sock = socket(AF_INET, SOCK_DGRAM, 0);
-            if (sock >= 0) {
-                struct ifreq ifr;
-                std::memset(&ifr, 0, sizeof(ifr));
-                std::strncpy(ifr.ifr_name, target_ifname.c_str(), IFNAMSIZ - 1);
-                if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
-                    std::memcpy(mac_address_, ifr.ifr_hwaddr.sa_data, 6);
+    if (target_ifname.empty()) {
+        struct ifaddrs* ifaddr = nullptr;
+        if (getifaddrs(&ifaddr) == 0) {
+            for (struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
+                if (ifa->ifa_addr == nullptr || ifa->ifa_addr->sa_family != AF_INET) {
+                    continue;
                 }
-                close(sock);
+                if ((ifa->ifa_flags & IFF_LOOPBACK) != 0) {
+                    continue;
+                }
+                char host[INET_ADDRSTRLEN];
+                auto* sa = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr);
+                inet_ntop(AF_INET, &(sa->sin_addr), host, INET_ADDRSTRLEN);
+                if (ip_address_str_ == host) {
+                    target_ifname = ifa->ifa_name;
+                    break;
+                }
+                if (target_ifname.empty()) {
+                    target_ifname = ifa->ifa_name;
+                }
             }
+            freeifaddrs(ifaddr);
         }
     }
 
-    // 2. DNS 서버 목록 파싱 (/etc/resolv.conf)
+    if (!target_ifname.empty()) {
+        int sock = socket(AF_INET, SOCK_DGRAM, 0);
+        if (sock >= 0) {
+            struct ifreq ifr;
+            std::memset(&ifr, 0, sizeof(ifr));
+            std::strncpy(ifr.ifr_name, target_ifname.c_str(), IFNAMSIZ - 1);
+            if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
+                std::memcpy(mac_address_, ifr.ifr_hwaddr.sa_data, 6);
+            }
+            close(sock);
+        }
+    }
+
+    // 2. DNS 서버 목록 파싱
+    // systemd-resolved 환경(Ubuntu 등)에서는 /etc/resolv.conf에 로컬 스텁(127.0.0.53)이 기록되므로,
+    // 실제 업스트림 DNS가 기록된 /run/systemd/resolve/resolv.conf를 우선 확인하고,
+    // 127.x.x.x 루프백 주소가 아닌 실제 외부 DNS 서버 주소를 우선 등록한다.
     dns_servers_.clear();
-    std::ifstream resolv_file("/etc/resolv.conf");
-    if (resolv_file.is_open()) {
+    const char* const resolv_paths[] = {
+        "/run/systemd/resolve/resolv.conf",
+        "/etc/resolv.conf"
+    };
+
+    auto parse_resolv = [](const char* path, std::vector<std::string>& out_servers) -> bool {
+        std::ifstream file(path);
+        if (!file.is_open()) {
+            return false;
+        }
         std::string line;
-        while (std::getline(resolv_file, line)) {
+        std::vector<std::string> parsed;
+        bool has_non_loopback = false;
+        while (std::getline(file, line)) {
             size_t start = line.find_first_not_of(" \t");
             if (start == std::string::npos || line[start] == '#') {
                 continue;
@@ -807,12 +835,34 @@ void BacnetGateway::detectNetworkInfo()
                     std::string dns_ip = line.substr(ip_start, ip_end == std::string::npos ? std::string::npos : (ip_end - ip_start));
                     int o1 = 0, o2 = 0, o3 = 0, o4 = 0;
                     if (std::sscanf(dns_ip.c_str(), "%d.%d.%d.%d", &o1, &o2, &o3, &o4) == 4) {
-                        dns_servers_.push_back(dns_ip);
+                        parsed.push_back(dns_ip);
+                        if (o1 != 127) {
+                            has_non_loopback = true;
+                        }
                     }
                 }
             }
         }
-        resolv_file.close();
+        if (has_non_loopback) {
+            out_servers.clear();
+            for (const auto& ip : parsed) {
+                int o1 = 0;
+                if (std::sscanf(ip.c_str(), "%d", &o1) == 1 && o1 != 127) {
+                    out_servers.push_back(ip);
+                }
+            }
+            return true;
+        }
+        if (!parsed.empty() && out_servers.empty()) {
+            out_servers = std::move(parsed);
+        }
+        return false;
+    };
+
+    for (const char* path : resolv_paths) {
+        if (parse_resolv(path, dns_servers_)) {
+            break;
+        }
     }
 }
 
@@ -1295,6 +1345,10 @@ void BacnetGateway::stop()
 
     unregisterHooks();
 
+    if (net_watcher_) {
+        net_watcher_->stop();
+        net_watcher_.reset();
+    }
     if (fd_monitor_) {
         fd_monitor_->stop();
         fd_monitor_.reset();
@@ -2182,6 +2236,140 @@ void BacnetGateway::requestRestart(const char* reason)
         std::cout << "[Gateway] " << reason << ". Gateway restart requested to apply BACnet/IP settings."
                   << std::endl;
     }
+}
+
+// ---------------------------------------------------------------------------
+// resolveBipAddress() / startNetworkWatcher() — B/IP 바인딩 인터페이스 확정과 감시
+// ---------------------------------------------------------------------------
+
+namespace {
+
+/// BACstac 이 참조할 IPv4/netmask 문자열 저장소 (bacBipCfgU 가 포인터로 참조, 프로세스 수명 유지)
+char g_bip_ip_storage[INET_ADDRSTRLEN]     = {0};
+char g_bip_subnet_storage[INET_ADDRSTRLEN] = {0};
+
+/// bip.cfg 의 임의 키 값 (주석/공백 제거, 없으면 빈 문자열)
+std::string readConfiguredBipValue(const std::string& path, const std::string& wanted_key)
+{
+    std::ifstream stream(path);
+    std::string line;
+    while (std::getline(stream, line)) {
+        const std::size_t comment = line.find('#');
+        if (comment != std::string::npos) {
+            line.erase(comment);
+        }
+        const std::size_t separator = line.find('=');
+        if (separator == std::string::npos) {
+            continue;
+        }
+        if (trimConfigValue(line.substr(0U, separator)) == wanted_key) {
+            return trimConfigValue(line.substr(separator + 1U));
+        }
+    }
+    return std::string();
+}
+
+void copyToStorage(char* storage, std::size_t size, const std::string& value)
+{
+    std::strncpy(storage, value.c_str(), size - 1U);
+    storage[size - 1U] = '\0';
+}
+
+} // namespace
+
+bool BacnetGateway::resolveBipAddress()
+{
+    constexpr int kWaitSliceMs     = 1000;
+    constexpr int kWaitLogEverySec = 10;
+
+    bip_iface_ = readConfiguredBipValue(bip_config_path_, "iface");
+    const bool foreign = (bacBipCfgU.foreignDevice == BACSTAC_TRUE);
+
+    for (int waited_sec = 0; ; ++waited_sec) {
+        const std::vector<net_link_state::IfAddr> snap = NetworkWatcher::snapshot();
+        std::string chosen_ip;
+        std::string chosen_mask;
+
+        if (!bip_iface_.empty()) {
+            // 지정 인터페이스 고정: 그 인터페이스의 사용 가능한 IPv4 만 사용
+            const net_link_state::IfAddr* entry = net_link_state::findUsableOn(bip_iface_, snap);
+            if (entry != nullptr) {
+                chosen_ip   = NetworkWatcher::formatIpv4(entry->ip);
+                chosen_mask = NetworkWatcher::formatIpv4(entry->netmask);
+            }
+        } else {
+            // 기존 ip= 방식: BACstac 이 자동 대체한 값을 포함한 설정 IPv4 를 그대로 사용.
+            // 대기 중에는 매 회 다시 로드하여 새로 올라온 인터페이스로 자동 대체되게 한다.
+            if (waited_sec > 0) {
+                (void)BACstacCfgLoadBipConfig();
+            }
+            const char* cfg_ip = foreign ? reinterpret_cast<const char*>(bacBipCfgU.fd.ip)
+                                         : reinterpret_cast<const char*>(bacBipCfgU.bip.ip);
+            const std::string configured = (cfg_ip != nullptr) ? std::string(cfg_ip) : std::string();
+            const uint32_t configured_ip = NetworkWatcher::parseIpv4(configured);
+            if (net_link_state::isLoopbackIp(configured_ip)) {
+                return true;  // 검증 환경 loopback 바인딩: 대기/보정 불필요
+            }
+            for (const net_link_state::IfAddr& a : snap) {
+                if (a.ip == configured_ip && configured_ip != 0U && a.up) {
+                    chosen_ip   = configured;
+                    chosen_mask = NetworkWatcher::formatIpv4(a.netmask);
+                    break;
+                }
+            }
+        }
+
+        if (!chosen_ip.empty()) {
+            copyToStorage(g_bip_ip_storage, sizeof(g_bip_ip_storage), chosen_ip);
+            if (foreign) {
+                bacBipCfgU.fd.ip = g_bip_ip_storage;
+            } else {
+                bacBipCfgU.bip.ip = g_bip_ip_storage;
+                if (!chosen_mask.empty() && chosen_mask != "0.0.0.0") {
+                    // 실제 인터페이스 netmask 로 보정 → IPv4 추종 후에도 broadcast 주소가 맞도록
+                    copyToStorage(g_bip_subnet_storage, sizeof(g_bip_subnet_storage), chosen_mask);
+                    bacBipCfgU.bip.subnet = g_bip_subnet_storage;
+                }
+            }
+            if (!bip_iface_.empty() || waited_sec > 0) {
+                std::cout << "[Gateway] BACnet/IP bind address: " << chosen_ip
+                          << (foreign ? std::string() : "/" + chosen_mask)
+                          << (bip_iface_.empty() ? std::string() : " (iface=" + bip_iface_ + ")")
+                          << std::endl;
+            }
+            return true;
+        }
+
+        if (waited_sec % kWaitLogEverySec == 0) {
+            // 이상 상황 로그: BACNET_LOG 설정과 무관하게 항상 stderr 로 출력
+            std::cerr << "[" << ModbusClient::getMsTimestamp() << "][Main] Waiting for network ("
+                      << (bip_iface_.empty() ? std::string("no usable IPv4 for BACnet/IP")
+                                             : "interface " + bip_iface_ + " has no usable IPv4")
+                      << ")... " << waited_sec << "s" << std::endl;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(kWaitSliceMs));
+        if (startup_running_ != nullptr && !startup_running_->load()) {
+            return false;
+        }
+    }
+}
+
+void BacnetGateway::startNetworkWatcher()
+{
+    const bool foreign = (bip_mode_str_ == "fd");
+    net_watcher_ = std::unique_ptr<NetworkWatcher>(new NetworkWatcher());
+    net_watcher_->start(
+        ip_address_str_, foreign ? std::string() : subnet_mask_str_, bip_iface_,
+        [](const std::string& old_ip, const std::string& new_ip) {
+            static std::string reason;
+            reason = "Network IPv4 changed (" + old_ip + " -> " + new_ip + ")";
+            requestRestart(reason.c_str());
+        },
+        [this]() {
+            if (fd_monitor_) {
+                fd_monitor_->requestRenew();
+            }
+        });
 }
 
 // ---------------------------------------------------------------------------

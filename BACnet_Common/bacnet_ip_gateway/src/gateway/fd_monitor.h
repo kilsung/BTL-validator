@@ -47,6 +47,13 @@ public:
     void stop();
 
     /**
+     * @brief 다음 폴링 주기(최대 1초 이내)에 즉시 Register-Foreign-Device 를 보내도록 요청합니다.
+     *        NetworkWatcher 가 링크 복구를 감지했을 때 호출하여, TTL(최대 300초 renew 주기)을
+     *        기다리지 않고 BBMD 에 재등록합니다. 스레드 안전.
+     */
+    void requestRenew() { renew_requested_ = true; }
+
+    /**
      * @brief WriteProperty 요청이 이 모니터가 보낸 자기 재등록 명령인지 확인합니다.
      *        (자기 재등록 진행 중 + 요청 출처가 자기 장치 주소)
      *        외부에서 온 Command 쓰기는 계속 거부해야 하므로 writePropHook에서 사용합니다.
@@ -70,6 +77,7 @@ private:
     uint16_t          ttl_               = 0;
     uint32_t          retry_interval_ms_ = 0;
     std::atomic<bool> running_{false};
+    std::atomic<bool> renew_requested_{false};
     std::thread       thread_;
 };
 

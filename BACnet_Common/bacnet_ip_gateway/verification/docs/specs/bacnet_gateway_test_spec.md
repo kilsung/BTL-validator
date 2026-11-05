@@ -12,7 +12,7 @@
 이 문서는 QE/QA가 시험 목적, 입력값, 수행단계, 자동 판정 방법과
 검증 공백을 한 번에 확인할 수 있도록 정리한 시험 사양서다. Runner는 10장 앞의
 요약표에서 TC ID, SRS ID, 제목을 읽으므로 요약표는 실행 카탈로그이기도 하다.
-요약표에는 정확히 90개의 TC가 있어야 하며, 10장 이후의 반복된 TC ID는 절차와
+요약표에는 정확히 94개의 TC가 있어야 하며, 10장 이후의 반복된 TC ID는 절차와
 증적 설명으로만 사용한다.
 
 이 문서는 제품 코드나 Runner의 동작을 바꾸지 않는다. 카드의 `bacnet_gateway_test_spec.md 기대 결과`는 SRS가
@@ -253,6 +253,10 @@ Runner의 실제 TC lifecycle은 다음 순서다.
 | TC-OBS-001 | SRS-NFR-OBS-001 | Min/Max 범위 모순 시 HOLD 진단 로그 | 설정 오류 시 HOLD 로그(60초 대기) 출력 확인 | 에러 문맥 및 60초 진단 로그 확인 |
 | TC-OBS-002 | SRS-NFR-OBS-001 | 시작(startup) 트레이스 로그 식별 | 통합 환경 기동 후 초기화 단계별 토큰(Relinquish/clamp/Synchronized) 검사 | 초기화 데이터 흐름 식별 |
 | TC-OBS-003 | SRS-NFR-OBS-001 | 장기(600초) Main 무응답 안정성 관찰 | 1초 주기 PID/로그 샘플링 및 2초 주기 BACnet 상태 프로브 송신 | Gateway 생존 유지, 로그 폭주 억제(<=20 lines/s), 3초 내 정상 종료 |
+| TC-NET-001 | SRS-NFR-NET-001 | 링크 DOWN→UP(같은 IPv4) 복구 | netns 게이트웨이 인터페이스(vgw0) 10초 DOWN 후 UP, 0.5초 간격 단발 ReadProperty 폴링 | 재시작 없이 UP 후 10초 이내 응답 재개, Reliability=NO_FAULT, Link down/up 로그 |
+| TC-NET-002 | SRS-NFR-NET-001 | 운용 중 IPv4 변경 추종 | vgw0 IPv4 를 10.77.0.2 → 10.77.0.3 으로 교체 | IPv4 changed 로그, 재시작 1회로 새 IPv4/실제 netmask 재바인딩, 새 IPv4 응답·IP_Address·서브넷 broadcast I-Am 일치, 옛 IPv4 무응답 |
+| TC-NET-003 | SRS-NFR-NET-001 | 기동 시 네트워크 미준비(IPv4 미할당) | IPv4 없이 기동 후 10초 이상 대기, 이후 IPv4 할당 | exit 하지 않고 Waiting for network 로그로 대기, IPv4 할당 후 15초 이내 기동 및 응답 |
+| TC-NET-004 | SRS-NFR-NET-001 | FD 모드 링크 복구 후 BBMD 재등록 | TTL 600초 FD 등록 상태에서 vgw0 15초 DOWN 후 UP | UP 후 10초 이내 Register-Foreign-Device 재등록(300초 renew 대기 없음), FD 즉시 재등록 로그 |
 
 ## 9. 표준 및 환경 TC 요약
 
@@ -1922,6 +1926,95 @@ Modbus RTU transaction은 simulator transaction log와 packet evidence에서 확
 - 직접 검증하지 않는 항목/검증 공백: 커널 패닉 및 물리 전원 차단 외란은 H/W 신뢰성 시험 범위로 위임한다.
 - 정리/증적: 시계열 자원 샘플 메트릭, 통신 성공/실패 통계, Gateway 로그 스냅샷.
 - BLOCKED 조건: `--soak` 또는 `--long` 옵션 미지정.
+
+#### TC-NET-001 — 링크 DOWN→UP(같은 IPv4) 복구
+
+- 실행 명령: `run_test.sh` managed, `--case TC-NET-001` (root·독립 네트워크 컨테이너 자동 구성).
+- 입력/사전조건: 컨테이너 내부 netns `bacgw` 의 `vgw0`(10.77.0.2/24) ↔ 러너 `vrun0`(10.77.0.1/24) veth 구성, `bip.cfg` 에 `iface=vgw0`, vport + Main 시뮬레이터는 러너 쪽, Gateway 는 `ip netns exec bacgw` 로 기동.
+- 수행단계:
+  1. Device Object_Name ReadProperty 로 기준 응답을 확인한다.
+  2. `vgw0` 를 DOWN 하고 `[Net] Link down` 로그(10초 이내)와 BACnet 무응답을 확인한다.
+  3. 10초 유지 후 프로세스 생존을 확인하고 `vgw0` 를 UP 한다.
+  4. 0.5초 간격 단발 ReadProperty 로 응답 재개 시간을 측정한다.
+  5. `[Net] Link up` 로그, 재시작 횟수 불변, Network Port Reliability(103)=0, Who-Is/I-Am 을 확인한다.
+- 자동 판정:
+
+| 항목 | 채널/근거 | 기대 | 현재 자동 판정 |
+|---|---|---|---|
+| 감지 | Gateway log | Link down/up 로그 | substring assertion |
+| 복구 | BACnet/IP | UP 후 10초 이내 SUCCESS | elapsed 비교 |
+| 재시작 없음 | Gateway log | started 횟수 불변 | count 비교 |
+| Reliability | BACnet/IP | NO_FAULT_DETECTED(0) | enum 비교 |
+
+- 현재 자동 검증 범위: 같은 IPv4 링크 단절/복구 시 재시작 없는 자동 복구와 감지 로그.
+- 직접 검증하지 않는 항목/검증 공백: 실제 PHY 캐리어 손실(케이블 분리)과 장시간 단절 중 COV 구독 유지.
+- 정리/증적: `network_recovery`(감지/복구 시간), BACnet 패킷, Gateway log.
+- BLOCKED 조건: managed 가 아니거나 root/NET_ADMIN 컨테이너가 아님(`net_admin` capability 없음).
+
+#### TC-NET-002 — 운용 중 IPv4 변경 추종
+
+- 실행 명령: `run_test.sh` managed, `--case TC-NET-002`.
+- 입력/사전조건: TC-NET-001 과 같은 netns 구성, 초기 IPv4 10.77.0.2/24, `iface=vgw0`.
+- 수행단계:
+  1. 기준 응답을 확인한다.
+  2. `vgw0` 의 IPv4 를 10.77.0.3/24 로 교체한다.
+  3. `[Net] IPv4 changed` 로그(10초 이내)와 Gateway 재시작 1회, `BACnet/IP bind address: 10.77.0.3/255.255.255.0 (iface=vgw0)` 로그를 확인한다.
+  4. 새 IPv4 로 ReadProperty 응답(변경 후 30초 이내), Network Port IP_Address=10.77.0.3, `10.77.0.255` directed broadcast Who-Is 에 새 IPv4 의 I-Am 을 확인한다.
+  5. 옛 IPv4(10.77.0.2) 요청이 응답하지 않음을 확인한다.
+- 자동 판정:
+
+| 항목 | 채널/근거 | 기대 | 현재 자동 판정 |
+|---|---|---|---|
+| 감지·재바인딩 | Gateway log | IPv4 changed, started +1, bind address 로그 | substring/count |
+| 새 주소 응답 | BACnet/IP | 30초 이내 SUCCESS | elapsed 비교 |
+| 속성/broadcast | BACnet/IP | IP_Address 일치, I-Am 송신 주소 = 새 IPv4 | 값 비교 |
+| 옛 주소 | BACnet/IP | 무응답 | status 비교 |
+
+- 현재 자동 검증 범위: 지정 인터페이스 IPv4 교체 시 재바인딩과 서브넷 broadcast 갱신.
+- 직접 검증하지 않는 항목/검증 공백: DHCP 클라이언트 연동, FD 모드의 IPv4 변경 후 BBMD 재등록.
+- 정리/증적: `network_recovery`(감지/재바인딩 시간), BACnet 패킷, Gateway log.
+- BLOCKED 조건: TC-NET-001 과 같음.
+
+#### TC-NET-003 — 기동 시 네트워크 미준비(IPv4 미할당)
+
+- 실행 명령: `run_test.sh` managed, `--case TC-NET-003`.
+- 입력/사전조건: netns 구성 후 `vgw0` 의 IPv4 를 제거한 상태(링크 UP), `iface=vgw0`.
+- 수행단계:
+  1. Gateway 를 기동하고 8초 이내 `Waiting for network` 로그를 확인한다.
+  2. 10초 대기 후 프로세스가 살아 있고 BACnet 서버가 기동하지 않았음을 확인한다.
+  3. `vgw0` 에 10.77.0.2/24 를 할당하고 15초 이내 `BACnet IP Gateway started` 와 BACnet 응답을 확인한다.
+- 자동 판정:
+
+| 항목 | 채널/근거 | 기대 | 현재 자동 판정 |
+|---|---|---|---|
+| 대기 | Gateway log / process | Waiting 로그, 생존, 미기동 | substring/poll/count |
+| 기동 | Gateway log / BACnet/IP | 할당 후 15초 이내 started, SUCCESS | elapsed 비교 |
+
+- 현재 자동 검증 범위: 기동 시 지정 인터페이스 IPv4 미할당 대기와 할당 후 기동.
+- 직접 검증하지 않는 항목/검증 공백: 인터페이스 자체가 존재하지 않는 경우(USB NIC 미장착)와 systemd 재시작 정책.
+- 정리/증적: `network_recovery`(할당 후 기동 시간), Gateway log.
+- BLOCKED 조건: TC-NET-001 과 같음.
+
+#### TC-NET-004 — FD 모드 링크 복구 후 BBMD 재등록
+
+- 실행 명령: `run_test.sh` managed, `--case TC-NET-004`.
+- 입력/사전조건: 러너 쪽 BBMDServer(10.77.0.1:47809, netns/veth 구성 직후·게이트웨이 기동 전에 bind), `bip.cfg.fd` FD 모드 TTL=600초, `iface=vgw0`.
+- 수행단계:
+  1. 초기 BBMD FDT 등록(15초 이내)을 확인한다.
+  2. `vgw0` 를 15초 DOWN 후 UP 한다.
+  3. UP 이후 BBMD 가 새 Register-Foreign-Device 를 수신한 시각(FDT 등록 시각 갱신)을 측정한다.
+  4. `[FD] Network link recovered. Re-registering` 로그를 확인한다.
+- 자동 판정:
+
+| 항목 | 채널/근거 | 기대 | 현재 자동 판정 |
+|---|---|---|---|
+| 재등록 | BBMD FDT | UP 후 10초 이내 등록 시각 갱신 | timestamp 비교 |
+| 로그 | Gateway log | 즉시 재등록 로그 | substring assertion |
+
+- 현재 자동 검증 범위: 링크 복구 시 TTL/300초 주기를 기다리지 않는 즉시 재등록.
+- 직접 검증하지 않는 항목/검증 공백: BBMD 측 FDT 만료 이후 broadcast 분배 복구.
+- 정리/증적: `network_recovery`(재등록 시간), BBMD/Gateway log.
+- BLOCKED 조건: TC-NET-001 과 같음.
 
 #### TC-PERF-001 — 100회 순차 ReadProperty benchmark
 

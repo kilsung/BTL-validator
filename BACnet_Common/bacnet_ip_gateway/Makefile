@@ -68,6 +68,7 @@ GATEWAY_SRCS = src/gateway/main.cpp \
                src/gateway/modbus_client.cpp \
                src/gateway/cov_manager.cpp \
                src/gateway/fd_monitor.cpp \
+               src/gateway/net_watcher.cpp \
                src/gateway/file_logger.cpp \
                src/gateway/dummy_device.c \
                $(COMMON_SRCS)
@@ -79,6 +80,7 @@ GATEWAY_OBJS = src/gateway/main.o \
                src/gateway/modbus_client.o \
                src/gateway/cov_manager.o \
                src/gateway/fd_monitor.o \
+               src/gateway/net_watcher.o \
                src/gateway/file_logger.o \
                src/gateway/dummy_device.o \
                src/common/modbus_crc.o \
@@ -164,6 +166,7 @@ TEST_SRCS   = verification/unit/test_main.cpp \
               verification/unit/test_bip_config_path.cpp \
               verification/unit/test_bip_config_file.cpp \
               verification/unit/test_fd_link_state.cpp \
+              verification/unit/test_net_link_state.cpp \
               src/common/modbus_crc.cpp
 
 test: $(TEST_TARGET)

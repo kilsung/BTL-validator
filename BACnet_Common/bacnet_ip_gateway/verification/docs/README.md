@@ -10,10 +10,10 @@ QE/QA 품질 심사, 고객사 감사, 소프트웨어 릴리즈 승인 시 제�
 
 | 구분 | 문서 파일명 | 문서 ID | 설명 및 역할 |
 |---|---|---|---|
-| **SRS** | [specs/bacnet_ip_gateway_srs.docx](specs/bacnet_ip_gateway_srs.docx) | `SRS-BIG-001` | **소프트웨어 요구사항 명세서** (ISO/IEC/IEEE 29148 기준 27개 원자 요구사항) |
+| **SRS** | [specs/bacnet_ip_gateway_srs.docx](specs/bacnet_ip_gateway_srs.docx) | `SRS-BIG-001` | **소프트웨어 요구사항 명세서** (ISO/IEC/IEEE 29148 기준 28개 원자 요구사항) |
 | **HLD** | [specs/bacnet_ip_gateway_hld.docx](specs/bacnet_ip_gateway_hld.docx) | `HLD-BIG-001` | **상위/기본설계서** (아키텍처, 프로세스 격리, 상태 머신) |
 | **LLD** | [specs/bacnet_ip_gateway_lld.docx](specs/bacnet_ip_gateway_lld.docx) | `LLD-BIG-001` | **하위/상세설계서** (11개 C++ 모듈, 2단계 우선순위 큐, 알고리즘) |
-| **TC Spec** | [specs/bacnet_gateway_test_spec.md](specs/bacnet_gateway_test_spec.md) | `TCS-BIG-001` | **테스트 케이스 명세서** (총 88개 TC 사전조건, 절차, 기대값) |
+| **TC Spec** | [specs/bacnet_gateway_test_spec.md](specs/bacnet_gateway_test_spec.md) | `TCS-BIG-001` | **테스트 케이스 명세서** (총 94개 TC 사전조건, 절차, 기대값) |
 
 ---
 

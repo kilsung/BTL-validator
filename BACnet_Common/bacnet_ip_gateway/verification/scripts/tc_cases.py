@@ -73,7 +73,7 @@ def _catalog():
         columns = [item.strip() for item in line.strip().split("|")[1:-1]]
         if len(columns) >= 3:
             result.append((columns[0], columns[1], columns[2]))
-    require(len(result) == 90, f"test specification must define 90 cases, found {len(result)}")
+    require(len(result) == 94, f"test specification must define 94 cases, found {len(result)}")
     return result
 
 
@@ -346,14 +346,19 @@ def _response_invoke_matches(packet, invoke_id):
     return (packet[index] & 0xF0) in (0x20, 0x30, 0x50, 0x60, 0x70) and packet[index + 1] == invoke_id
 
 
-def _confirmed_exchange(ctx, packet, invoke_id, note, timeout=None, retries=None):
+def _confirmed_exchange(ctx, packet, invoke_id, note, timeout=None, retries=None, stats=None):
     """Send one confirmed request on a fresh socket with BACnet APDU retries.
 
     timeout: 시도당 대기 시간(초). None 이면 IUT APDU_Timeout 사용.
     retries: 재전송 횟수. None 이면 IUT Number_Of_APDU_Retries 사용.
+    stats:   dict 를 주면 "retries"(사용한 재전송 횟수)와 "rtt_ms"(마지막 전송 기준 응답 시간)를 기록.
     Returns (response, sender). Raises socket.timeout when every attempt timed out.
     """
-    policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    # timeout/retries 를 모두 지정한 단발 시도는 IUT 정책 조회(추가 요청)를 하지 않는다.
+    if timeout is None or retries is None:
+        policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    else:
+        policy_timeout, policy_retries = timeout, retries
     per_attempt = policy_timeout if timeout is None else timeout
     total = 1 + (policy_retries if retries is None else max(0, retries))
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
@@ -363,8 +368,11 @@ def _confirmed_exchange(ctx, packet, invoke_id, note, timeout=None, retries=None
             if attempt:
                 _note_apdu_retry(ctx, invoke_id, note, attempt, total)
             _record_bacnet_tx(ctx, packet, note=tx_note)
+            sent_at = time.monotonic()
+            if stats is not None:
+                stats["retries"] = attempt
             sock.sendto(packet, _endpoint(ctx))
-            deadline = time.monotonic() + per_attempt
+            deadline = sent_at + per_attempt
             while True:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
@@ -380,6 +388,8 @@ def _confirmed_exchange(ctx, packet, invoke_id, note, timeout=None, retries=None
                     continue
                 if attempt:
                     _note_apdu_retry(ctx, invoke_id, note, attempt, total, recovered=True)
+                if stats is not None:
+                    stats["rtt_ms"] = (time.monotonic() - sent_at) * 1000.0
                 return response, sender
     raise socket.timeout(f"{note} invoke {invoke_id}: no response after {total} attempt(s)")
 
@@ -508,27 +518,32 @@ def _read_enum_list(ctx, object_type, instance, property_id, invoke_id, timeout=
 
 
 def _read_property_attempt(ctx, object_type, instance, property_id, invoke_id,
-                           timeout=1.0, note="ReadProperty attempt"):
-    """Send one ReadProperty without turning an expected outage into a failed step."""
+                           timeout=1.0, note="ReadProperty attempt", retries=0):
+    """Send ReadProperty without turning an expected outage into a failed step.
+
+    retries=0 (기본값): 단발 시도. 장애 감지/Fault 주입/복구 polling 처럼 실패가
+    예상되거나 재전송이 판정을 바꾸는 검사용.
+    retries=None, timeout=None: IUT APDU_Timeout / Number_Of_APDU_Retries 로 재전송
+    (성공을 기대하는 일반 읽기, SOAK 등).
+    반환 dict: status, value, latency_ms(첫 전송부터), rtt_ms(마지막 전송 기준), retries
+    """
     invoke_id &= 0xFF
     packet = build_bacnet_ip_packet(
         None, None, invoke_id,
         build_read_property_apdu(object_type, instance, invoke_id, property_id),
     )
     started = time.monotonic()
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(timeout)
-        sock.bind((_client_bind_ip(ctx), 0))
-        _record_bacnet_tx(ctx, packet, note=note)
-        try:
-            sock.sendto(packet, _endpoint(ctx))
-            response, sender = sock.recvfrom(4096)
-        except (OSError, socket.timeout) as exc:
-            return {
-                "status": "TIMEOUT",
-                "value": str(exc),
-                "latency_ms": (time.monotonic() - started) * 1000.0,
-            }
+    stats = {"retries": 0}
+    try:
+        response, sender = _confirmed_exchange(ctx, packet, invoke_id, note,
+                                               timeout=timeout, retries=retries, stats=stats)
+    except (OSError, socket.timeout) as exc:
+        return {
+            "status": "TIMEOUT",
+            "value": str(exc),
+            "latency_ms": (time.monotonic() - started) * 1000.0,
+            "retries": stats.get("retries", 0),
+        }
     status, value = parse_bacnet_response(response, invoke_id)
     _record_bacnet_rx(
         ctx, response, sender, note=f"{note} response",
@@ -539,6 +554,8 @@ def _read_property_attempt(ctx, object_type, instance, property_id, invoke_id,
         "value": value,
         "sender": list(sender),
         "latency_ms": (time.monotonic() - started) * 1000.0,
+        "rtt_ms": stats.get("rtt_ms"),
+        "retries": stats.get("retries", 0),
     }
 
 
@@ -691,7 +708,11 @@ def _observed_exchange(ctx, sock, packet, invoke_id, note, cov_counts=None,
     timeout/retries 가 None 이면 IUT APDU_Timeout / Number_Of_APDU_Retries 를 사용한다.
     Raises AssertionError when every attempt timed out (기존 동작과 동일).
     """
-    policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    # timeout/retries 를 모두 지정한 단발 시도는 IUT 정책 조회(추가 요청)를 하지 않는다.
+    if timeout is None or retries is None:
+        policy_timeout, policy_retries, _ = _apdu_policy(ctx)
+    else:
+        policy_timeout, policy_retries = timeout, retries
     per_attempt = policy_timeout if timeout is None else timeout
     total = 1 + (policy_retries if retries is None else max(0, retries))
     for attempt in range(total):
@@ -1131,7 +1152,7 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
                 ctx._ssh_last_error = error.strip() or f"exit code {returncode}"
             return returncode, output, error
         except ImportError:
-            ctx._ssh_last_error = "Windows SSH 암호 인증에 paramiko가 필요합니다 (pip install paramiko)."
+            ctx._ssh_last_error = "Windows SSH 암호 인증에 paramiko>=3.4,<4가 필요합니다."
             return None
         except Exception as error:
             ctx._ssh_last_error = str(error)
@@ -1742,7 +1763,7 @@ LEGACY_STEP3 = EPICS_VERIFIER_CASES
 NATIVE_STEP1 = {
     "TC-BAC-001", "TC-BAC-003", "TC-BAC-004", "TC-BAC-007", "TC-BAC-008",
     "TC-BAC-009", "TC-BAC-010", "TC-BAC-012", "TC-BAC-013", "TC-BAC-015",
-    "TC-BAC-019", "TC-BTL-001", "TC-MAP-007",
+    "TC-BAC-019", "TC-BAC-020", "TC-BTL-001", "TC-MAP-007",
 }
 NATIVE_OBSERVE = NATIVE_STEP1 | {
     "TC-BAC-002", "TC-BAC-011", "TC-BAC-014", "TC-BIP-001",
@@ -1750,7 +1771,7 @@ NATIVE_OBSERVE = NATIVE_STEP1 | {
 NATIVE_MUTATING = {
     "TC-BAC-007", "TC-BAC-008", "TC-BAC-009", "TC-BAC-010", "TC-BAC-012",
     "TC-BAC-011", "TC-BAC-013", "TC-BAC-014", "TC-BAC-015", "TC-BAC-019",
-    "TC-MAP-007",
+    "TC-BAC-020", "TC-MAP-007",
 }
 NATIVE_MAIN_CONTROL = {"TC-BAC-010", "TC-BAC-011", "TC-BAC-014"}
 
@@ -2684,12 +2705,12 @@ def _bip_mode_case(ctx):
         check_step(ctx, f"NetworkPort Changes_Pending FALSE ({mode})", "FALSE", pending.hex() if pending else None,
                    pending == b"\x10", f"Changes_Pending is not FALSE: {pending}")
         if mode == "normal":
-            fd_attempt = _read_property_attempt(ctx, 56, 1, 418, 50 + index)
+            fd_attempt = _read_property_attempt(ctx, 56, 1, 418, 50 + index, timeout=None, retries=None)
             status = fd_attempt["status"]
             value = fd_attempt.get("value")
             check_step(ctx, "normal FD_BBMD_Address 읽기", "SUCCESS", status,
                        status == "SUCCESS", f"normal mode failed to read FD_BBMD_Address: {value}")
-            ttl_attempt = _read_property_attempt(ctx, 56, 1, 419, 55 + index)
+            ttl_attempt = _read_property_attempt(ctx, 56, 1, 419, 55 + index, timeout=None, retries=None)
             check_step(ctx, "normal FD_Subscription_Lifetime 읽기", "SUCCESS",
                        ttl_attempt["status"], ttl_attempt["status"] == "SUCCESS",
                        f"normal mode failed to read FD_Subscription_Lifetime: {ttl_attempt.get('value')}")
@@ -2986,7 +3007,7 @@ def _bac_network_port_runtime_case(ctx):
                    os.readlink(link) if link.is_symlink() else None,
                    link.is_symlink() and os.readlink(link) == "bip.cfg.normal",
                    "bip.cfg link was not switched")
-        fd_attempt = _read_property_attempt(ctx, 56, 1, 418, 103)
+        fd_attempt = _read_property_attempt(ctx, 56, 1, 418, 103, timeout=None, retries=None)
         check_step(ctx, "normal 모드에서도 FD_BBMD_Address 읽기", "SUCCESS", fd_attempt["status"],
                    fd_attempt["status"] == "SUCCESS", "FD_BBMD_Address is not readable in normal mode")
         first = _gateway_fdt_entry(ctx, endpoint)
@@ -3423,6 +3444,10 @@ def _get_vport_pid(ctx) -> Optional[int]:
         if proc.poll() is None:
             return proc.pid
     try:
+        res = subprocess.run(["pidof", "vport"], stdout=subprocess.PIPE, text=True, check=False)
+        pids = [int(p.strip()) for p in res.stdout.split() if p.strip().isdigit()]
+        if pids:
+            return pids[0]
         res = subprocess.run(["pgrep", "-f", "vport"], stdout=subprocess.PIPE, text=True, check=False)
         pids = [int(p.strip()) for p in res.stdout.split() if p.strip().isdigit()]
         return pids[0] if pids else None
@@ -3458,21 +3483,44 @@ def _get_remote_ssh_system_metrics(ctx) -> Optional[Dict[str, Dict[str, Any]]]:
     ssh_port = getattr(ctx.options, "ssh_port", 22) or 22
     ssh_pass = getattr(ctx.options, "ssh_pass", None)
 
-    # Robust PID finder supporting standard Linux and BusyBox
+    # Robust PID finder supporting standard Linux and BusyBox:
+    # 1) pidof (procps/BusyBox 모두 argv[0] basename 도 비교)
+    # 2) /proc/<pid>/cmdline 의 argv[0] basename 비교
+    #    - comm 은 15자로 잘리고(bacnet_ip_gatew), execv("/proc/self/exe") 재시작 후에는
+    #      "exe" 로 바뀌므로 pgrep -x / ps 이름 비교로는 찾지 못한다.
+    #    - pidof 가 없는 보드도 지원한다.
+    # 주의: "pidof | awk || ..." 형태는 파이프라인 종료코드가 awk(항상 0)라서 대체 탐색이
+    #       실행되지 않으므로, 결과가 비었는지로 다음 방법을 시도한다.
+    # PID 를 찾지 못하면 진단용으로 ps 의 관련 줄을 DIAG= 로 함께 출력한다.
     remote_script = (
-        'find_pid() { pgrep -f "$1" 2>/dev/null | head -n1 || ps -ef 2>/dev/null | grep "$1" | grep -v grep | awk \'{print $2}\' | head -n1 || ps 2>/dev/null | grep "$1" | grep -v grep | awk \'{print $1}\' | head -n1; }; '
+        'find_pid() { '
+        'p=$(pidof "$1" 2>/dev/null | awk \'{print $1}\'); '
+        'if [ -z "$p" ]; then '
+        'for d in /proc/[0-9]*; do '
+        'a=$(tr "\\000" "\\n" < "$d/cmdline" 2>/dev/null | head -n1); '
+        '[ -n "$a" ] && [ "${a##*/}" = "$1" ] && { p=${d#/proc/}; break; }; '
+        'done; '
+        'fi; '
+        'echo "$p"; '
+        '}; '
         'GW_PID=$(find_pid bacnet_ip_gateway); '
         'VP_PID=$(find_pid vport); '
         'GW_RSS=$([ -n "$GW_PID" ] && grep -i VmRSS /proc/$GW_PID/status 2>/dev/null | awk \'{print $2}\' || echo "0"); '
         'GW_FDS=$([ -n "$GW_PID" ] && ls -1 /proc/$GW_PID/fd 2>/dev/null | wc -l || echo "0"); '
         'VP_RSS=$([ -n "$VP_PID" ] && grep -i VmRSS /proc/$VP_PID/status 2>/dev/null | awk \'{print $2}\' || echo "0"); '
         'VP_FDS=$([ -n "$VP_PID" ] && ls -1 /proc/$VP_PID/fd 2>/dev/null | wc -l || echo "0"); '
-        'echo "GW:${GW_PID:-none}:${GW_RSS:-0}:${GW_FDS:-0} VP:${VP_PID:-none}:${VP_RSS:-0}:${VP_FDS:-0}"'
+        'echo "GW:${GW_PID:-none}:${GW_RSS:-0}:${GW_FDS:-0} VP:${VP_PID:-none}:${VP_RSS:-0}:${VP_FDS:-0}"; '
+        'if [ -z "$GW_PID" ]; then '
+        'echo "DIAG=$(ps 2>/dev/null | grep -i bacnet | grep -v grep | head -n3 | tr \'\\n\' \';\')"; '
+        'fi'
     )
 
     res = _run_remote_ssh_command(ctx, remote_script, timeout=8.0)
     if res is not None and res[0] == 0 and res[1].strip():
-        out = res[1].strip()
+        out_lines = res[1].strip().splitlines()
+        out = out_lines[0] if out_lines else ""
+        ctx._ssh_pid_diag = next((line[len("DIAG="):].strip() for line in out_lines[1:]
+                                  if line.startswith("DIAG=")), None)
         metrics = {}
         for token in out.split():
             parts = token.split(":")
@@ -3497,6 +3545,9 @@ def _get_remote_ssh_system_metrics(ctx) -> Optional[Dict[str, Dict[str, Any]]]:
                   f"Gateway PID={gw_info.get('pid')}(RSS {gw_info.get('rss_kb')} KB), "
                   f"vport PID={vp_info.get('pid')}(RSS {vp_info.get('rss_kb')} KB)",
                   flush=True)
+            if gw_info.get("pid") is None:
+                print(f"    [SSH 경고] 원격 보드에서 bacnet_ip_gateway 프로세스를 찾지 못했습니다 "
+                      f"(ps: {ctx._ssh_pid_diag or 'bacnet 관련 프로세스 없음'})", flush=True)
         if "gateway" in metrics or "vport" in metrics:
             return metrics
     else:
@@ -3520,6 +3571,10 @@ def _get_gateway_pid(ctx) -> Optional[int]:
     if ctx.managed and "gateway" in ctx.processes:
         return ctx.processes["gateway"].process.pid
     try:
+        res = subprocess.run(["pidof", "bacnet_ip_gateway"], stdout=subprocess.PIPE, text=True, check=False)
+        pids = [int(p.strip()) for p in res.stdout.split() if p.strip().isdigit()]
+        if pids:
+            return pids[0]
         res = subprocess.run(["pgrep", "-f", "bacnet_ip_gateway"], stdout=subprocess.PIPE, text=True, check=False)
         pids = [int(p.strip()) for p in res.stdout.split() if p.strip().isdigit()]
         return pids[0] if pids else None
@@ -3577,8 +3632,21 @@ def _soak_reliability_case(ctx):
     has_vport = (vp_base is not None and vp_base.get("rss_kb") is not None) or (vp_pid is not None)
 
     if not is_local and getattr(ctx.options, "ssh_enable", False) and not has_os_metrics:
+        ssh_target = (f"{getattr(ctx.options, 'ssh_user', 'root')}@{getattr(ctx.options, 'target_ip', '')}"
+                      f":{getattr(ctx.options, 'ssh_port', 22)}")
+        if getattr(ctx, "_ssh_connected", False):
+            # SSH 는 성공했지만 원격에서 게이트웨이 프로세스/RSS 를 찾지 못한 경우
+            gw_pid_remote = (remote_sys or {}).get("gateway", {}).get("pid")
+            diag = getattr(ctx, "_ssh_pid_diag", None) or "ps 에 bacnet 관련 프로세스 없음"
+            if gw_pid_remote is None:
+                reason = (f"SSH 접속은 성공했으나 원격 보드에서 bacnet_ip_gateway 프로세스를 찾지 못했습니다 "
+                          f"(게이트웨이 실행 여부/실행 파일명 확인 필요, ps: {diag})")
+            else:
+                reason = (f"SSH 접속은 성공했으나 원격 게이트웨이(PID={gw_pid_remote})의 "
+                          f"/proc/{gw_pid_remote}/status VmRSS 를 읽지 못했습니다 (SSH 계정 권한 확인 필요)")
+            blocked(f"원격 OS 자원 모니터링 불가 ({ssh_target}): {reason}")
         err = getattr(ctx, "_ssh_connect_error", getattr(ctx, "_ssh_last_error", "인증 실패 또는 접속 불가"))
-        blocked(f"원격 SSH 접속 실패 ({getattr(ctx.options, 'ssh_user', 'root')}@{getattr(ctx.options, 'target_ip', '')}:{getattr(ctx.options, 'ssh_port', 22)}): "
+        blocked(f"원격 SSH 접속 실패 ({ssh_target}): "
                 f"OS 자원(메모리/FD/vport) 실시간 모니터링을 수행할 수 없습니다. (원인: {err})")
 
     baseline_gw_rss = gw_base["rss_kb"] if (gw_base and gw_base.get("rss_kb")) else None
@@ -3591,9 +3659,16 @@ def _soak_reliability_case(ctx):
     samples = []
     total_reads = 0
     failed_reads = 0
+    recovered_reads = 0   # APDU 재전송으로 복구된 읽기 수 (일시적 네트워크 유실)
+    retry_sends = 0       # 재전송 패킷 총 수
     cycle = 0
     invoke_id = 1
+    apdu_timeout_sec, apdu_retries, apdu_policy_src = _apdu_policy(ctx)
+    print(f"    [SOAK] APDU policy: timeout={apdu_timeout_sec * 1000:.0f}ms, "
+          f"retries={apdu_retries} [{apdu_policy_src}]", flush=True)
     last_progress_log = 0.0
+    consecutive_gw_dead = 0
+    consecutive_vp_dead = 0
 
     while time.monotonic() - started < duration_sec:
         cycle += 1
@@ -3613,14 +3688,22 @@ def _soak_reliability_case(ctx):
         cycle_failed = 0
         cycle_latencies = []
         for obj in all_objects:
-            res = _read_property_attempt(ctx, obj["type"], obj["instance"], 85, invoke_id, timeout=2.0)
+            # BACnet 클라이언트 동작(5.4.4.3)과 동일하게 IUT APDU_Timeout / Number_Of_APDU_Retries 로
+            # 재전송한다. 재전송 후에도 응답이 없을 때만 실패로 집계한다.
+            res = _read_property_attempt(ctx, obj["type"], obj["instance"], 85, invoke_id,
+                                         timeout=None, retries=None, note="SOAK ReadProperty")
             invoke_id = (invoke_id + 1) & 0xFF
             total_reads += 1
+            used_retries = res.get("retries", 0) or 0
+            retry_sends += used_retries
             if res.get("status") != "SUCCESS":
                 failed_reads += 1
                 cycle_failed += 1
-            if "latency_ms" in res:
-                cycle_latencies.append(res["latency_ms"])
+            elif used_retries:
+                recovered_reads += 1
+            # RTT 드리프트 지표는 재전송 대기 시간이 섞이지 않도록 마지막 전송 기준 응답 시간 사용
+            if res.get("rtt_ms") is not None:
+                cycle_latencies.append(res["rtt_ms"])
 
         if not is_local and cycle_failed == len(all_objects):
             require(False, f"Gateway unresponsive on network at {time.monotonic() - started:.1f}s")
@@ -3633,35 +3716,53 @@ def _soak_reliability_case(ctx):
             cur_gw_m = remote_cur.get("gateway") if remote_cur else None
             cur_vp_m = remote_cur.get("vport") if remote_cur else None
 
-        cur_gw_rss = cur_gw_m["rss_kb"] if cur_gw_m else (baseline_gw_rss or 0)
-        cur_gw_fds = cur_gw_m["fd_count"] if cur_gw_m else (baseline_gw_fds or 0)
-        cur_vp_rss = cur_vp_m["rss_kb"] if cur_vp_m else (baseline_vp_rss or 0)
-        cur_vp_fds = cur_vp_m["fd_count"] if cur_vp_m else (baseline_vp_fds or 0)
+        # Fallback to previous sample, then baseline, then 0 to ensure non-None integers
+        prev_sample = samples[-1] if samples else None
+        cur_gw_rss = (cur_gw_m.get("rss_kb") if cur_gw_m else None) or (prev_sample["gw_rss_kb"] if prev_sample else baseline_gw_rss) or 0
+        cur_gw_fds = (cur_gw_m.get("fd_count") if cur_gw_m else None) or (prev_sample["gw_fds"] if prev_sample else baseline_gw_fds) or 0
+        cur_vp_rss = (cur_vp_m.get("rss_kb") if cur_vp_m else None) or (prev_sample["vp_rss_kb"] if prev_sample else baseline_vp_rss) or 0
+        cur_vp_fds = (cur_vp_m.get("fd_count") if cur_vp_m else None) or (prev_sample["vp_fds"] if prev_sample else baseline_vp_fds) or 0
 
         if not is_local and has_os_metrics:
             if cur_gw_m is None or cur_gw_m.get("pid") is None:
-                require(False, f"Gateway crashed during soak test at {time.monotonic() - started:.1f}s")
-            if has_vport and (cur_vp_m is None or cur_vp_m.get("pid") is None):
-                require(False, f"vport crashed during soak test at {time.monotonic() - started:.1f}s")
+                consecutive_gw_dead += 1
+                if consecutive_gw_dead >= 3:
+                    require(False, f"Gateway crashed during soak test at {time.monotonic() - started:.1f}s")
+            else:
+                consecutive_gw_dead = 0
+
+            if has_vport:
+                if cur_vp_m is None or cur_vp_m.get("pid") is None:
+                    consecutive_vp_dead += 1
+                    if consecutive_vp_dead >= 3:
+                        require(False, f"vport crashed during soak test at {time.monotonic() - started:.1f}s")
+                else:
+                    consecutive_vp_dead = 0
 
         now = time.monotonic()
         elapsed = now - started
         avg_cycle_lat = (sum(cycle_latencies) / len(cycle_latencies)) if cycle_latencies else 0.0
 
+        gw_growth_kb = (cur_gw_rss - baseline_gw_rss) if (cur_gw_rss is not None and baseline_gw_rss is not None) else 0
+        gw_growth_pct = round((gw_growth_kb / baseline_gw_rss) * 100.0, 2) if (baseline_gw_rss and baseline_gw_rss > 0) else 0.0
+        vp_growth_kb = (cur_vp_rss - baseline_vp_rss) if (cur_vp_rss is not None and baseline_vp_rss is not None) else 0
+        vp_growth_pct = round((vp_growth_kb / baseline_vp_rss) * 100.0, 2) if (baseline_vp_rss and baseline_vp_rss > 0) else 0.0
+
         samples.append({
             "cycle": cycle,
             "elapsed_sec": round(elapsed, 2),
             "gw_rss_kb": cur_gw_rss,
-            "gw_rss_growth_kb": (cur_gw_rss - baseline_gw_rss) if baseline_gw_rss is not None else 0,
-            "gw_rss_growth_pct": round(((cur_gw_rss - baseline_gw_rss) / baseline_gw_rss) * 100.0, 2) if baseline_gw_rss else 0.0,
+            "gw_rss_growth_kb": gw_growth_kb,
+            "gw_rss_growth_pct": gw_growth_pct,
             "gw_fds": cur_gw_fds,
             "vp_rss_kb": cur_vp_rss,
-            "vp_rss_growth_kb": (cur_vp_rss - baseline_vp_rss) if baseline_vp_rss is not None else 0,
-            "vp_rss_growth_pct": round(((cur_vp_rss - baseline_vp_rss) / baseline_vp_rss) * 100.0, 2) if baseline_vp_rss else 0.0,
+            "vp_rss_growth_kb": vp_growth_kb,
+            "vp_rss_growth_pct": vp_growth_pct,
             "vp_fds": cur_vp_fds,
             "avg_latency_ms": round(avg_cycle_lat, 2),
             "total_reads": total_reads,
             "failed_reads": failed_reads,
+            "recovered_reads": recovered_reads,
         })
 
         # Periodic progress report: every 60s for long tests, or every 10s for short (<180s) tests, and cycle 1
@@ -3674,15 +3775,16 @@ def _soak_reliability_case(ctx):
             rate = ((total_reads - failed_reads) / total_reads * 100.0) if total_reads > 0 else 100.0
             metric_str = ""
             if has_os_metrics and cur_gw_rss:
-                gw_delta = cur_gw_rss - (baseline_gw_rss or cur_gw_rss)
+                gw_delta = (cur_gw_rss - baseline_gw_rss) if baseline_gw_rss is not None else 0
                 metric_str = f" | GW RSS: {cur_gw_rss} KB ({gw_delta:+d} KB), FD: {cur_gw_fds}"
                 if has_vport and cur_vp_rss:
-                    vp_delta = cur_vp_rss - (baseline_vp_rss or cur_vp_rss)
+                    vp_delta = (cur_vp_rss - baseline_vp_rss) if baseline_vp_rss is not None else 0
                     metric_str += f" | vport RSS: {cur_vp_rss} KB ({vp_delta:+d} KB), FD: {cur_vp_fds}"
             elif avg_cycle_lat > 0:
                 metric_str = f" | RTT: {avg_cycle_lat:.1f} ms"
+            retry_str = f", Retry 복구 {recovered_reads}" if recovered_reads else ""
             print(f"    [SOAK] 진행률: {pct:5.1f}% [{elapsed_str} / {total_str}] | "
-                  f"Cycle {cycle:4d} | Reads: {total_reads} (성공률 {rate:.2f}%){metric_str}",
+                  f"Cycle {cycle:4d} | Reads: {total_reads} (성공률 {rate:.2f}%{retry_str}){metric_str}",
                   flush=True)
 
         if time.monotonic() - started < duration_sec:
@@ -3706,6 +3808,10 @@ def _soak_reliability_case(ctx):
         "cycles_completed": cycle,
         "total_reads": total_reads,
         "failed_reads": failed_reads,
+        "recovered_reads": recovered_reads,
+        "retry_sends": retry_sends,
+        "apdu_policy": {"timeout_ms": round(apdu_timeout_sec * 1000), "retries": apdu_retries,
+                        "source": apdu_policy_src},
         "gateway": {
             "baseline_rss_kb": baseline_gw_rss,
             "final_rss_kb": samples[-1]["gw_rss_kb"] if samples else baseline_gw_rss,
@@ -3731,22 +3837,27 @@ def _soak_reliability_case(ctx):
 
     # Step 2: Communication Success Rate
     success_rate = ((total_reads - failed_reads) / total_reads * 100.0) if total_reads > 0 else 0.0
-    check_step(ctx, "전체 관제점 통신 성공률 (>=99.9%)", 99.9, round(success_rate, 3),
+    check_step(ctx, "전체 관제점 통신 성공률 (>=99.9%, APDU Retry 포함)", 99.9, round(success_rate, 3),
                success_rate >= 99.9, f"Communication success rate too low: {success_rate:.3f}% ({failed_reads}/{total_reads} failed)")
+    # 정보성 step: 재전송으로 복구된 읽기 수 (판정에는 영향 없음, 네트워크 품질 지표)
+    check_step(ctx, "APDU Retry 복구 읽기 수 (정보)", "기록",
+               {"recovered_reads": recovered_reads, "retry_sends": retry_sends,
+                "recovery_rate_pct": round(recovered_reads / total_reads * 100.0, 3) if total_reads else 0.0},
+               True)
 
     # Step 3 & Step 4: Memory & FD (if OS metrics available) or Network Stability metrics
     if has_os_metrics and baseline_gw_rss is not None:
         final_gw_rss = samples[-1]["gw_rss_kb"] if samples else baseline_gw_rss
-        gw_growth_pct = ((final_gw_rss - baseline_gw_rss) / baseline_gw_rss * 100.0) if baseline_gw_rss else 0.0
-        gw_growth_kb = final_gw_rss - baseline_gw_rss
+        gw_growth_kb = (final_gw_rss - baseline_gw_rss) if (final_gw_rss is not None and baseline_gw_rss is not None) else 0
+        gw_growth_pct = ((gw_growth_kb / baseline_gw_rss) * 100.0) if (baseline_gw_rss and baseline_gw_rss > 0) else 0.0
         gw_ok = (gw_growth_pct < 5.0) or (gw_growth_kb < 2048)
 
         vp_ok = True
         vp_details_str = ""
         if has_vport and baseline_vp_rss is not None:
             final_vp_rss = samples[-1]["vp_rss_kb"] if samples else baseline_vp_rss
-            vp_growth_pct = ((final_vp_rss - baseline_vp_rss) / baseline_vp_rss * 100.0) if baseline_vp_rss else 0.0
-            vp_growth_kb = final_vp_rss - baseline_vp_rss
+            vp_growth_kb = (final_vp_rss - baseline_vp_rss) if (final_vp_rss is not None and baseline_vp_rss is not None) else 0
+            vp_growth_pct = ((vp_growth_kb / baseline_vp_rss) * 100.0) if (baseline_vp_rss and baseline_vp_rss > 0) else 0.0
             vp_ok = (vp_growth_pct < 5.0) or (vp_growth_kb < 2048)
             vp_details_str = f", vport: {vp_growth_pct:+.2f}% ({vp_growth_kb:+d} KB)"
 
@@ -3783,7 +3894,7 @@ def _soak_reliability_case(ctx):
                    f"{lat_growth:+.2f} ms (초기 {first_cycle_lat:.1f} ms -> 최종 {last_cycle_lat:.1f} ms)",
                    lat_ok, f"Network latency drifted excessively: +{lat_growth:.2f} ms")
 
-        check_step(ctx, "원격 관제점 통신 실패/타임아웃 발생 수 (0건)",
+        check_step(ctx, "원격 관제점 통신 실패/타임아웃 발생 수 (0건, APDU Retry 후)",
                    0,
                    failed_reads,
                    failed_reads == 0,
@@ -4374,7 +4485,315 @@ def _standards_case(ctx, tc_id):
         require(not undocumented, f"BACstac calls not found in 7.10 docs: {undocumented}")
 
 
+# ---------------------------------------------------------------------------
+# 네트워크 장애 대응 (TC-NET-*, SRS-NFR-NET-001)
+#   managed 전용. 게이트웨이를 netns(bacgw) 안에서 bip.cfg iface=vgw0 로 기동하고,
+#   러너는 veth 반대편(vrun0, 10.77.0.1)에서 BACnet 요청/BBMD 를 수행한다.
+#   장애 주입: 링크 DOWN/UP, IPv4 교체, IPv4 미할당 상태 기동.
+# ---------------------------------------------------------------------------
+_NET_RECOVERY_LIMIT_SEC = 10.0      # 링크 복구 후 BACnet 응답 재개 한도
+_NET_DETECT_LIMIT_SEC = 10.0        # NetworkWatcher 감지 한도 (1초 polling x 3회 debounce + 여유)
+_NET_REBIND_LIMIT_SEC = 30.0        # IPv4 변경 감지 → 재시작 → 새 IPv4 응답 한도
+_NET_FD_REREG_LIMIT_SEC = 10.0      # 링크 복구 후 BBMD 재등록 한도 (300초 renew 를 기다리지 않음)
+
+
+def _net_started_count(ctx):
+    return _gateway_log(ctx).count("BACnet IP Gateway started")
+
+
+def _net_probe(ctx, invoke_id, timeout=1.0, note="TC-NET probe ReadProperty Device Object_Name"):
+    """Device Object_Name 단발 읽기 (Modbus 와 무관한 순수 BACnet/IP 경로)."""
+    return _read_property_attempt(ctx, 8, ctx.options.device_id, 77, invoke_id & 0xFF,
+                                  timeout=timeout, retries=0, note=note)
+
+
+def _net_wait_bacnet(ctx, limit_sec, invoke_base):
+    """BACnet 응답이 재개될 때까지 0.5초 간격 단발 폴링. (성공 여부, 경과초, 시도 수)"""
+    started = time.monotonic()
+    attempts = 0
+    while time.monotonic() - started < limit_sec:
+        res = _net_probe(ctx, invoke_base + attempts, timeout=1.0)
+        attempts += 1
+        if res.get("status") == "SUCCESS":
+            return True, time.monotonic() - started, attempts
+        time.sleep(0.5)
+    return False, time.monotonic() - started, attempts
+
+
+def _net_wait_log(ctx, token, limit_sec, after_offset=0):
+    """게이트웨이 로그에서 after_offset 이후에 token 이 나타날 때까지 대기. 경과초 또는 None."""
+    started = time.monotonic()
+    while time.monotonic() - started < limit_sec:
+        if token in _gateway_log(ctx)[after_offset:]:
+            return time.monotonic() - started
+        time.sleep(0.2)
+    return None
+
+
+def _net_who_is_broadcast(ctx, broadcast_ip, window=1.5):
+    """서브넷 directed broadcast 로 Who-Is 를 보내고 I-Am 송신 주소 목록을 반환."""
+    packet = build_bacnet_ip_packet(None, None, 0, build_who_is_apdu(None, None))
+    senders = []
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sock.bind((_client_bind_ip(ctx), 0))
+        _record_bacnet_tx(ctx, packet, note=f"Who-Is directed broadcast {broadcast_ip}")
+        sock.sendto(packet, (broadcast_ip, ctx.options.target_port))
+        deadline = time.monotonic() + window
+        sock.settimeout(0.1)
+        while time.monotonic() < deadline:
+            try:
+                response, sender = sock.recvfrom(4096)
+            except socket.timeout:
+                continue
+            status, value = parse_i_am_response(response)
+            _record_bacnet_rx(ctx, response, sender, note="I-Am (directed broadcast)",
+                              parsed={"parse_status": status, "parsed_value": value})
+            if status == "SUCCESS":
+                senders.append(sender[0])
+    return senders
+
+
+def _net_start_stack(ctx, mode="normal", bbmd_endpoint=None, ttl=60, gw_ip=None,
+                     assign_ip=True, wait_ready=True, after_netns=None):
+    """netns 안에서 managed 스택(vport/시뮬레이터는 러너 쪽, 게이트웨이는 bacgw)을 기동."""
+    for name in ("gateway", "main_simulator", "vport"):
+        ctx.stop_process(name)
+    gw_ip = gw_ip or ctx.NETNS_GW_IP
+    ctx.netns_setup(gw_ip)
+    if after_netns is not None:
+        # netns_setup() 은 veth 를 새로 만들므로, 러너 쪽 주소(10.77.0.1)에 바인딩하는
+        # 서버(BBMD 등)는 반드시 이 시점 이후에 기동해야 한다.
+        after_netns()
+    if not assign_ip:
+        ctx.netns_set_ip(None)
+    ctx.options.target_ip = gw_ip
+    ctx.write_bip_config(mode, bbmd_endpoint=bbmd_endpoint, ttl=ttl, ip=gw_ip, iface=ctx.NETNS_GW_IF)
+    ctx.start_vport(3)
+    ctx.wait_for(lambda: (ctx.dev_dir / "ttySLAVE").exists(), 5.0, "vport links")
+    ctx.start_simulator()
+    ctx.simulator({"op": "set", "block": "holding", "address": 3, "value": 40})
+    ctx.simulator({"op": "set", "block": "holding", "address": 4, "value": 110})
+    ctx.start_gateway(netns=ctx.NETNS_NAME)
+    if wait_ready:
+        ctx.wait_gateway_ready()
+    return ctx.processes["gateway"]
+
+
+def _network_fault_case(ctx, tc_id):
+    ctx.require_managed()
+    ctx.require_capability("net_admin", "네트워크 장애 주입에는 root/NET_ADMIN 컨테이너가 필요합니다 "
+                                        "(run_test.sh 가 TC-NET-* 선택 시 자동 구성)")
+    original_target = ctx.options.target_ip
+    servers = []
+    try:
+        if tc_id == "TC-NET-001":
+            _net_link_flap_case(ctx)
+        elif tc_id == "TC-NET-002":
+            _net_ip_change_case(ctx)
+        elif tc_id == "TC-NET-003":
+            _net_startup_wait_case(ctx)
+        elif tc_id == "TC-NET-004":
+            _net_fd_reregister_case(ctx, servers)
+        else:
+            require(False, f"unhandled network fault case: {tc_id}")
+    finally:
+        for server in servers:
+            try:
+                server.stop()
+            except Exception:
+                pass
+        for name in ("gateway", "main_simulator", "vport"):
+            try:
+                ctx.stop_process(name)
+            except Exception:
+                pass
+        try:
+            ctx.netns_teardown()
+        except Exception:
+            pass
+        ctx.options.target_ip = original_target
+        # 다음 TC 는 _ensure_runtime 으로 loopback 기본 스택을 다시 기동한다.
+        ctx.write_bip_config("normal")
+
+
+def _net_link_flap_case(ctx):
+    _net_start_stack(ctx)
+    baseline = _net_probe(ctx, 10, timeout=3.0)
+    check_step(ctx, "링크 DOWN 전 BACnet 응답", "SUCCESS", baseline.get("status"),
+               baseline.get("status") == "SUCCESS", f"baseline read failed: {baseline}")
+    starts_before = _net_started_count(ctx)
+    log_offset = len(_gateway_log(ctx))
+
+    ctx.netns_link("down")
+    down_at = time.monotonic()
+    detect = _net_wait_log(ctx, "[Net] Link down", _NET_DETECT_LIMIT_SEC, log_offset)
+    check_step(ctx, "NetworkWatcher 링크 DOWN 감지 로그", f"<= {_NET_DETECT_LIMIT_SEC:.0f}s",
+               None if detect is None else round(detect, 2), detect is not None,
+               "'[Net] Link down' was not logged")
+    during = _net_probe(ctx, 30, timeout=1.0)
+    check_step(ctx, "링크 DOWN 중 BACnet 무응답 (장애 주입 확인)", "TIMEOUT", during.get("status"),
+               during.get("status") != "SUCCESS", f"gateway still answered while link down: {during}")
+    remaining = 10.0 - (time.monotonic() - down_at)
+    if remaining > 0:
+        time.sleep(remaining)
+    gateway = ctx.processes["gateway"]
+    check_step(ctx, "링크 DOWN 중 게이트웨이 프로세스 생존", True, gateway.process.poll() is None,
+               gateway.process.poll() is None, f"gateway exited: {gateway.process.returncode}")
+
+    ctx.netns_link("up")
+    recovered, elapsed, attempts = _net_wait_bacnet(ctx, _NET_RECOVERY_LIMIT_SEC + 5.0, 40)
+    check_step(ctx, f"링크 UP 후 BACnet 응답 재개 (<= {_NET_RECOVERY_LIMIT_SEC:.0f}s)",
+               f"<= {_NET_RECOVERY_LIMIT_SEC:.0f}s", round(elapsed, 2),
+               recovered and elapsed <= _NET_RECOVERY_LIMIT_SEC,
+               f"BACnet did not recover within limit (recovered={recovered}, {elapsed:.1f}s, {attempts} probes)")
+    up_log = _net_wait_log(ctx, "[Net] Link up", _NET_DETECT_LIMIT_SEC, log_offset)
+    check_step(ctx, "NetworkWatcher 링크 UP 감지 로그", True, up_log is not None, up_log is not None,
+               "'[Net] Link up' was not logged")
+    check_step(ctx, "같은 IPv4 링크 복구 시 재시작 없음", starts_before, _net_started_count(ctx),
+               _net_started_count(ctx) == starts_before, "gateway restarted on a same-IP link flap")
+    reliability = _read_property_attempt(ctx, 56, 1, 103, 60, timeout=None, retries=None,
+                                         note="Network Port Reliability after link recovery")
+    check_step(ctx, "Network Port Reliability = NO_FAULT_DETECTED(0)", 0, reliability.get("value"),
+               reliability.get("status") == "SUCCESS" and reliability.get("value") == 0,
+               f"Reliability after recovery: {reliability}")
+    _who_is(ctx)
+    ctx.evidence.details["network_recovery"] = {
+        "case": "link_flap", "down_sec": 10.0, "detect_sec": detect,
+        "recovery_sec": round(elapsed, 2), "probe_attempts": attempts,
+    }
+
+
+def _net_ip_change_case(ctx):
+    old_ip, new_ip = ctx.NETNS_GW_IP, "10.77.0.3"
+    _net_start_stack(ctx, gw_ip=old_ip)
+    baseline = _net_probe(ctx, 10, timeout=3.0)
+    check_step(ctx, "IPv4 변경 전 BACnet 응답", "SUCCESS", baseline.get("status"),
+               baseline.get("status") == "SUCCESS", f"baseline read failed: {baseline}")
+    starts_before = _net_started_count(ctx)
+    log_offset = len(_gateway_log(ctx))
+
+    ctx.netns_set_ip(new_ip)
+    changed_at = time.monotonic()
+    detect = _net_wait_log(ctx, "[Net] IPv4 changed", _NET_DETECT_LIMIT_SEC, log_offset)
+    check_step(ctx, "NetworkWatcher IPv4 변경 감지 로그", f"<= {_NET_DETECT_LIMIT_SEC:.0f}s",
+               None if detect is None else round(detect, 2), detect is not None,
+               "'[Net] IPv4 changed' was not logged")
+    ctx.wait_for(lambda: _net_started_count(ctx) > starts_before, _NET_REBIND_LIMIT_SEC,
+                 "gateway restart after IPv4 change")
+    check_step(ctx, "IPv4 변경 후 재시작(재바인딩) 1회", starts_before + 1, _net_started_count(ctx),
+               _net_started_count(ctx) == starts_before + 1, "unexpected restart count")
+    bind_log = f"BACnet/IP bind address: {new_ip}/255.255.255.0 (iface={ctx.NETNS_GW_IF})"
+    check_step(ctx, "새 IPv4/실제 netmask 로 바인딩 로그", bind_log, bind_log in _gateway_log(ctx)[log_offset:],
+               bind_log in _gateway_log(ctx)[log_offset:], f"missing bind log: {bind_log}")
+
+    ctx.options.target_ip = new_ip
+    remaining = max(1.0, _NET_REBIND_LIMIT_SEC - (time.monotonic() - changed_at))
+    recovered, elapsed, attempts = _net_wait_bacnet(ctx, remaining, 40)
+    total = time.monotonic() - changed_at
+    check_step(ctx, f"새 IPv4 에서 BACnet 응답 (<= {_NET_REBIND_LIMIT_SEC:.0f}s)",
+               f"<= {_NET_REBIND_LIMIT_SEC:.0f}s", round(total, 2), recovered,
+               f"no BACnet response on {new_ip} ({attempts} probes)")
+    ip_raw = _read_value_bytes(ctx, 56, 1, 400, 70)
+    expected_ip_raw = bytes([0x64]) + socket.inet_aton(new_ip)
+    check_step(ctx, "Network Port IP_Address = 새 IPv4", new_ip, ip_raw.hex() if ip_raw else None,
+               ip_raw == expected_ip_raw, f"IP_Address mismatch: {ip_raw}")
+    senders = _net_who_is_broadcast(ctx, "10.77.0.255")
+    check_step(ctx, "서브넷 broadcast Who-Is → 새 IPv4 에서 I-Am", [new_ip], senders,
+               senders == [new_ip], f"unexpected I-Am senders: {senders}")
+    ctx.options.target_ip = old_ip
+    stale = _net_probe(ctx, 90, timeout=1.0)
+    ctx.options.target_ip = new_ip
+    check_step(ctx, "옛 IPv4 무응답", "TIMEOUT", stale.get("status"), stale.get("status") != "SUCCESS",
+               f"old address still answered: {stale}")
+    ctx.evidence.details["network_recovery"] = {
+        "case": "ip_change", "old_ip": old_ip, "new_ip": new_ip, "detect_sec": detect,
+        "rebind_total_sec": round(total, 2),
+    }
+
+
+def _net_startup_wait_case(ctx):
+    gateway = _net_start_stack(ctx, assign_ip=False, wait_ready=False)
+    waiting = _net_wait_log(ctx, "Waiting for network", 8.0)
+    check_step(ctx, "IPv4 미할당 상태 기동 → 네트워크 대기 로그", True, waiting is not None,
+               waiting is not None, "'Waiting for network' was not logged")
+    time.sleep(10.0)
+    alive = gateway.process.poll() is None
+    check_step(ctx, "네트워크 대기 중 프로세스 생존 (exit 1 아님)", True, alive, alive,
+               f"gateway exited while waiting for network: {gateway.process.returncode}")
+    check_step(ctx, "네트워크 대기 중 BACnet 서버 미기동", 0, _net_started_count(ctx),
+               _net_started_count(ctx) == 0, "gateway started without a usable IPv4")
+
+    ctx.netns_set_ip(ctx.NETNS_GW_IP)
+    assigned_at = time.monotonic()
+    ctx.wait_for(lambda: _net_started_count(ctx) >= 1, 20.0, "gateway start after IPv4 assignment")
+    started_sec = time.monotonic() - assigned_at
+    check_step(ctx, "IPv4 할당 후 게이트웨이 기동 (<= 15s)", "<= 15s", round(started_sec, 2),
+               started_sec <= 15.0, f"gateway started too late: {started_sec:.1f}s")
+    recovered, elapsed, attempts = _net_wait_bacnet(ctx, 10.0, 40)
+    check_step(ctx, "기동 후 BACnet 응답", "SUCCESS", recovered, recovered,
+               f"no BACnet response after startup ({attempts} probes)")
+    ctx.evidence.details["network_recovery"] = {
+        "case": "startup_wait", "start_after_ip_sec": round(started_sec, 2),
+    }
+
+
+def _net_fd_reregister_case(ctx, servers):
+    from bbmd_server import BBMDServer
+    bbmd_ip, bbmd_port = ctx.NETNS_RUN_IP, 47809
+    server = BBMDServer(host=bbmd_ip, port=bbmd_port)
+    servers.append(server)
+
+    def start_bbmd():
+        # vrun0(10.77.0.1) 이 생성된 뒤에 바인딩해야 한다. server.sock 은 bind 전에
+        # 할당되므로 bind 성공 후 설정되는 server.running 으로 기동 완료를 판정한다.
+        threading.Thread(target=server.start, daemon=True).start()
+        ctx.wait_for(lambda: server.running, 3.0, "netns BBMD socket bind")
+
+    # TTL 600 초: BACstac 은 TTL 시점, 게이트웨이 주기 renew 는 300 초마다만 재등록하므로
+    # 링크 복구 직후의 재등록은 NetworkWatcher → FdMonitor 즉시 재등록에 의해서만 일어난다.
+    _net_start_stack(ctx, mode="fd", bbmd_endpoint=(bbmd_ip, bbmd_port), ttl=600,
+                     after_netns=start_bbmd)
+
+    def entry():
+        with server.lock:
+            for (ip, _port), item in server.fdt.items():
+                if ip == ctx.NETNS_GW_IP:
+                    return item
+        return None
+
+    ctx.wait_for(lambda: entry() is not None, 15.0, "initial FD registration")
+    check_step(ctx, "초기 BBMD 등록", True, True, True)
+    log_offset = len(_gateway_log(ctx))
+
+    ctx.netns_link("down")
+    time.sleep(15.0)
+    ctx.netns_link("up")
+    up_wall = time.time()
+    up_mono = time.monotonic()
+    rereg = None
+    while time.monotonic() - up_mono < _NET_FD_REREG_LIMIT_SEC + 5.0:
+        item = entry()
+        if item is not None and item.registered_time >= up_wall:
+            rereg = item.registered_time - up_wall
+            break
+        time.sleep(0.2)
+    check_step(ctx, f"링크 UP 후 BBMD 재등록 (<= {_NET_FD_REREG_LIMIT_SEC:.0f}s)",
+               f"<= {_NET_FD_REREG_LIMIT_SEC:.0f}s", None if rereg is None else round(rereg, 2),
+               rereg is not None and rereg <= _NET_FD_REREG_LIMIT_SEC,
+               "Register-Foreign-Device was not sent promptly after link recovery")
+    renew_log = "[FD] Network link recovered. Re-registering"
+    check_step(ctx, "FD 즉시 재등록 로그", True, renew_log in _gateway_log(ctx)[log_offset:],
+               renew_log in _gateway_log(ctx)[log_offset:], f"missing log: {renew_log}")
+    ctx.evidence.details["network_recovery"] = {
+        "case": "fd_reregister", "down_sec": 15.0,
+        "reregister_sec": None if rereg is None else round(rereg, 2),
+    }
+
+
 def run_case(ctx, tc_id):
+    if tc_id.startswith("TC-NET-"):
+        return _network_fault_case(ctx, tc_id)
     if tc_id.startswith("TC-CFG-"):
         return _config_case(ctx, tc_id)
     if tc_id.startswith("TC-START-"):
@@ -4417,9 +4836,11 @@ def _register_all():
             requirements.append("bacnet_mutate")
         if tc_id in NATIVE_MAIN_CONTROL:
             requirements.append("main_control")
+        if tc_id.startswith("TC-NET-"):
+            requirements.append("net_admin")
         tc_case(
             tc_id, srs_id, title, suites,
-            timeout_sec=(86400.0 if tc_id == "TC-AVL-004" else (720.0 if tc_id.startswith("TC-OBS-") else (600.0 if tc_id == "TC-BIP-002" else (300.0 if tc_id == "TC-BAC-020" else 180.0)))),
+            timeout_sec=(86400.0 if tc_id == "TC-AVL-004" else (720.0 if tc_id.startswith("TC-OBS-") else (600.0 if tc_id == "TC-BIP-002" else (300.0 if tc_id in ("TC-BAC-020",) or tc_id.startswith("TC-NET-") else 180.0)))),
             requirements=requirements,
         )(handler)
 

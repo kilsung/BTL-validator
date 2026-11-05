@@ -1484,7 +1484,8 @@ class SocketWrapper:
     Robust socket wrapper with automatic retry, delay injection,
     COV notification filtering/acknowledging, and invoke ID tracking.
     """
-    def __init__(self, s, d, target_ip, target_port):
+    def __init__(self, s, d, target_ip, target_port, apdu_timeout=1.0, apdu_retries=2,
+                 unconfirmed_timeout=1.0):
         self.s = s
         self.d = d
         self.target_ip = target_ip
@@ -1492,6 +1493,14 @@ class SocketWrapper:
         self.last_sent_packet = None
         self.last_sent_address = None
         self.expected_invoke_id = None
+        # Confirmed 요청: 시도당 apdu_timeout 초 대기, 최대 apdu_retries 회 재전송
+        # (BACnet 5.4.4.3, IUT 의 APDU_Timeout / Number_Of_APDU_Retries 로 설정 권장)
+        # Unconfirmed 요청(Who-Has 등): 시도당 unconfirmed_timeout 초 대기
+        self.apdu_timeout = apdu_timeout
+        self.apdu_retries = apdu_retries
+        self.unconfirmed_timeout = unconfirmed_timeout
+        self.retry_count = 0       # 재전송한 패킷 수
+        self.recovered_count = 0   # 재전송 후 응답을 받은 요청 수
 
     def _get_apdu_offset_and_type(self, data):
         if len(data) < 6 or data[0] != 0x81:
@@ -1527,10 +1536,24 @@ class SocketWrapper:
         return self.s.sendto(data, address)
 
     def recvfrom(self, bufsize):
-        for attempt in range(3):
+        confirmed = self.expected_invoke_id is not None
+        per_attempt = self.apdu_timeout if confirmed else self.unconfirmed_timeout
+        total_attempts = 1 + max(0, int(self.apdu_retries))
+        orig_timeout = self.s.gettimeout()
+        try:
+            return self._recv_with_retry(bufsize, per_attempt, total_attempts)
+        finally:
+            self.s.settimeout(orig_timeout)
+
+    def _recv_with_retry(self, bufsize, per_attempt, total_attempts):
+        for attempt in range(total_attempts):
             try:
                 start_time = time.time()
-                while time.time() - start_time < 1.0:
+                while True:
+                    remaining = per_attempt - (time.time() - start_time)
+                    if remaining <= 0:
+                        break
+                    self.s.settimeout(remaining)
                     try:
                         resp, addr = self.s.recvfrom(bufsize)
                     except socket.timeout:
@@ -1561,21 +1584,26 @@ class SocketWrapper:
                                     continue
 
                         self.expected_invoke_id = None
+                        if attempt:
+                            self.recovered_count += 1
                         return resp, addr
                     else:
                         self.expected_invoke_id = None
+                        if attempt:
+                            self.recovered_count += 1
                         return resp, addr
 
                 raise socket.timeout()
 
             except socket.timeout:
-                if attempt == 2:
+                if attempt == total_attempts - 1:
                     raise
                 if self.last_sent_packet and self.last_sent_address:
                     sys.stdout.write(f" (Retry {attempt+1})")
                     sys.stdout.flush()
                     if self.d > 0.0:
                         time.sleep(self.d)
+                    self.retry_count += 1
                     self.s.sendto(self.last_sent_packet, self.last_sent_address)
 
     def __getattr__(self, name):

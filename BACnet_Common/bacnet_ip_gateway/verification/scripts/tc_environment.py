@@ -138,12 +138,88 @@ class TestEnvironment:
                 "main_control", "main_fault_injection", "modbus_trace",
                 "process_lifecycle", "bacnet_mutate",
             })
+            if self.net_admin_available():
+                capabilities.add("net_admin")
         elif self.options.allow_live_mutation:
             capabilities.add("bacnet_mutate")
         return capabilities
 
     def has_capability(self, capability: str):
         return capability in self.capabilities
+
+    # ------------------------------------------------------------------
+    # 네트워크 장애 주입 (TC-NET-*): 컨테이너 내부 netns + veth
+    #   bacgw netns  : vgw0 (게이트웨이 쪽, 기본 10.77.0.2/24)
+    #   runner netns : vrun0 (러너/BBMD 쪽, 10.77.0.1/24)
+    # run_test.sh 는 TC-NET-* 선택 시 root + 독립 네트워크로 컨테이너를 띄우므로
+    # 여기서 만든 인터페이스는 호스트 네트워크에 영향을 주지 않는다.
+    # ------------------------------------------------------------------
+    NETNS_NAME = "bacgw"
+    NETNS_GW_IF = "vgw0"
+    NETNS_RUN_IF = "vrun0"
+    NETNS_RUN_IP = "10.77.0.1"
+    NETNS_GW_IP = "10.77.0.2"
+    NETNS_PREFIX = 24
+
+    def net_admin_available(self) -> bool:
+        """root 이면서 netns 생성이 실제로 가능한지 1회 확인한다 (결과 캐시)."""
+        cached = getattr(self, "_net_admin_cache", None)
+        if cached is not None:
+            return cached
+        ok = False
+        if hasattr(os, "geteuid") and os.geteuid() == 0 and shutil.which("ip"):
+            probe = f"bacnet-probe-{os.getpid()}"
+            try:
+                res = subprocess.run(["ip", "netns", "add", probe], capture_output=True, timeout=5)
+                ok = res.returncode == 0
+            except (OSError, subprocess.SubprocessError):
+                ok = False
+            finally:
+                subprocess.run(["ip", "netns", "delete", probe], capture_output=True, timeout=5)
+        self._net_admin_cache = ok
+        return ok
+
+    @staticmethod
+    def _ip_cmd(*args, netns: Optional[str] = None, check: bool = True):
+        command = ["ip"] + (["netns", "exec", netns, "ip"] if netns else []) + [str(a) for a in args]
+        res = subprocess.run(command, capture_output=True, text=True, timeout=10)
+        if check and res.returncode != 0:
+            raise AssertionError(f"{' '.join(command)} failed: {res.stderr.strip() or res.stdout.strip()}")
+        return res
+
+    def netns_setup(self, gw_ip: Optional[str] = None):
+        """게이트웨이용 netns 와 veth 쌍을 만든다 (기존 잔재는 먼저 정리)."""
+        self.netns_teardown()
+        gw_ip = gw_ip or self.NETNS_GW_IP
+        self._ip_cmd("netns", "add", self.NETNS_NAME)
+        self._ip_cmd("link", "add", self.NETNS_RUN_IF, "type", "veth", "peer", "name", self.NETNS_GW_IF)
+        self._ip_cmd("link", "set", self.NETNS_GW_IF, "netns", self.NETNS_NAME)
+        self._ip_cmd("addr", "add", f"{self.NETNS_RUN_IP}/{self.NETNS_PREFIX}", "dev", self.NETNS_RUN_IF)
+        self._ip_cmd("link", "set", self.NETNS_RUN_IF, "up")
+        self._ip_cmd("link", "set", "lo", "up", netns=self.NETNS_NAME)
+        self._ip_cmd("addr", "add", f"{gw_ip}/{self.NETNS_PREFIX}", "dev", self.NETNS_GW_IF,
+                     netns=self.NETNS_NAME)
+        self._ip_cmd("link", "set", self.NETNS_GW_IF, "up", netns=self.NETNS_NAME)
+        self.record_step("[netns] 게이트웨이 netns/veth 구성", "configured",
+                         {"netns": self.NETNS_NAME, "gateway_if": self.NETNS_GW_IF, "gateway_ip": gw_ip,
+                          "runner_if": self.NETNS_RUN_IF, "runner_ip": self.NETNS_RUN_IP},
+                         passed=True)
+
+    def netns_teardown(self):
+        self._ip_cmd("link", "delete", self.NETNS_RUN_IF, check=False)
+        self._ip_cmd("netns", "delete", self.NETNS_NAME, check=False)
+
+    def netns_link(self, state: str):
+        """게이트웨이 쪽 인터페이스 링크를 up/down 한다 (IPv4 는 유지)."""
+        require(state in ("up", "down"), f"invalid link state: {state}")
+        self._ip_cmd("link", "set", self.NETNS_GW_IF, state, netns=self.NETNS_NAME)
+
+    def netns_set_ip(self, new_ip: Optional[str]):
+        """게이트웨이 쪽 인터페이스의 IPv4 를 교체한다 (None 이면 IPv4 제거만)."""
+        self._ip_cmd("addr", "flush", "dev", self.NETNS_GW_IF, netns=self.NETNS_NAME)
+        if new_ip:
+            self._ip_cmd("addr", "add", f"{new_ip}/{self.NETNS_PREFIX}", "dev", self.NETNS_GW_IF,
+                         netns=self.NETNS_NAME)
 
     def require_capability(self, capability: str, reason: str = ""):
         if self.has_capability(capability):
@@ -200,7 +276,7 @@ class TestEnvironment:
     @staticmethod
     def _case_needs_gateway(tc_id: str) -> bool:
         """Return whether a managed case starts or directly exercises Gateway."""
-        if tc_id.startswith(("TC-START-", "TC-AVL-", "TC-PERF-", "TC-OBS-", "TC-MOD-")):
+        if tc_id.startswith(("TC-START-", "TC-AVL-", "TC-PERF-", "TC-OBS-", "TC-MOD-", "TC-NET-")):
             return True
         if tc_id.startswith("TC-BAC-") or tc_id.startswith("TC-BIP-"):
             return True
@@ -485,8 +561,15 @@ class TestEnvironment:
     def write_json(path: Path, payload):
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    def write_bip_config(self, mode: str, bbmd_endpoint: Optional[Tuple[str, int]] = None, ttl: int = 60):
-        """Write one isolated BACnet/IP mode configuration for the next Gateway start."""
+    def write_bip_config(self, mode: str, bbmd_endpoint: Optional[Tuple[str, int]] = None, ttl: int = 60,
+                         ip: Optional[str] = None, iface: Optional[str] = None):
+        """Write one isolated BACnet/IP mode configuration for the next Gateway start.
+
+        ip:    ip=/fd.ip= 값 (기본: options.target_ip)
+        iface: 지정 시 iface=<이름> 을 추가 (게이트웨이가 해당 인터페이스의 IPv4 로 바인딩/추종)
+        """
+        bind_ip = ip or self.options.target_ip
+        iface_lines = [f"iface={iface}"] if iface else []
         if self.workspace is None:
             raise RuntimeError("managed workspace is not prepared")
         selected = str(mode).lower()
@@ -497,9 +580,9 @@ class TestEnvironment:
         normal_lines = [
             header, "mode=normal",
             f"port={self.options.target_port}",
-            f"ip={self.options.target_ip}",
+            f"ip={bind_ip}",
             "subnet=255.255.255.0",
-        ]
+        ] + iface_lines
         # bip.cfg is a symlink to bip.cfg.normal / bip.cfg.fd, like the product layout.
         # The gateway re-links it when BACnet_IP_Mode is written.
         (self.workspace / "bip.cfg.normal").write_text("\n".join(normal_lines) + "\n", encoding="utf-8")
@@ -508,16 +591,16 @@ class TestEnvironment:
             fd_lines = [
                 header, "mode=fd",
                 f"port={self.options.target_port}",
-                f"ip={self.options.target_ip}",
+                f"ip={bind_ip}",
                 "subnet=255.255.255.0",
-                f"fd.ip={self.options.target_ip}",
+                f"fd.ip={bind_ip}",
                 f"fd.port={self.options.target_port}",
                 f"fd.bbmd_ip={host}",
                 f"fd.bbmd_port={port}",
                 f"fd.ttl={ttl}",
                 "fd.reg_timeout=3000",
                 "fd.reg_attempts=0",
-            ]
+            ] + iface_lines
             (self.workspace / "bip.cfg.fd").write_text("\n".join(fd_lines) + "\n", encoding="utf-8")
         link = self.workspace / "bip.cfg"
         if link.is_symlink() or link.exists():
@@ -696,13 +779,16 @@ class TestEnvironment:
         self.add_evidence(simulator_log)
         return proc
 
-    def start_gateway(self):
+    def start_gateway(self, netns: Optional[str] = None):
+        """게이트웨이 기동. netns 를 주면 'ip netns exec <netns>' 안에서 실행한다 (TC-NET-*)."""
         self.require_managed()
         self.require_executable(self.options.gateway_bin, "bacnet_ip_gateway")
         gateway_env = os.environ.copy()
         gateway_env["BACNET_LOG"] = "1"
-        return self.start_process("gateway", [self.options.gateway_bin, self.config_dir],
-                                  env=gateway_env)
+        command = [self.options.gateway_bin, self.config_dir]
+        if netns:
+            command = ["ip", "netns", "exec", netns] + command
+        return self.start_process("gateway", command, env=gateway_env)
 
     def stack_is_running(self):
         """Return true only when the complete managed stack is ready."""
@@ -914,6 +1000,11 @@ class TestEnvironment:
         for name in reversed(list(self.processes)):
             try:
                 self.stop_process(name)
+            except Exception:
+                pass
+        if getattr(self, "_net_admin_cache", False):
+            try:
+                self.netns_teardown()  # TC-NET-* 비정상 종료 시 netns/veth 잔재 정리
             except Exception:
                 pass
         if self._created_workspace and self.workspace is not None:

@@ -347,6 +347,26 @@ def approve_baseline(result_path: Path, policy_path: Path, scenario=None):
     print(f"Approved performance baseline for {scenario}: {policy_path}")
 
 
+def _restore_result_ownership(output_dir):
+    """root 컨테이너(네트워크 장애 TC 실행)로 만든 결과 파일 소유권을 호스트 사용자로 되돌린다.
+
+    run_test.sh 가 HOST_UID/HOST_GID 를 넘겨준 경우에만 동작한다.
+    """
+    if os.name != "posix":
+        return
+    uid, gid = os.environ.get("HOST_UID"), os.environ.get("HOST_GID")
+    if os.geteuid() != 0 or not uid or not gid or not uid.isdigit() or not gid.isdigit():
+        return
+    targets = [output_dir, output_dir.parent]
+    for root, dirs, files in os.walk(output_dir):
+        targets.extend(Path(root) / name for name in dirs + files)
+    for path in targets:
+        try:
+            os.chown(path, int(uid), int(gid), follow_symlinks=False)
+        except OSError:
+            pass
+
+
 def main():
     args = parse_args()
     if args.approve_baseline is not None:
@@ -476,6 +496,7 @@ def main():
                 except Exception:
                     pass
     counts = write_reports(results, output_dir, metadata)
+    _restore_result_ownership(output_dir)
     print((output_dir / "summary.log").read_text(encoding="utf-8"))
     print(f"Step report: {output_dir / 'steps.log'}")
     print(f"Step CSV:    {output_dir / 'steps.csv'}")

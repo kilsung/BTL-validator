@@ -412,6 +412,13 @@ body {
 .tc-card.cat-interop { border-left-color: var(--accent-cyan); }
 .tc-card.cat-compat { border-left-color: var(--accent-purple); }
 .tc-card.cat-usability { border-left-color: var(--accent-indigo); }
+.tc-card.tc-search-highlight {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  background: rgba(251, 191, 36, 0.08) !important;
+  transform: translateY(-2px);
+  transition: all 0.25s ease;
+}
 
 .tc-header {
   display: flex;
@@ -556,14 +563,14 @@ code {
   <div class="sidebar-controls">
     <div class="filter-select-label">
       <span>실행 모드 필터</span>
-      <span id="filterCount" style="color:var(--accent-blue);font-weight:700;">27 / 27</span>
+      <span id="filterCount" style="color:var(--accent-blue);font-weight:700;">28 / 28</span>
     </div>
     <select class="mode-select" id="modeSelect" onchange="applyFilters()">
-      <option value="all">전체 보기 (All 27 SRS)</option>
-      <option value="live_readonly">🟢 Live 안전모드 (6 SRS / 22.2%)</option>
-      <option value="live_mutation">🔵 Live 제어허용 (8 SRS / 29.6%)</option>
+      <option value="all">전체 보기 (All 28 SRS)</option>
+      <option value="live_readonly">🟢 Live 안전모드 (6 SRS / 21.4%)</option>
+      <option value="live_mutation">🔵 Live 제어허용 (8 SRS / 28.6%)</option>
       <option value="live_partial">🟡 Live 일부지원 (11 SRS)</option>
-      <option value="managed_only">🔴 Managed 전용 (8 SRS)</option>
+      <option value="managed_only">🔴 Managed 전용 (9 SRS)</option>
     </select>
     <div class="sidebar-search">
       <input type="text" id="searchInput" placeholder="요구사항 / TC 검색..." onkeyup="applyFilters()">
@@ -571,33 +578,34 @@ code {
   </div>
 
   <div class="nav-group" id="navList">
-    <div class="nav-item" data-srs-id="SRS-FUN-CFG-001" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-CFG-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-001</span> 설정 로드와 기본 검증</span>  <span class="nav-badge badge-live-part">🟡 Live 1/3</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-CFG-002" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-CFG-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-002</span> Min/Max 모순 및 설정 오류 홀드</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-CFG-003" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-CFG-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-003</span> 홀드 상태 안전성</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-START-001" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-START-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-001</span> 기동 순서와 지연 기동 대응</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-START-002" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-START-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-002</span> Relinquish Default 결정과 3자 일치</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-START-003" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-START-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-003</span> 초기 동기화 BACnet 기동 게이트</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-VPORT-001" data-live-status="managed_only" onclick="selectSRS('SRS-FUN-VPORT-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-001</span> 가상 포트 제공 (PTY 생성과 정리)</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-VPORT-002" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-VPORT-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-002</span> 요청 프레임 검증과 직렬화</span>  <span class="nav-badge badge-live-part">🟡 Live 3/5</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-VPORT-003" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-VPORT-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-003</span> 응답 라우팅과 타임아웃</span>  <span class="nav-badge badge-live-part">🟡 Live 1/4</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-MAP-001" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-MAP-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-001</span> 설정 기반 BACnet 객체 매핑</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-MAP-002" data-live-status="live_full_readonly" onclick="selectSRS('SRS-FUN-MAP-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-002</span> 데이터 타입과 값 변환</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-MAP-003" data-live-status="live_full_mutation" onclick="selectSRS('SRS-FUN-MAP-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-003</span> 객체 무결성과 접근 제한</span>  <span class="nav-badge badge-live-mut">🔵 Live 제어</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-001" data-live-status="live_full_readonly" onclick="selectSRS('SRS-FUN-BAC-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-001</span> 장치 및 객체 발견 (Who-Is/Who-Has)</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-002" data-live-status="live_full_readonly" onclick="selectSRS('SRS-FUN-BAC-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-002</span> 속성 읽기와 오류 (ReadProperty)</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-003" data-live-status="live_full_mutation" onclick="selectSRS('SRS-FUN-BAC-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-003</span> 속성 쓰기와 우선순위 (WriteProperty)</span>  <span class="nav-badge badge-live-mut">🔵 Live 제어</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-004" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-BAC-004')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-004</span> COV 구독과 변화 알림</span>  <span class="nav-badge badge-live-part">🟡 Live 2/4</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-005" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-BAC-005')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-005</span> Device Communication Control (DCC)</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
-<div class="nav-item" data-srs-id="SRS-FUN-BAC-006" data-live-status="live_partial" onclick="selectSRS('SRS-FUN-BAC-006')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-006</span> Device/Network Port 및 오류 응답</span>  <span class="nav-badge badge-live-part">🟡 Live 3/4</span></div>
-<div class="nav-item" data-srs-id="SRS-IF-CFG-001" data-live-status="managed_only" onclick="selectSRS('SRS-IF-CFG-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-CFG-001</span> 실행 및 설정 인터페이스 계약</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-IF-MOD-001" data-live-status="live_full_readonly" onclick="selectSRS('SRS-IF-MOD-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-MOD-001</span> Modbus RTU 요청/응답 계약</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-IF-BIP-001" data-live-status="live_partial" onclick="selectSRS('SRS-IF-BIP-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-BIP-001</span> BACnet/IP 네트워크 계약</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
-<div class="nav-item" data-srs-id="SRS-NFR-AVL-001" data-live-status="live_partial" onclick="selectSRS('SRS-NFR-AVL-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-AVL-001</span> 재연결, 장애 격리 및 장기 연속 운용 무결성</span>  <span class="nav-badge badge-live-part">🟡 Live 1/4</span></div>
-<div class="nav-item" data-srs-id="SRS-NFR-PERF-001" data-live-status="live_partial" onclick="selectSRS('SRS-NFR-PERF-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-PERF-001</span> 제한 시간과 동시 요청 처리</span>  <span class="nav-badge badge-live-part">🟡 Live 1/3</span></div>
-<div class="nav-item" data-srs-id="SRS-NFR-OBS-001" data-live-status="managed_only" onclick="selectSRS('SRS-NFR-OBS-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-OBS-001</span> 운용 로그와 진단성</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
-<div class="nav-item" data-srs-id="SRS-CON-BTL-001" data-live-status="live_full_readonly" onclick="selectSRS('SRS-CON-BTL-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-BTL-001</span> B-ASC 기능 선언 일치</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-CON-BTL-002" data-live-status="live_full_readonly" onclick="selectSRS('SRS-CON-BTL-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-BTL-002</span> APDU와 EPICS 일관성</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
-<div class="nav-item" data-srs-id="SRS-CON-ENV-001" data-live-status="live_partial" onclick="selectSRS('SRS-CON-ENV-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-ENV-001</span> 플랫폼과 상용 스택 제약</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
+    <div class="nav-item" data-srs-id="SRS-FUN-CFG-001" data-live-status="live_partial" data-search="srs-fun-cfg-001 설정 로드와 기본 검증 tc-cfg-001 유효한 최소 프로필 tc-cfg-002 json 문법 오류와 필수 주소 누락 tc-cfg-003 중복 instance와 주소 범위 오류" onclick="selectSRS('SRS-FUN-CFG-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-001</span> 설정 로드와 기본 검증</span>  <span class="nav-badge badge-live-part">🟡 Live 1/3</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-CFG-002" data-live-status="managed_only" data-search="srs-fun-cfg-002 min/max 모순 및 설정 오류 홀드 tc-cfg-004 `min &lt; max`와 relinquish_default tc-cfg-005 `min == max` clamp tc-cfg-006 모순 설정 후 파일 수정 및 reload" onclick="selectSRS('SRS-FUN-CFG-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-002</span> Min/Max 모순 및 설정 오류 홀드</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-CFG-003" data-live-status="managed_only" data-search="srs-fun-cfg-003 홀드 상태 안전성 tc-cfg-007 모순 설정 hold 상태 tc-cfg-008 hold 61초 유지 후 복구 tc-cfg-009 hold 직후 sigterm" onclick="selectSRS('SRS-FUN-CFG-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-CFG-003</span> 홀드 상태 안전성</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-START-001" data-live-status="managed_only" data-search="srs-fun-start-001 기동 순서와 지연 기동 대응 tc-start-001 정상 순서 기동 tc-start-002 gateway 선기동 tc-start-003 main 지연 기동" onclick="selectSRS('SRS-FUN-START-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-001</span> 기동 순서와 지연 기동 대응</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-START-002" data-live-status="managed_only" data-search="srs-fun-start-002 relinquish default 결정과 3자 일치 tc-start-004 json default와 min/max clamp 동기화 tc-start-005 json default 생략, main 값 범위 내 tc-start-006 json default 생략, 양쪽 경계 밖" onclick="selectSRS('SRS-FUN-START-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-002</span> Relinquish Default 결정과 3자 일치</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-START-003" data-live-status="managed_only" data-search="srs-fun-start-003 초기 동기화 bacnet 기동 게이트 tc-start-007 첫 fc06 동기화 timeout tc-start-008 중간 객체 timeout 후 진행 tc-start-009 첫 fc05 동기화 timeout" onclick="selectSRS('SRS-FUN-START-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-START-003</span> 초기 동기화 BACnet 기동 게이트</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-VPORT-001" data-live-status="managed_only" data-search="srs-fun-vport-001 가상 포트 제공 (pty 생성과 정리) tc-vport-001 master 1/3/5 link 생성과 정리 tc-vport-002 vport 정상 sigterm tc-vport-003 강제 종료 후 vport 재기동 tc-vport-010 pty 슬레이브 open→close 후 cpu 점유율 측정" onclick="selectSRS('SRS-FUN-VPORT-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-001</span> 가상 포트 제공 (PTY 생성과 정리)</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-VPORT-002" data-live-status="live_partial" data-search="srs-fun-vport-002 요청 프레임 검증과 직렬화 tc-vport-004 frame 조각 수신 tc-vport-005 crc 오류와 guard 초과 buffer tc-vport-006 3 master 동시 요청 tc-vport-012 요청 큐 상한 초과 시 modbus exception 응답 tc-vport-013 비표준 fc 프레임 거부 및 exception 프레임 정상 라우팅" onclick="selectSRS('SRS-FUN-VPORT-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-002</span> 요청 프레임 검증과 직렬화</span>  <span class="nav-badge badge-live-part">🟡 Live 3/5</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-VPORT-003" data-live-status="live_partial" data-search="srs-fun-vport-003 응답 라우팅과 타임아웃 tc-vport-007 master별 응답 라우팅 tc-vport-008 fc06 응답 형식 두 가지 tc-vport-009 timeout·불완전·불일치 후 정상 요청 tc-vport-015 vport vs gateway 타임아웃 계층 정합성 검증" onclick="selectSRS('SRS-FUN-VPORT-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-VPORT-003</span> 응답 라우팅과 타임아웃</span>  <span class="nav-badge badge-live-part">🟡 Live 1/4</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-MAP-001" data-live-status="live_partial" data-search="srs-fun-map-001 설정 기반 bacnet 객체 매핑 tc-map-001 명시된 ai/ao/bi/bv mapping tc-map-002 `bacnet_type` 자동 추론 tc-map-003 자동 instance 재현성" onclick="selectSRS('SRS-FUN-MAP-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-001</span> 설정 기반 BACnet 객체 매핑</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-MAP-002" data-live-status="live_full_readonly" data-search="srs-fun-map-002 데이터 타입과 값 변환 tc-map-004 숫자 변환 c++ unit-test tc-map-005 swap 및 min/max 경계 c++ unit-test tc-map-006 bit/bv 변환 c++ unit-test" onclick="selectSRS('SRS-FUN-MAP-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-002</span> 데이터 타입과 값 변환</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-MAP-003" data-live-status="live_full_mutation" data-search="srs-fun-map-003 객체 무결성과 접근 제한 tc-map-007 입력 객체 writeproperty 차단 tc-map-008 ao min 미만/max 초과 writeproperty 차단 tc-map-009 중복 명시 instance 및 주소 범위 초과 거부" onclick="selectSRS('SRS-FUN-MAP-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-MAP-003</span> 객체 무결성과 접근 제한</span>  <span class="nav-badge badge-live-mut">🔵 Live 제어</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-001" data-live-status="live_full_readonly" data-search="srs-fun-bac-001 장치 및 객체 발견 (who-is/who-has) tc-bac-001 범위 없는 who-is와 i-am tc-bac-002 범위 내/범위 밖 who-is tc-bac-003 who-has와 i-have object binding" onclick="selectSRS('SRS-FUN-BAC-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-001</span> 장치 및 객체 발견 (Who-Is/Who-Has)</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-002" data-live-status="live_full_readonly" data-search="srs-fun-bac-002 속성 읽기와 오류 (readproperty) tc-bac-004 8개 object present_value tc-bac-005 정적/배열 속성과 object list index tc-bac-006 unknown object/property/index 오류" onclick="selectSRS('SRS-FUN-BAC-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-002</span> 속성 읽기와 오류 (ReadProperty)</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-003" data-live-status="live_full_mutation" data-search="srs-fun-bac-003 속성 쓰기와 우선순위 (writeproperty) tc-bac-007 priority 8 우선 및 하위 쓰기 방어 tc-bac-008 priority 8 해제 후 priority 16 인계 tc-bac-009 모든 priority slot null 시 relinquish default 복귀" onclick="selectSRS('SRS-FUN-BAC-003')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-003</span> 속성 쓰기와 우선순위 (WriteProperty)</span>  <span class="nav-badge badge-live-mut">🔵 Live 제어</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-004" data-live-status="live_partial" data-search="srs-fun-bac-004 cov 구독과 변화 알림 tc-bac-010 cov_increment 유효/무효와 변화 경계 tc-bac-011 binary 상태 변경/무변경 cov tc-bac-012 subscribecov 생성·갱신·취소·lifetime 만료 tc-bac-019 cov 최대 동시 구독 용량(20개) 및 한계 초과 거부" onclick="selectSRS('SRS-FUN-BAC-004')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-004</span> COV 구독과 변화 알림</span>  <span class="nav-badge badge-live-part">🟡 Live 2/4</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-005" data-live-status="live_partial" data-search="srs-fun-bac-005 device communication control (dcc) tc-bac-013 dcc disable 중 readproperty tc-bac-014 dcc disable initiation tc-bac-015 dcc timed disable 만료" onclick="selectSRS('SRS-FUN-BAC-005')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-005</span> Device Communication Control (DCC)</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
+<div class="nav-item" data-srs-id="SRS-FUN-BAC-006" data-live-status="live_partial" data-search="srs-fun-bac-006 device/network port 및 오류 응답 tc-bac-016 device/network port 필수 속성 tc-bac-017 network port read-only 속성 write tc-bac-018 미지원 service 오류 tc-bac-020 network port fd 설정 런타임 변경 및 에러 응답" onclick="selectSRS('SRS-FUN-BAC-006')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-FUN-BAC-006</span> Device/Network Port 및 오류 응답</span>  <span class="nav-badge badge-live-part">🟡 Live 3/4</span></div>
+<div class="nav-item" data-srs-id="SRS-IF-CFG-001" data-live-status="managed_only" data-search="srs-if-cfg-001 실행 및 설정 인터페이스 계약 tc-ifcfg-001 기본/명시 config directory 계약 tc-ifcfg-002 serial/cov/cache 경계 6종 tc-ifcfg-003 vport master 수와 timeout log tc-vport-011 마스터 상한 초과 기동 거부 tc-vport-014 명시적 --config 경로의 설정 파일 미발견 시 에러 종료" onclick="selectSRS('SRS-IF-CFG-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-CFG-001</span> 실행 및 설정 인터페이스 계약</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-IF-MOD-001" data-live-status="live_full_readonly" data-search="srs-if-mod-001 modbus rtu 요청/응답 계약 tc-mod-001 fc01/02/03/04 정상 응답 tc-mod-002 fc05/06/16 정상 write tc-mod-003 modbus 오류와 one-shot timeout" onclick="selectSRS('SRS-IF-MOD-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-MOD-001</span> Modbus RTU 요청/응답 계약</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-IF-BIP-001" data-live-status="live_partial" data-search="srs-if-bip-001 bacnet/ip 네트워크 계약 tc-bip-001 기본 udp port와 i-am tc-bip-002 독립 네트워크 모드(normal / fd) 기동 및 bbmd 등록 유지 tc-bip-003 지원 service/object bit" onclick="selectSRS('SRS-IF-BIP-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-IF-BIP-001</span> BACnet/IP 네트워크 계약</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
+<div class="nav-item" data-srs-id="SRS-NFR-AVL-001" data-live-status="live_partial" data-search="srs-nfr-avl-001 재연결, 장애 격리 및 장기 연속 운용 무결성 tc-avl-001 runtime vport 재시작 후 복구 tc-avl-002 gateway 중지 후 다른 process 생존 tc-avl-003 gateway 종료 시간 tc-avl-004 12시간 전체 관제점 장기 연속 운용 신뢰성" onclick="selectSRS('SRS-NFR-AVL-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-AVL-001</span> 재연결, 장애 격리 및 장기 연속 운용 무결성</span>  <span class="nav-badge badge-live-part">🟡 Live 1/4</span></div>
+<div class="nav-item" data-srs-id="SRS-NFR-NET-001" data-live-status="managed_only" data-search="srs-nfr-net-001 네트워크 장애 복구와 인터페이스 추종 tc-net-001 링크 down→up(같은 ipv4) 복구 tc-net-002 운용 중 ipv4 변경 추종 tc-net-003 기동 시 네트워크 미준비(ipv4 미할당) tc-net-004 fd 모드 링크 복구 후 bbmd 재등록" onclick="selectSRS('SRS-NFR-NET-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-NET-001</span> 네트워크 장애 복구와 인터페이스 추종</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-NFR-PERF-001" data-live-status="live_partial" data-search="srs-nfr-perf-001 제한 시간과 동시 요청 처리 tc-perf-001 100회 순차 readproperty benchmark tc-perf-002 cov 부하 중 foreground read/write (제어 명령 기아 방지) tc-perf-003 main 타임아웃 큐 포화와 복구 (장애 회복력)" onclick="selectSRS('SRS-NFR-PERF-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-PERF-001</span> 제한 시간과 동시 요청 처리</span>  <span class="nav-badge badge-live-part">🟡 Live 1/3</span></div>
+<div class="nav-item" data-srs-id="SRS-NFR-OBS-001" data-live-status="managed_only" data-search="srs-nfr-obs-001 운용 로그와 진단성 tc-obs-001 min/max hold 진단 log tc-obs-002 json/main/clamp startup trace tc-obs-003 600초 main 무응답 관찰" onclick="selectSRS('SRS-NFR-OBS-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-NFR-OBS-001</span> 운용 로그와 진단성</span>  <span class="nav-badge badge-managed-only">🔴 Managed</span></div>
+<div class="nav-item" data-srs-id="SRS-CON-BTL-001" data-live-status="live_full_readonly" data-search="srs-con-btl-001 b-asc 기능 선언 일치 tc-btl-001 선언 bibb 기본 서비스 tc-btl-002 btl device/network port 조항 tc-btl-003 pics/tpi/json 3자 전수 대조 감사" onclick="selectSRS('SRS-CON-BTL-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-BTL-001</span> B-ASC 기능 선언 일치</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-CON-BTL-002" data-live-status="live_full_readonly" data-search="srs-con-btl-002 apdu와 epics 일관성 tc-btl-004 epics 전체 object/property scan tc-btl-005 max apdu/object list 경계 tc-btl-006 service/object bit와 protocol revision" onclick="selectSRS('SRS-CON-BTL-002')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-BTL-002</span> APDU와 EPICS 일관성</span>  <span class="nav-badge badge-live-full">🟢 Live 100%</span></div>
+<div class="nav-item" data-srs-id="SRS-CON-ENV-001" data-live-status="live_partial" data-search="srs-con-env-001 플랫폼과 상용 스택 제약 tc-env-001 host build와 warning tc-env-002 linux gateway/vport smoke tc-env-003 bacstac 공개 api/문서 감사" onclick="selectSRS('SRS-CON-ENV-001')">  <span class="nav-label"><span style="color:var(--accent-blue);font-weight:600;">SRS-CON-ENV-001</span> 플랫폼과 상용 스택 제약</span>  <span class="nav-badge badge-live-part">🟡 Live 2/3</span></div>
   </div>
 </nav>
 
@@ -611,7 +619,7 @@ code {
 
   <div class="active-mode-banner" id="modeBanner">
     <div class="banner-tag" id="modeBannerText">
-      <span>🌐 필터 상태: 전체 보기 (27개 요구사항)</span>
+      <span>🌐 필터 상태: 전체 보기 (28개 요구사항)</span>
     </div>
     <div style="color:var(--text-muted);font-size:12px;" id="modeBannerSub">
       Managed(로컬) 및 Live(원격) 전체 시험 대상
@@ -625,19 +633,19 @@ code {
     </div>
     <div class="doc-stats-mini">
       <div class="stat-pill">
-        <div class="stat-pill-val">27</div>
+        <div class="stat-pill-val">28</div>
         <div style="color:var(--text-muted);">SRS</div>
       </div>
       <div class="stat-pill">
-        <div class="stat-pill-val">90</div>
+        <div class="stat-pill-val">94</div>
         <div style="color:var(--text-muted);">TC</div>
       </div>
       <div class="stat-pill">
-        <div class="stat-pill-val" style="color:var(--accent-green);">22.2%</div>
+        <div class="stat-pill-val" style="color:var(--accent-green);">21.4%</div>
         <div style="color:var(--text-muted);">Live 안전</div>
       </div>
       <div class="stat-pill">
-        <div class="stat-pill-val" style="color:var(--accent-cyan);">29.6%</div>
+        <div class="stat-pill-val" style="color:var(--accent-cyan);">28.6%</div>
         <div style="color:var(--text-muted);">Live 제어</div>
       </div>
     </div>
@@ -675,7 +683,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-CFG-001" data-tc-id="TC-CFG-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-001</span><span class="tc-name">유효한 최소 프로필</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -719,7 +727,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 개별 관제점의 복잡한 Modbus 예외 에러 주입은 TC-MOD/TC-AVL 범위에서 분리 검증한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-CFG-002" data-tc-id="TC-CFG-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-002</span><span class="tc-name">JSON 문법 오류와 필수 주소 누락</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -775,7 +783,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 모순 설정(Min &gt; Max)의 60초 주기 재검증 대기 동작은 TC-CFG-006~008에서 분리 검증한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-CFG-003" data-tc-id="TC-CFG-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-003</span><span class="tc-name">중복 instance와 주소 범위 오류</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -847,7 +855,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-CFG-004" data-tc-id="TC-CFG-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-004</span><span class="tc-name"><code>min &lt; max</code>와 Relinquish_Default</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -885,7 +893,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Modbus 백엔드 Write-back의 상세 프레임은 TC-START-004/TC-START-005에서 분리 검증한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-CFG-005" data-tc-id="TC-CFG-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-005</span><span class="tc-name"><code>min == max</code> clamp</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -923,7 +931,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Modbus 백엔드 Write-back의 상세 프레임은 별도 TC에서 검증한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-CFG-006" data-tc-id="TC-CFG-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-006</span><span class="tc-name">모순 설정 후 파일 수정 및 reload</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -995,7 +1003,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-CFG-007" data-tc-id="TC-CFG-007">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-007</span><span class="tc-name">모순 설정 HOLD 상태</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -1027,7 +1035,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: HOLD 대기 상태에서 네트워크 포트(UDP 47808)가 점유되었는지 등 OS 수준의 소켓 상태는 확인하지 않음.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-CFG-008" data-tc-id="TC-CFG-008">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-008</span><span class="tc-name">HOLD 61초 유지 후 복구</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -1065,7 +1073,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 61초 동안 로그 파일에 무의미한 스팸 로그가 반복 출력되는지는 검사하지 않음.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-CFG-009" data-tc-id="TC-CFG-009">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-CFG-009</span><span class="tc-name">HOLD 직후 SIGTERM</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -1125,7 +1133,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-START-001" data-tc-id="TC-START-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-001</span><span class="tc-name">정상 순서 기동</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -1157,7 +1165,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: BACnet 탐색(Discovery) 및 개별 객체의 Present_Value 속성 조회는 이 TC에서 다루지 않는다(BAC-001 등에서 검증).</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-START-002" data-tc-id="TC-START-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-002</span><span class="tc-name">Gateway 선기동</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -1189,7 +1197,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 대기 상태 중 실제 BACnet 요청에 대한 응답 동작이나 재시도 횟수 등은 측정하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-START-003" data-tc-id="TC-START-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-003</span><span class="tc-name">Main 지연 기동</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -1255,7 +1263,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-START-004" data-tc-id="TC-START-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-004</span><span class="tc-name">JSON default와 Min/Max clamp 동기화</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -1293,7 +1301,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 모든 객체에 대한 동기화 프레임 페이로드나 CRC 패킷 단위 분석은 수행하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-START-005" data-tc-id="TC-START-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-005</span><span class="tc-name">JSON default 생략, Main 값 범위 내</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -1331,7 +1339,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 다른 객체 설정과 쓰기 프레임의 바이너리 바이트 필드는 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-START-006" data-tc-id="TC-START-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-006</span><span class="tc-name">JSON default 생략, 양쪽 경계 밖</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -1403,7 +1411,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-START-007" data-tc-id="TC-START-007">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-007</span><span class="tc-name">첫 FC06 동기화 timeout</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -1441,7 +1449,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 실패한 각 Modbus 프레임의 바이트 페이로드 단위 분석 및 재시도 상태 머신의 세부 진입 로그까지는 어서션하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-START-008" data-tc-id="TC-START-008">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-008</span><span class="tc-name">중간 객체 timeout 후 진행</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -1467,7 +1475,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 전체 동기화 시퀀스의 진행 퍼센티지 갱신 내역 및 주소 1 객체 이후의 복구 과정은 직접 검증하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-START-009" data-tc-id="TC-START-009">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-START-009</span><span class="tc-name">첫 FC05 동기화 timeout</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -1539,7 +1547,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-001" data-tc-id="TC-VPORT-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-001</span><span class="tc-name">Master 1/3/5 link 생성과 정리</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -1571,7 +1579,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 프로세스의 스레드 조인(Thread join), 실제 파일 디스크립터(FD) 메모리 누수 여부는 직접 검증하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-VPORT-002" data-tc-id="TC-VPORT-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-002</span><span class="tc-name">vport 정상 SIGTERM</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -1597,7 +1605,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 커널 레벨의 자원 누수, 파일 디스크립터 반환 여부는 자동 프레임워크가 직접 확인하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-VPORT-003" data-tc-id="TC-VPORT-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-003</span><span class="tc-name">강제 종료 후 vport 재기동</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -1629,7 +1637,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 재기동 직후 실제 모드버스 패킷 송수신 루프의 정상 동작이나, 기존 Master 포트들에 대한 통신 복구까지는 확인하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-010" data-tc-id="TC-VPORT-010">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-010</span><span class="tc-name">PTY 슬레이브 open→close 후 CPU 점유율 측정</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Boundary_경계 및 신뢰성) [Managed 전용/호스트 단위시험]</span></div>
@@ -1695,7 +1703,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (5개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-VPORT-004" data-tc-id="TC-VPORT-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-004</span><span class="tc-name">frame 조각 수신</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1727,7 +1735,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 프레임워크가 프레임 경계와 슬레이브 측 수신 바이트 배열을 직접 디코딩하여 검증하지 않는다. (Gateway/Main 사용 안 함)</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-VPORT-005" data-tc-id="TC-VPORT-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-005</span><span class="tc-name">CRC 오류와 guard 초과 buffer</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1759,7 +1767,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 프레임워크는 수신 큐(Queue)의 입출력 바이트 배열이나 가드 바이트 경계 타이밍을 직접 계산하여 어서션하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-VPORT-006" data-tc-id="TC-VPORT-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-006</span><span class="tc-name">3 Master 동시 요청</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1791,7 +1799,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Runner는 Master별 raw byte interleave와 queue scheduling을 직접 관찰하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-VPORT-012" data-tc-id="TC-VPORT-012">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-012</span><span class="tc-name">요청 큐 상한 초과 시 Modbus Exception 응답</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1823,7 +1831,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 대규모 마스터(10개 이상) 동시 폭주 상태에서의 큐 메모리 상한 실측은 포함하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-013" data-tc-id="TC-VPORT-013">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-013</span><span class="tc-name">비표준 FC 프레임 거부 및 Exception 프레임 정상 라우팅</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Exception_예외 처리) [Managed 전용/호스트 단위시험]</span></div>
@@ -1889,7 +1897,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-VPORT-007" data-tc-id="TC-VPORT-007">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-007</span><span class="tc-name">Master별 응답 라우팅</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1921,7 +1929,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Runner는 각 Master의 실제 PTY 수신 buffer를 직접 비교하지 않으며 BACnet 경로도 사용하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-VPORT-008" data-tc-id="TC-VPORT-008">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-008</span><span class="tc-name">FC06 응답 형식 두 가지</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1953,7 +1961,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Runner는 응답 길이/CRC/라우팅 byte를 직접 parse하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-VPORT-009" data-tc-id="TC-VPORT-009">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-009</span><span class="tc-name">timeout·불완전·불일치 후 정상 요청</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -1985,7 +1993,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Runner는 timeout 경계와 두 번째 Master의 raw 수신 buffer를 직접 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-015" data-tc-id="TC-VPORT-015">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-015</span><span class="tc-name">vport vs Gateway 타임아웃 계층 정합성 검증</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Boundary_경계값 검증) [Managed / Live 지원 (방안 B)]</span></div>
@@ -2046,7 +2054,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-MAP-001" data-tc-id="TC-MAP-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-001</span><span class="tc-name">명시된 AI/AO/BI/BV mapping</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2078,7 +2086,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 각 객체의 상세 속성(Description, Units 등)의 전수 검사는 TC-BTL 범위에서 다룬다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-MAP-002" data-tc-id="TC-MAP-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-002</span><span class="tc-name"><code>bacnet_type</code> 자동 추론</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2122,7 +2130,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 복합 비트 마스크 연산은 TC-MAP-006 범위에서 다룬다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-MAP-003" data-tc-id="TC-MAP-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-003</span><span class="tc-name">자동 instance 재현성</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2194,7 +2202,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-MAP-004" data-tc-id="TC-MAP-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-004</span><span class="tc-name">숫자 변환 C++ unit-test</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Interoperation_연동 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -2226,7 +2234,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 검증 프레임워크는 C++ 내부의 원시 레지스터 값이나 엔디안(Byte Order) 변환 과정을 개별적으로 캡처하고 단언(Assert)하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-MAP-005" data-tc-id="TC-MAP-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-005</span><span class="tc-name">swap 및 Min/Max 경계 C++ unit-test</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Interoperation_연동 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -2258,7 +2266,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 네트워크를 통한 실제 Modbus 프레임 바이트 오더 변화나 초과 값 입력 시 실제 차단 여부를 이 TC가 엔드투엔드로 확인하지는 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-MAP-006" data-tc-id="TC-MAP-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-006</span><span class="tc-name">bit/BV 변환 C++ unit-test</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Interoperation_연동 기능) [Managed 전용/호스트 단위시험]</span></div>
@@ -2324,7 +2332,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-MAP-007" data-tc-id="TC-MAP-007">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-007</span><span class="tc-name">입력 객체 WriteProperty 차단</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -2356,7 +2364,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 다른 모든 인스턴스 번호에 대해 순회하며 검사하지는 않으며, 대표 입력 객체 1개에 대해서만 샘플링 검증을 수행한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-MAP-008" data-tc-id="TC-MAP-008">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-008</span><span class="tc-name">AO Min 미만/Max 초과 WriteProperty 차단</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -2400,7 +2408,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Priority-Array의 각 인덱스(1~16)별 세부 우선순위 범위 검사는 본 TC에서 직접 분리하지 않고 프로파일 테스터에 위임한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-MAP-009" data-tc-id="TC-MAP-009">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MAP-009</span><span class="tc-name">중복 명시 instance 및 주소 범위 초과 거부</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -2490,7 +2498,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-BAC-001" data-tc-id="TC-BAC-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-001</span><span class="tc-name">범위 없는 Who-Is와 I-Am</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2528,7 +2536,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 모든 선언 service/object bit와 I-Am의 모든 optional field는 이 카드에서 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-BAC-002" data-tc-id="TC-BAC-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-002</span><span class="tc-name">범위 내/범위 밖 Who-Is</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2560,7 +2568,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 다른 device가 동시에 응답하는 다중 장치 환경과 broadcast routing은 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-BAC-003" data-tc-id="TC-BAC-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-003</span><span class="tc-name">Who-Has와 I-Have object binding</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2626,7 +2634,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-BAC-004" data-tc-id="TC-BAC-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-004</span><span class="tc-name">8개 object Present_Value</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -2664,7 +2672,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 각 property의 모든 optional metadata, Object List 응답과 packet byte 전체는 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-005" data-tc-id="TC-BAC-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-005</span><span class="tc-name">정적/배열 속성과 Object List index</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -2702,7 +2710,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 index별 response count/element/APDU를 직접 decode하지 않는다. 이 카드의 SRS 기대 전체는 <code>bacnet_profile_tester.py</code> 내부 판정 결과에 의존한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-006" data-tc-id="TC-BAC-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-006</span><span class="tc-name">unknown object/property/index 오류</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -2768,7 +2776,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-007" data-tc-id="TC-BAC-007">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-007</span><span class="tc-name">Priority 8 우선 및 하위 쓰기 방어</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -2800,7 +2808,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: priority 8 해제 후 fallback은 TC-BAC-008에서 검사하며, 모든 16개 slot 조합은 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-008" data-tc-id="TC-BAC-008">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-008</span><span class="tc-name">Priority 8 해제 후 Priority 16 인계</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -2832,7 +2840,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: priority 16 해제 후 Relinquish_Default 복귀는 TC-BAC-009에서 검사한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-009" data-tc-id="TC-BAC-009">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-009</span><span class="tc-name">모든 priority slot NULL 시 Relinquish Default 복귀</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -2898,7 +2906,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-010" data-tc-id="TC-BAC-010">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-010</span><span class="tc-name">COV_Increment 유효/무효와 변화 경계</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -2942,7 +2950,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 음수 increment, 여러 analog object와 notification payload의 모든 property field는 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-011" data-tc-id="TC-BAC-011">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-011</span><span class="tc-name">Binary 상태 변경/무변경 COV</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -2974,7 +2982,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: notification payload의 값/시간/순서와 다른 binary object는 직접 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-012" data-tc-id="TC-BAC-012">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-012</span><span class="tc-name">SubscribeCOV 생성·갱신·취소·lifetime 만료</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -3012,7 +3020,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 각 subscription의 모든 optional field, notification payload와 60초 subscription의 실제 만료 시점은 직접 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BAC-019" data-tc-id="TC-BAC-019">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-019</span><span class="tc-name">COV 최대 동시 구독 용량(20개) 및 한계 초과 거부</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -3090,7 +3098,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-013" data-tc-id="TC-BAC-013">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-013</span><span class="tc-name">DCC Disable 중 ReadProperty</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3128,7 +3136,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Enable 후 별도 ReadProperty로 PV 복구를 확인하지 않는다. duration 만료 경로는 TC-BAC-015가 담당한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-014" data-tc-id="TC-BAC-014">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-014</span><span class="tc-name">DCC Disable Initiation</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3172,7 +3180,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 다른 서비스의 initiation 정책, notification payload와 모든 object type은 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-015" data-tc-id="TC-BAC-015">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-015</span><span class="tc-name">DCC timed Disable 만료</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-mutation">🔵 Live Mutation</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3250,7 +3258,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-016" data-tc-id="TC-BAC-016">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-016</span><span class="tc-name">Device/Network Port 필수 속성</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3282,7 +3290,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 각 Device/Network Port property의 value/type와 설정·실제 network 비교를 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 직접 decode하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-017" data-tc-id="TC-BAC-017">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-017</span><span class="tc-name">Network Port read-only 속성 Write</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3314,7 +3322,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 개별 표준 Error/Abort code (예: Class 2 PROPERTY, Code 31 UNKNOWN_PROPERTY), property 불변, DCC/Block 상태와 Changes Pending 값을 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 직접 assertion하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-018" data-tc-id="TC-BAC-018">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-018</span><span class="tc-name">미지원 service 오류</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3346,7 +3354,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 세 요청 각각의 <code>UNRECOGNIZED_SERVICE</code> 등 오류 code, invoke ID와 transaction 종료를 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 직접 parse하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BAC-020" data-tc-id="TC-BAC-020">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BAC-020</span><span class="tc-name">Network Port FD 설정 런타임 변경 및 에러 응답</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -3442,7 +3450,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (5개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-IFCFG-001" data-tc-id="TC-IFCFG-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-IFCFG-001</span><span class="tc-name">기본/명시 config directory 계약</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -3492,7 +3500,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 심볼릭 링크 순환 참조나 권한 거부(EACCES) 디렉터리 처리는 보안/예외 전용 TC에서 검증한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-IFCFG-002" data-tc-id="TC-IFCFG-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-IFCFG-002</span><span class="tc-name">serial/COV/cache 경계 6종</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -3536,7 +3544,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 실제 serial baud/data bit가 kernel device에 적용되었는지와 COV/cache runtime 성능은 직접 측정하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-IFCFG-003" data-tc-id="TC-IFCFG-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-IFCFG-003</span><span class="tc-name">vport Master 수와 timeout log</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -3574,7 +3582,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: timeout이 실제 Slave transaction에 적용되는지, MASTER1/2 모든 link 권한은 직접 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-011" data-tc-id="TC-VPORT-011">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-011</span><span class="tc-name">마스터 상한 초과 기동 거부</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Interface(Boundary_경계값 검증) [Managed 전용]</span></div>
@@ -3612,7 +3620,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 런타임 중 마스터 fd가 동적으로 FD_SETSIZE를 넘는 파일 디스크립터 고갈 상황은 직접 에뮬레이트하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-VPORT-014" data-tc-id="TC-VPORT-014">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-VPORT-014</span><span class="tc-name">명시적 --config 경로의 설정 파일 미발견 시 에러 종료</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Interface(Exception_예외 처리) [Managed 전용]</span></div>
@@ -3678,7 +3686,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-MOD-001" data-tc-id="TC-MOD-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MOD-001</span><span class="tc-name">FC01/02/03/04 정상 응답</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능) [Managed 전용/통합시험]</span></div>
@@ -3722,7 +3730,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 실제 RS485 물리 계층의 전기적 노이즈나 케이블 단선은 소프트웨어 가상 포트(vport) 환경이므로 검증하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-MOD-002" data-tc-id="TC-MOD-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MOD-002</span><span class="tc-name">FC05/06/16 정상 Write</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능) [Managed 전용/통합시험]</span></div>
@@ -3772,7 +3780,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 비표준 Modbus 쓰기 명령(FC15 다중 코일 쓰기 등)은 게이트웨이 사양상 미사용이므로 검증 대상이 아니다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-MOD-003" data-tc-id="TC-MOD-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-MOD-003</span><span class="tc-name">Modbus 오류와 one-shot timeout</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능) [Managed 전용/통합시험]</span></div>
@@ -3868,7 +3876,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-basic">
+      <div class="tc-card cat-basic" id="TC-BIP-001" data-tc-id="TC-BIP-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BIP-001</span><span class="tc-name">기본 UDP port와 I-Am</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Basic_기본 기능)</span></div>
@@ -3900,7 +3908,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: port bind 자체를 socket inspection으로 분리 검사하지 않으며 service/object bit는 BIP-003/adapter 범위다.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BIP-002" data-tc-id="TC-BIP-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BIP-002</span><span class="tc-name">독립 네트워크 모드(Normal / FD) 기동 및 BBMD 등록 유지</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -3952,7 +3960,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *BLOCKED 조건*: BBMD endpoint/auto 없음, managed 실행 파일 부족.</div>
         </div>
       </div>
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BIP-003" data-tc-id="TC-BIP-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BIP-003</span><span class="tc-name">지원 service/object bit</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -4018,7 +4026,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-AVL-001" data-tc-id="TC-AVL-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-AVL-001</span><span class="tc-name">runtime vport 재시작 후 복구</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4056,7 +4064,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 reopen 내부의 정확한 syscall/재시도 횟수와 모든 object 복구는 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-AVL-002" data-tc-id="TC-AVL-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-AVL-002</span><span class="tc-name">Gateway 중지 후 다른 process 생존</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4088,7 +4096,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: Gateway crash 시 실제 BACnet 서비스 상태, Main의 새 Modbus transaction과 기존 protocol simulator 기능은 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-AVL-003" data-tc-id="TC-AVL-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-AVL-003</span><span class="tc-name">Gateway 종료 시간</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4114,7 +4122,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 초기화 중 SIGTERM, FD/thread leak와 모든 PTY link 정리는 별도 assertion으로 확인하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-AVL-004" data-tc-id="TC-AVL-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-AVL-004</span><span class="tc-name">12시간 전체 관제점 장기 연속 운용 신뢰성</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4162,6 +4170,192 @@ code {
   </div>
 </div>
 
+<div class="req-card" id="SRS-NFR-NET-001" data-live-status="managed_only">
+  <div class="req-header">
+    <div>
+      <span class="req-id">SRS-NFR-NET-001</span>
+      <span class="req-title-text">네트워크 장애 복구와 인터페이스 추종</span>
+    </div>
+    <div class="req-status-badges">
+      <span class="req-badge" style="background:rgba(251,113,133,0.2);color:var(--accent-rose);border:1px solid rgba(251,113,133,0.4);">🔴 Managed 전용 (시뮬레이션/장애주입)</span>
+      <span class="req-badge" style="background:rgba(56,189,248,0.15);color:var(--accent-blue);">4 Test Cases</span>
+    </div>
+  </div>
+  <div class="req-body">
+    <div class="element-group">
+      <div class="element-title">📌 Summary (요구사항 요약)</div>
+      <div class="element-content"><p>Gateway는 <code>bip.cfg</code>에 지정된 바인딩 인터페이스(<code>iface=&lt;이름&gt;</code>, 다중 NIC 환경)의 IPv4로 BACnet/IP를 운용해야 하며, 다른 인터페이스로 넘어가서는 안 된다. 링크가 DOWN 되었다가 같은 IPv4로 UP 되면 재시작 없이 10초 이내에 응답을 재개해야 한다. 운용 중 IPv4(또는 netmask)가 바뀌면 새 IPv4와 실제 netmask로 다시 바인딩해야 한다. 기동 시 사용할 IPv4가 없으면 비정상 종료하지 않고 대기해야 한다. Foreign Device 모드에서는 링크 복구 후 10초 이내에 BBMD에 재등록해야 한다.</p></div>
+    </div>
+    <div class="element-group">
+      <div class="element-title">🔄 Input / Output Relationship (입출력 관계)</div>
+      <div class="element-content"><p>- <strong>입력 (Input)</strong>: 바인딩 인터페이스의 IFF_UP/IFF_RUNNING 변화, IPv4/netmask 변경, 기동 시 IPv4 미할당 (getifaddrs 1초 주기 스냅샷)</p><p>- <strong>출력 (Output)</strong>: <code>[Net] Link down/up</code>, <code>[Net] IPv4 changed &lt;old&gt; -&gt; &lt;new&gt;</code>, <code>[Main] Waiting for network</code>, <code>[FD] Network link recovered. Re-registering</code> 로그, IPv4 변경 시 자체 재시작(execv) 재바인딩, FD 즉시 재등록</p></div>
+    </div>
+    <div class="element-group">
+      <div class="element-title">⚡ Normal / Alternative Flow (정상 / 대안 동작)</div>
+      <div class="element-content"><p>- <strong>정상 흐름 (Normal Flow)</strong>:</p><p>1. NetworkWatcher가 1초마다 바인딩 인터페이스 상태를 판정하고, 같은 판정이 3회 연속되면 확정한다.</p><p>2. 링크 DOWN→UP(같은 IPv4): 재시작하지 않는다. BACstac 소켓이 수신을 자동 재개한다.</p><p>3. IPv4 변경: 재시작 요청 → main 루프가 execv로 재실행 → 지정 인터페이스의 새 IPv4/netmask로 바인딩한다.</p><p>- <strong>대안 흐름 (Alternative Flow)</strong>: 기동 시 지정 인터페이스에 IPv4가 없으면 BACstac 초기화 전에 대기하고, IPv4가 생기면 기동을 이어간다. FD 모드는 링크 복구 직후 Network Port Command(RENEW_FD_REGISTRATION)로 즉시 재등록한다.</p></div>
+    </div>
+    <div class="element-group">
+      <div class="element-title" style="color:var(--accent-amber);">🛡️ 부가요소 (예외/제약/품질/연관관계)</div>
+      <div class="element-content"><p>- <strong>Exception Handling (예외처리)</strong>:</p><p>지정 인터페이스가 IPv4 를 잃으면 다른 인터페이스로 넘어가지 않고 링크 다운 상태로 대기한다. 재시작 요청은 IPv4 변경 확정 1회에 한 번만 보낸다.</p><p>- <strong>Constrain (제약사항)</strong>:</p><p>BACstac B/IP 소켓은 실행 중 재바인딩할 수 없으므로 IPv4 변경 반영은 자체 재시작(execv)으로 수행한다. Network Port 쓰기 재시작과 같은 경로를 사용한다.</p><p>- <strong>Quality Requirement (품질 요구사항)</strong>:</p><p>감지 &lt;= 10초(1초 polling x 3회 debounce), 링크 복구 후 응답 재개 &lt;= 10초, IPv4 변경 후 새 주소 응답 &lt;= 30초, IPv4 할당 후 기동 &lt;= 15초, FD 재등록 &lt;= 10초.</p><p>- <strong>Relation with other Requirement (다른 요구사항과의 연관관계)</strong>:</p><p>SRS-IF-BIP-001, SRS-NFR-AVL-001, SRS-NFR-OBS-001</p></div>
+    </div>
+    <div class="tc-list-title">🧪 연동 Test Case 목록 (4개 TC)</div>
+    <div class="tc-grid">
+      <div class="tc-card cat-stability" id="TC-NET-001" data-tc-id="TC-NET-001">
+        <div class="tc-header">
+          <div><span class="tc-id-badge">TC-NET-001</span><span class="tc-name">링크 DOWN→UP(같은 IPv4) 복구</span></div>
+          <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
+        </div>
+        <div class="tc-section"><div class="tc-section-label">📋 Precondition (사전조건):</div><div>- 컨테이너 내부 netns <code>bacgw</code>(<code>vgw0</code> 10.77.0.2/24) ↔ 러너 <code>vrun0</code>(10.77.0.1/24), <code>bip.cfg</code> 에 <code>iface=vgw0</code>, root·독립 네트워크 컨테이너.</div></div>
+        <div class="tc-section"><div class="tc-section-label">🔢 Test Procedure (수행 절차):</div><div>1. Device Object_Name ReadProperty 로 기준 응답을 확인한다.</div><div>2. <code>vgw0</code> 를 10초 DOWN 하고 <code>[Net] Link down</code> 로그와 BACnet 무응답, 프로세스 생존을 확인한다.</div><div>3. <code>vgw0</code> 를 UP 하고 0.5초 간격 단발 ReadProperty 로 응답 재개 시간을 측정한다.</div><div>4. <code>[Net] Link up</code> 로그, 재시작 횟수 불변, Network Port Reliability=0, Who-Is/I-Am 을 확인한다.</div></div>
+        <div class="tc-section"><div class="tc-section-label">✅ Expected Result (기대 결과 및 판정):</div>
+<div style="overflow-x: auto;"><table>
+<thead><tr>
+<th>항목</th>
+<th>채널/근거</th>
+<th>기대</th>
+<th>현재 자동 판정</th>
+</tr></thead><tbody>
+<tr>
+<td>감지</td>
+<td>Gateway log</td>
+<td>Link down/up 로그</td>
+<td>substring assertion</td>
+</tr>
+<tr>
+<td>복구</td>
+<td>BACnet/IP</td>
+<td>UP 후 10초 이내 SUCCESS</td>
+<td>elapsed 비교</td>
+</tr>
+<tr>
+<td>재시작 없음</td>
+<td>Gateway log</td>
+<td>started 횟수 불변</td>
+<td>count 비교</td>
+</tr>
+<tr>
+<td>Reliability</td>
+<td>BACnet/IP</td>
+<td>NO_FAULT_DETECTED(0)</td>
+<td>enum 비교</td>
+</tr>
+</tbody></table></div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *자동 검증 범위*: 같은 IPv4 링크 단절/복구 시 재시작 없는 자동 복구와 감지 로그.</div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 실제 PHY 캐리어 손실(케이블 분리)과 장시간 단절 중 COV 구독 유지.</div>
+        </div>
+      </div>
+      <div class="tc-card cat-stability" id="TC-NET-002" data-tc-id="TC-NET-002">
+        <div class="tc-header">
+          <div><span class="tc-id-badge">TC-NET-002</span><span class="tc-name">운용 중 IPv4 변경 추종</span></div>
+          <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
+        </div>
+        <div class="tc-section"><div class="tc-section-label">📋 Precondition (사전조건):</div><div>- TC-NET-001 과 같은 netns 구성, 초기 IPv4 10.77.0.2/24, <code>iface=vgw0</code>.</div></div>
+        <div class="tc-section"><div class="tc-section-label">🔢 Test Procedure (수행 절차):</div><div>1. 기준 응답을 확인한 뒤 <code>vgw0</code> 의 IPv4 를 10.77.0.3/24 로 교체한다.</div><div>2. <code>[Net] IPv4 changed</code> 로그, 재시작 1회, <code>BACnet/IP bind address: 10.77.0.3/255.255.255.0 (iface=vgw0)</code> 로그를 확인한다.</div><div>3. 새 IPv4 응답(30초 이내), Network Port IP_Address, <code>10.77.0.255</code> broadcast Who-Is 의 I-Am 송신 주소를 확인한다.</div><div>4. 옛 IPv4 가 응답하지 않음을 확인한다.</div></div>
+        <div class="tc-section"><div class="tc-section-label">✅ Expected Result (기대 결과 및 판정):</div>
+<div style="overflow-x: auto;"><table>
+<thead><tr>
+<th>항목</th>
+<th>채널/근거</th>
+<th>기대</th>
+<th>현재 자동 판정</th>
+</tr></thead><tbody>
+<tr>
+<td>감지·재바인딩</td>
+<td>Gateway log</td>
+<td>IPv4 changed, started +1, bind address 로그</td>
+<td>substring/count</td>
+</tr>
+<tr>
+<td>새 주소 응답</td>
+<td>BACnet/IP</td>
+<td>30초 이내 SUCCESS</td>
+<td>elapsed 비교</td>
+</tr>
+<tr>
+<td>속성/broadcast</td>
+<td>BACnet/IP</td>
+<td>IP_Address 일치, I-Am 송신 주소 = 새 IPv4</td>
+<td>값 비교</td>
+</tr>
+<tr>
+<td>옛 주소</td>
+<td>BACnet/IP</td>
+<td>무응답</td>
+<td>status 비교</td>
+</tr>
+</tbody></table></div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *자동 검증 범위*: 지정 인터페이스 IPv4 교체 시 재바인딩과 서브넷 broadcast 갱신.</div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: DHCP 클라이언트 연동, FD 모드의 IPv4 변경 후 BBMD 재등록.</div>
+        </div>
+      </div>
+      <div class="tc-card cat-stability" id="TC-NET-003" data-tc-id="TC-NET-003">
+        <div class="tc-header">
+          <div><span class="tc-id-badge">TC-NET-003</span><span class="tc-name">기동 시 네트워크 미준비(IPv4 미할당)</span></div>
+          <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
+        </div>
+        <div class="tc-section"><div class="tc-section-label">📋 Precondition (사전조건):</div><div>- netns 구성 후 <code>vgw0</code> IPv4 제거(링크 UP), <code>iface=vgw0</code>.</div></div>
+        <div class="tc-section"><div class="tc-section-label">🔢 Test Procedure (수행 절차):</div><div>1. Gateway 를 기동하고 <code>Waiting for network</code> 로그를 확인한다.</div><div>2. 10초 대기 후 프로세스 생존과 BACnet 서버 미기동을 확인한다.</div><div>3. <code>vgw0</code> 에 10.77.0.2/24 를 할당하고 15초 이내 기동과 BACnet 응답을 확인한다.</div></div>
+        <div class="tc-section"><div class="tc-section-label">✅ Expected Result (기대 결과 및 판정):</div>
+<div style="overflow-x: auto;"><table>
+<thead><tr>
+<th>항목</th>
+<th>채널/근거</th>
+<th>기대</th>
+<th>현재 자동 판정</th>
+</tr></thead><tbody>
+<tr>
+<td>대기</td>
+<td>Gateway log / process</td>
+<td>Waiting 로그, 생존, 미기동</td>
+<td>substring/poll/count</td>
+</tr>
+<tr>
+<td>기동</td>
+<td>Gateway log / BACnet/IP</td>
+<td>할당 후 15초 이내 started, SUCCESS</td>
+<td>elapsed 비교</td>
+</tr>
+</tbody></table></div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *자동 검증 범위*: 기동 시 지정 인터페이스 IPv4 미할당 대기와 할당 후 기동.</div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 인터페이스 자체 부재(USB NIC 미장착)와 systemd 재시작 정책.</div>
+        </div>
+      </div>
+      <div class="tc-card cat-stability" id="TC-NET-004" data-tc-id="TC-NET-004">
+        <div class="tc-header">
+          <div><span class="tc-id-badge">TC-NET-004</span><span class="tc-name">FD 모드 링크 복구 후 BBMD 재등록</span></div>
+          <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
+        </div>
+        <div class="tc-section"><div class="tc-section-label">📋 Precondition (사전조건):</div><div>- 러너 쪽 BBMDServer(10.77.0.1:47809, netns/veth 구성 직후·게이트웨이 기동 전에 bind), <code>bip.cfg.fd</code> FD 모드 TTL=600초, <code>iface=vgw0</code>.</div></div>
+        <div class="tc-section"><div class="tc-section-label">🔢 Test Procedure (수행 절차):</div><div>1. 초기 BBMD FDT 등록을 확인한다.</div><div>2. <code>vgw0</code> 를 15초 DOWN 후 UP 한다.</div><div>3. UP 이후 BBMD FDT 등록 시각 갱신(재등록)과 <code>[FD] Network link recovered. Re-registering</code> 로그를 확인한다.</div></div>
+        <div class="tc-section"><div class="tc-section-label">✅ Expected Result (기대 결과 및 판정):</div>
+<div style="overflow-x: auto;"><table>
+<thead><tr>
+<th>항목</th>
+<th>채널/근거</th>
+<th>기대</th>
+<th>현재 자동 판정</th>
+</tr></thead><tbody>
+<tr>
+<td>재등록</td>
+<td>BBMD FDT</td>
+<td>UP 후 10초 이내 등록 시각 갱신</td>
+<td>timestamp 비교</td>
+</tr>
+<tr>
+<td>로그</td>
+<td>Gateway log</td>
+<td>즉시 재등록 로그</td>
+<td>substring assertion</td>
+</tr>
+</tbody></table></div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *자동 검증 범위*: 링크 복구 시 TTL/300초 주기를 기다리지 않는 즉시 재등록.</div>
+<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: BBMD 측 FDT 만료 이후 broadcast 분배 복구.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="req-card" id="SRS-NFR-PERF-001" data-live-status="live_partial">
   <div class="req-header">
     <div>
@@ -4192,7 +4386,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-usability">
+      <div class="tc-card cat-usability" id="TC-PERF-001" data-tc-id="TC-PERF-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-PERF-001</span><span class="tc-name">100회 순차 ReadProperty benchmark</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Usability(사용성)</span></div>
@@ -4231,7 +4425,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 동시성 멀티스레드 부하 및 COV 이벤트 경합 상태는 이 카드에서 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-PERF-002" data-tc-id="TC-PERF-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-PERF-002</span><span class="tc-name">COV 부하 중 foreground Read/Write (제어 명령 기아 방지)</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4270,7 +4464,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 10초를 초과하는 장시간 COV 스트레스나 모든 구독 패킷 필드의 전수 비트 비교는 검사하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-PERF-003" data-tc-id="TC-PERF-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-PERF-003</span><span class="tc-name">Main 타임아웃 큐 포화와 복구 (장애 회복력)</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4349,7 +4543,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-OBS-001" data-tc-id="TC-OBS-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-OBS-001</span><span class="tc-name">Min/Max HOLD 진단 log</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4387,7 +4581,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 반복 log의 정확한 line rate, 각 retry의 1회 출력 여부와 모든 진단 field는 직접 세지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-OBS-002" data-tc-id="TC-OBS-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-OBS-002</span><span class="tc-name">JSON/Main/clamp startup trace</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4419,7 +4613,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: source→raw→final→write/progress의 각 값과 Modbus FC03/FC06 대응 관계를 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 직접 비교하지 않는다. 별도 BACnet 요청도 보내지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-stability">
+      <div class="tc-card cat-stability" id="TC-OBS-003" data-tc-id="TC-OBS-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-OBS-003</span><span class="tc-name">600초 Main 무응답 관찰</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Stability(안정성)</span></div>
@@ -4497,7 +4691,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-interop">
+      <div class="tc-card cat-interop" id="TC-BTL-001" data-tc-id="TC-BTL-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-001</span><span class="tc-name">선언 BIBB 기본 서비스</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Interoperation_연동 기능)</span></div>
@@ -4529,7 +4723,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 선언된 모든 BIBB의 WriteProperty/COV/DCC 상세 동작을 이 단일 TC에서 모두 호출하지는 않으며, 타 TC(mutation) 수행 결과를 자동으로 취합하여 전체 BIBB matrix 달성도를 평가하는 기능은 포함하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BTL-002" data-tc-id="TC-BTL-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-002</span><span class="tc-name">BTL Device/Network Port 조항</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -4561,7 +4755,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 검증 프레임워크 (<code>tc_runner.py</code>)가 개별 BACnet APDU 패킷, Property 필드, 그리고 에러 코드(예: Error Class 2 PROPERTY, Code 40 WRITE_ACCESS_DENIED)를 직접 검사(assertion)하지 않고 검증 스크립트의 최종 출력에 의존한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-compat">
+      <div class="tc-card cat-compat" id="TC-BTL-003" data-tc-id="TC-BTL-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-003</span><span class="tc-name">PICS/TPI/JSON 3자 전수 대조 감사</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Compatibility(호환성)</span></div>
@@ -4650,7 +4844,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BTL-004" data-tc-id="TC-BTL-004">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-004</span><span class="tc-name">EPICS 전체 object/property scan</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -4688,7 +4882,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 검증 프레임워크 (<code>tc_runner.py</code>)는 네트워크 상의 개별 BACnet APDU 패킷을 캡처 및 디코딩하여 직접 비교하지 않으며, TPI 선언값과 실제 장비 응답값 간의 구체적 비교 결과는 전적으로 <code>btl_epics_verifier.py</code>의 출력 로그에 의존한다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BTL-005" data-tc-id="TC-BTL-005">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-005</span><span class="tc-name">Max APDU/Object List 경계</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -4720,7 +4914,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 자동 검증 프레임워크 (<code>tc_runner.py</code>)는 Max APDU 1476 바이트 초과 여부, Object List의 정확한 index 및 개수, Segmentation 관련 세부 BACnet 응답 패킷을 직접 캡처하여 검증(assertion)하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-complex">
+      <div class="tc-card cat-complex" id="TC-BTL-006" data-tc-id="TC-BTL-006">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-BTL-006</span><span class="tc-name">service/object bit와 protocol revision</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Function(Complex_복합 기능)</span></div>
@@ -4786,7 +4980,7 @@ code {
     </div>
     <div class="tc-list-title">🧪 연동 Test Case 목록 (3개 TC)</div>
     <div class="tc-grid">
-      <div class="tc-card cat-usability">
+      <div class="tc-card cat-usability" id="TC-ENV-001" data-tc-id="TC-ENV-001">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-ENV-001</span><span class="tc-name">host build와 warning</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Usability(사용성)</span></div>
@@ -4818,7 +5012,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 타겟 보드를 위한 크로스 컴파일(cross build), <code>makeIMX</code> 명령 실행, 타겟 장치 전용 컴파일러 검증 및 SonarQube 등 외부 도구를 이용한 전체 소스코드 정적 분석은 본 TC의 검증 범위를 벗어난다.</div>
         </div>
       </div>
-      <div class="tc-card cat-compat">
+      <div class="tc-card cat-compat" id="TC-ENV-002" data-tc-id="TC-ENV-002">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-ENV-002</span><span class="tc-name">Linux Gateway/vport smoke</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-managed">🔴 Managed 전용</span><span class="tc-category-badge">Compatibility(호환성)</span></div>
@@ -4850,7 +5044,7 @@ code {
 <div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">  - *직접 미검증/공백*: 이 TC에서는 BACnet 트래픽(Who-Is, ReadProperty 등) 송수신 정상 여부, 다양한 리눅스 배포판 환경에서의 호환성(matrix) 및 OS 플랫폼 API 전체 동작 보장은 직접 검증(assertion)하지 않는다.</div>
         </div>
       </div>
-      <div class="tc-card cat-compat">
+      <div class="tc-card cat-compat" id="TC-ENV-003" data-tc-id="TC-ENV-003">
         <div class="tc-header">
           <div><span class="tc-id-badge">TC-ENV-003</span><span class="tc-name">BACstac 공개 API/문서 감사</span></div>
           <div class="tc-badges-wrap"><span class="tc-live-badge live-badge-readonly">🟢 Live 지원</span><span class="tc-category-badge">Compatibility(호환성)</span></div>
@@ -5024,6 +5218,39 @@ function selectSRS(srsId) {
   }
 
   updateNavButtons();
+
+  const q = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
+  if (q) {
+    highlightMatchedTC(q);
+  }
+}
+
+function highlightMatchedTC(q) {
+  document.querySelectorAll('.tc-card').forEach(card => {
+    card.classList.remove('tc-search-highlight');
+  });
+
+  if (!q) return;
+
+  const activeCard = document.querySelector('.req-card.active');
+  if (!activeCard) return;
+
+  let firstTarget = null;
+  const tcCards = activeCard.querySelectorAll('.tc-card');
+  tcCards.forEach(card => {
+    const tcId = (card.getAttribute('data-tc-id') || '').toLowerCase();
+    const tcText = card.textContent.toLowerCase();
+    if (tcId.includes(q) || (q.length >= 3 && tcText.includes(q))) {
+      card.classList.add('tc-search-highlight');
+      if (!firstTarget) firstTarget = card;
+    }
+  });
+
+  if (firstTarget) {
+    setTimeout(() => {
+      firstTarget.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 60);
+  }
 }
 
 function getVisibleSRSIds() {
@@ -5099,7 +5326,7 @@ function applyFilters(autoSelect = true) {
 
   navItems.forEach(item => {
     const liveStatus = item.getAttribute('data-live-status');
-    const text = item.textContent.toLowerCase();
+    const searchTarget = (item.getAttribute('data-search') || item.textContent).toLowerCase();
 
     let modeMatch = false;
     if (mode === 'all') modeMatch = true;
@@ -5108,7 +5335,7 @@ function applyFilters(autoSelect = true) {
     else if (mode === 'live_partial') modeMatch = (liveStatus === 'live_partial');
     else if (mode === 'managed_only') modeMatch = (liveStatus === 'managed_only');
 
-    const searchMatch = !q || text.includes(q);
+    const searchMatch = !q || searchTarget.includes(q);
 
     if (modeMatch && searchMatch) {
       item.classList.remove('hidden');
@@ -5120,7 +5347,7 @@ function applyFilters(autoSelect = true) {
 
   const filterCountElem = document.getElementById('filterCount');
   if (filterCountElem) {
-    filterCountElem.textContent = `${matchCount} / 27`;
+    filterCountElem.textContent = `${matchCount} / 28`;
   }
   updateModeBanner(mode, matchCount);
 
@@ -5130,12 +5357,14 @@ function applyFilters(autoSelect = true) {
       if (!visible.includes(currentSRSId)) {
         selectSRS(visible[0]);
       } else {
-        selectSRS(currentSRSId);
+        highlightMatchedTC(q);
       }
     } else {
       document.querySelectorAll('.req-card').forEach(card => card.classList.remove('active'));
       updateNavButtons();
     }
+  } else {
+    highlightMatchedTC(q);
   }
 }
 

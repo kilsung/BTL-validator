@@ -173,7 +173,14 @@ void FdMonitor::run()
         const uint32_t since_renew_ms = static_cast<uint32_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - last_renew).count());
-        if (fd_link_state::shouldRenew(ttl_, since_renew_ms)) {
+        // 링크 복구 직후(NetworkWatcher 요청)에는 TTL 과 무관하게 즉시 재등록한다.
+        const bool link_recovered = renew_requested_.exchange(false);
+        if (link_recovered) {
+            std::cerr << "[" << ModbusClient::getMsTimestamp()
+                      << "][FD] Network link recovered. Re-registering with BBMD "
+                      << bbmd_ip_ << ':' << bbmd_port_ << " immediately." << std::endl;
+        }
+        if (link_recovered || fd_link_state::shouldRenew(ttl_, since_renew_ms)) {
             last_renew = std::chrono::steady_clock::now();
             int renew_status = 0;
             if (!renewRegistration(renew_status)) {
