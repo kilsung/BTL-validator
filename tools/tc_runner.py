@@ -133,6 +133,7 @@ def load_defaults(root: Path) -> Dict:
         'tpi_path': common.get('tpi_path', 'model/cdu/[BTL]cdu.tpi'),
         'pics_doc': common.get('pics_docx_path', 'model/cdu/[BTL]FUNC_CHECKLIST_CDU.docx'),
         'response_time_ms': common.get('expected_response_time_ms', 200),
+        'performance_policy': common.get('performance_policy', './verification/scripts/performance_policy.json'),
         'gateway_config_dir': common.get('gateway_config_dir', './conf'),
         'vport_config_path': common.get('vport_config_path', '../vport_release/vport.cfg'),
         'gateway_bin': binaries.get('gateway_bin', './bacnet_ip_gateway'),
@@ -170,6 +171,9 @@ def check_environment(root: Path, opts: Dict) -> Dict:
                        ('gateway_config_dir', 'Gateway 설정 디렉터리')):
         p = opts.get(key)
         add(label, rel_exists(p), p or '(미지정)')
+    policy = opts.get('performance_policy')
+    if policy:
+        add('성능 정책', rel_exists(policy), policy)
 
     if opts.get('mode') == 'live':
         try:
@@ -182,7 +186,7 @@ def check_environment(root: Path, opts: Dict) -> Dict:
         except Exception as e:
             add('Python (호스트)', False, str(e))
         add('대상 IP', bool(opts.get('target_ip')), opts.get('target_ip') or '(미입력)')
-        if opts.get('ssh_enabled'):
+        if opts.get('ssh_enabled') and opts.get('soak'):
             ok, detail = check_ssh(root, opts)
             add('SSH 접속 (TC-AVL-004 자원 모니터링)', ok, detail)
         return {'items': items, 'runner': 'host'}
@@ -441,6 +445,7 @@ class TcRunner:
 
         for key, flag in (('gateway_config_dir', '--gateway-config-dir'),
                           ('vport_config_path', '--vport-config-path'),
+                          ('performance_policy', '--performance-policy'),
                           ('tpi_path', '--tpi'), ('pics_doc', '--pics-doc')):
             if opts.get(key):
                 args += [flag, path_fn(opts[key])]
@@ -460,7 +465,7 @@ class TcRunner:
             args += ['--ip', ip, '--port', str(int(opts.get('target_port') or 47808))]
             if opts.get('allow_live_mutation'):
                 args.append('--allow-live-mutation')
-            if opts.get('ssh_enabled'):
+            if opts.get('ssh_enabled') and opts.get('soak'):
                 args += ['--ssh-enable', '--ssh-user', opts.get('ssh_user') or 'root',
                          '--ssh-port', str(int(opts.get('ssh_port') or 22))]
 

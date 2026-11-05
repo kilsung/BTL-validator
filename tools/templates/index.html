@@ -2516,6 +2516,10 @@
                 <div class="col-6"><label>Main 응답지연 (ms)</label><input type="number" class="form-control" id="tcRespMs" value="200"></div>
               </div>
 
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="tcIncludeSoak" onchange="tcSoakChanged()">
+                <label class="form-check-label" for="tcIncludeSoak">장기 신뢰성 시험 포함 (TC-AVL-004)</label>
+              </div>
               <div id="tcSoakFields" class="row g-2 mb-2" style="display:none">
                 <div class="col-6"><label>Soak 시간 (h)</label><input type="number" step="0.5" class="form-control" id="tcSoakHours" value="12"></div>
                 <div class="col-6"><label>질의 주기 (s)</label><input type="number" step="1" class="form-control" id="tcSoakInterval" value="15"></div>
@@ -2526,6 +2530,7 @@
                 <div class="mt-2">
                   <label>TPI (EPICS)</label><input type="text" class="form-control mb-1" id="tcTpi">
                   <label>PICS 체크리스트</label><input type="text" class="form-control mb-1" id="tcPics">
+                  <label>성능 정책</label><input type="text" class="form-control mb-1" id="tcPerformancePolicy">
                   <label>Gateway 설정 디렉터리</label><input type="text" class="form-control mb-1" id="tcGwConf">
                   <label>vport 설정 경로</label><input type="text" class="form-control mb-1" id="tcVportConf">
                   <label>외부 BBMD (host:port, 비우면 내장 BBMD 자동 구동)</label><input type="text" class="form-control mb-1" id="tcBbmd">
@@ -2565,6 +2570,7 @@
               <span><i class="bi bi-list-ol me-2"></i>TC 목록 <small class="ms-2" id="tcCaseCount" style="font-size:0.75rem"></small></span>
               <div class="d-flex gap-2 align-items-center">
                 <input type="text" class="form-control form-control-sm" id="tcFilter" placeholder="검색 (ID/제목)" style="width:180px" oninput="tcRenderCases()">
+                <button class="btn btn-sm btn-light" onclick="tcLoadCases()" title="TC 목록 새로고침" aria-label="TC 목록 새로고침"><i class="bi bi-arrow-clockwise"></i></button>
                 <button class="btn btn-sm btn-light" onclick="tcCollapseCases()" id="tcCaseToggle">펼치기</button>
               </div>
             </div>
@@ -5184,12 +5190,14 @@ async function tcInit() {
     _tcSet('tcTargetIp', o.target_ip); _tcSet('tcTargetPort', o.target_port);
     _tcSet('tcDeviceId', o.device_id); _tcSet('tcRespMs', o.response_time_ms);
     _tcSet('tcTpi', o.tpi_path); _tcSet('tcPics', o.pics_doc);
+    _tcSet('tcPerformancePolicy', o.performance_policy);
     _tcSet('tcGwConf', o.gateway_config_dir); _tcSet('tcVportConf', o.vport_config_path);
     _tcSet('tcBbmd', o.bbmd_endpoint);
     _tcSet('tcSshUser', o.ssh_user); _tcSet('tcSshPort', o.ssh_port);
     _tcSet('tcSoakHours', o.soak_hours); _tcSet('tcSoakInterval', o.soak_interval);
     _tcSetChk('tcMutation', o.allow_live_mutation); _tcSetChk('tcSsh', o.ssh_enabled);
     _tcSetChk('tcLong', o.long); _tcSetChk('tcAutoBuild', o.auto_build ?? true);
+    _tcSetChk('tcIncludeSoak', o.soak);
     _tcSetChk('tcAllowBuild', o.allow_build); _tcSetChk('tcReleaseBac0', o.release_bac0 ?? true);
     document.getElementById('tcSshFields').style.display = _tcChk('tcSsh') ? '' : 'none';
     tc.bins = {gateway_bin: o.gateway_bin, vport_bin: o.vport_bin,
@@ -5231,8 +5239,22 @@ function tcModeChanged() {
 }
 
 function tcSuiteChanged() {
-  document.getElementById('tcSoakFields').style.display = _tcVal('tcSuite') === 'soak' ? '' : 'none';
+  if (_tcVal('tcSuite') === 'soak') _tcSetChk('tcIncludeSoak', true);
+  tcSoakChanged();
   if (_tcVal('tcSuite') === 'custom' && document.getElementById('tcCaseSection').style.display === 'none') tcCollapseCases();
+}
+
+function tcSoakChanged() {
+  const suite = _tcVal('tcSuite');
+  const eligible = ['full', 'all', 'soak', 'custom'].includes(suite);
+  const checkbox = document.getElementById('tcIncludeSoak');
+  checkbox.disabled = !eligible || suite === 'soak';
+  if (!eligible) checkbox.checked = false;
+  document.getElementById('tcSoakFields').style.display = checkbox.checked ? '' : 'none';
+  if (suite === 'custom') {
+    checkbox.checked ? tc.checked.add('TC-AVL-004') : tc.checked.delete('TC-AVL-004');
+    tcRenderCases();
+  }
 }
 
 function tcCollapseCases() {
@@ -5251,6 +5273,8 @@ async function tcLoadCases() {
     return;
   }
   tc.cases = d.cases;
+  const availableIds = new Set(tc.cases.map(item => item.tc_id));
+  tc.checked = new Set([...tc.checked].filter(id => availableIds.has(id)));
   const groups = [...new Set(tc.cases.map(c => c.tc_id.split('-').slice(0, 2).join('-')))];
   document.getElementById('tcGroupBtns').innerHTML =
     ['', ...groups].map(g => `<button class="btn btn-outline-secondary tc-group-btn" onclick="tcSetGroup('${g}')" data-g="${g}">${g || '전체'}</button>`).join('');
@@ -5282,31 +5306,38 @@ function tcRenderCases() {
 function tcToggleCase(id, on) {
   on ? tc.checked.add(id) : tc.checked.delete(id);
   if (on && _tcVal('tcSuite') !== 'custom') _tcSet('tcSuite', 'custom');
+  _tcSetChk('tcIncludeSoak', tc.checked.has('TC-AVL-004'));
+  tcSuiteChanged();
   tcRenderCases();
 }
 
 function tcToggleAll(on) {
   tcVisibleCases().forEach(c => on ? tc.checked.add(c.tc_id) : tc.checked.delete(c.tc_id));
   if (on && _tcVal('tcSuite') !== 'custom') _tcSet('tcSuite', 'custom');
+  _tcSetChk('tcIncludeSoak', tc.checked.has('TC-AVL-004'));
+  tcSuiteChanged();
   tcRenderCases();
 }
 
 function tcCollectOpts() {
   const suite = _tcVal('tcSuite');
+  const soak = suite === 'soak' || (_tcChk('tcIncludeSoak') &&
+    ['full', 'all', 'custom'].includes(suite));
   const o = {
     mode: tcMode(),
     suite: suite === 'custom' ? 'all' : suite,
     cases: suite === 'custom' ? [...tc.checked] : (suite === 'soak' ? ['TC-AVL-004'] : []),
-    soak: suite === 'soak' || (suite === 'custom' && tc.checked.has('TC-AVL-004')),
+    soak,
     soak_hours: parseFloat(_tcVal('tcSoakHours')) || 12, soak_interval: parseFloat(_tcVal('tcSoakInterval')) || 15,
     target_ip: _tcVal('tcTargetIp'), target_port: parseInt(_tcVal('tcTargetPort')) || 47808,
     device_id: parseInt(_tcVal('tcDeviceId')) || 1200, response_time_ms: parseInt(_tcVal('tcRespMs')) || 0,
     tpi_path: _tcVal('tcTpi'), pics_doc: _tcVal('tcPics'),
+    performance_policy: _tcVal('tcPerformancePolicy'),
     gateway_config_dir: _tcVal('tcGwConf'), vport_config_path: _tcVal('tcVportConf'),
     bbmd_endpoint: _tcVal('tcBbmd'),
     allow_live_mutation: _tcChk('tcMutation'), long: _tcChk('tcLong'),
-    ssh_enabled: _tcChk('tcSsh'), ssh_user: _tcVal('tcSshUser'), ssh_port: parseInt(_tcVal('tcSshPort')) || 22,
-    ssh_pass: document.getElementById('tcSshPass').value,
+    ssh_enabled: tcMode() === 'live' && soak && _tcChk('tcSsh'), ssh_user: _tcVal('tcSshUser'), ssh_port: parseInt(_tcVal('tcSshPort')) || 22,
+    ssh_pass: tcMode() === 'live' && soak && _tcChk('tcSsh') ? document.getElementById('tcSshPass').value : '',
     auto_build: _tcChk('tcAutoBuild'), allow_build: _tcChk('tcAllowBuild'), release_bac0: _tcChk('tcReleaseBac0'),
     ...(tc.bins || {}),
   };
