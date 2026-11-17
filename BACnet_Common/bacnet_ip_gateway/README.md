@@ -8,37 +8,11 @@
 
 상위 BACnet 클라이언트(SCADA, BMS)와 하위 필드 장치(Modbus RTU/TCP 디바이스, 센서, 액추에이터 등) 사이에서 표준 BACnet 객체 인터페이스와 Modbus 레지스터 간의 실시간 양방향 매핑을 수행합니다.
 
-```mermaid
-graph TB
-    subgraph ClientLayer ["1. BACnet/IP Client Layer (상위 관제망)"]
-        SCADA["SCADA / HMI"]
-        BMS["Building Management System"]
-    end
+<p align="center">
+  <img src="verification/docs/assets/bacnet_ip_gateway_readme_fig1.svg" alt="시스템 계층 구성" />
+</p>
 
-    subgraph GatewayLayer ["2. BACnet/IP Gateway System Layer (코어 변환 계층)"]
-        Stack["BACstac v7.11 Core Stack (UDP 47808)"]
-        ObjHandler["BACnet Object Manager (Device, Network Port, AI, AO, BI, BV)"]
-        Priority["16-Level Priority Array & Relinquish Default"]
-        COV["COV Manager (Change of Value Events)"]
-        Config["JSON Config Engine (conf/)"]
-        ModbusEngine["Modbus Client Engine (2-Level Priority Queue)"]
-    end
-
-    subgraph BusLayer ["3. Field Bus & Device Layer (하위 제어망)"]
-        vport["vport Virtual Serial Bus / PTY (가상 시리얼 통신 허브)"]
-        ModbusDev["CDU / 칠러 Main SW (Modbus RTU Slave)"]
-    end
-
-    SCADA <-->|BACnet/IP UDP| Stack
-    BMS <-->|BACnet/IP UDP| Stack
-    Stack <--> ObjHandler
-    ObjHandler <--> Priority
-    ObjHandler <--> COV
-    ObjHandler <--> ModbusEngine
-    Config -.->|Profile Mapping| ObjHandler
-    ModbusEngine <-->|PTY /dev/ttyMASTER2| vport
-    vport <-->|/dev/ttySLAVE| ModbusDev
-```
+> 범례: 굵은 실선 = 자체 코딩부, 회색 채움 = 상용 스택(BACstac), 점선 = 외부 요소(범위 밖). 요청/응답은 방향별 화살표로 분리 표기.
 
 ---
 
@@ -140,39 +114,13 @@ Modbus 슬레이브 Unit ID와 매핑할 BACnet 객체(AI, AO, BI, BV) 목록을
 
 실제 RS-485 하드웨어가 없는 개발 PC 환경에서는 가상 시리얼 통신 허브 프로그램인 **`vport`**를 실행하여 Modbus 통신 루프백 및 멀티 마스터 다중화 환경을 구성합니다.
 
-`vport`는 리눅스 가상 터미널(PTY)을 활용하여 물리적인 결선 없이 **복수의 프로토콜 변환 마스터(Modbus/TCP, BACnet/IP, SNMP)가 단일 CDU/칠러 Main SW의 Modbus RTU 포트에 충돌 없이 동시 접근**할 수 있도록 요청을 큐잉하고 중재하는 소프트웨어 허브입니다.
+`vport`는 리눅스 가상 터미널(PTY)을 활용하여 물리적인 결선 없이 **복수의 프로토콜 변환 마스터(SNMP, BACnet/IP, Redfish)가 단일 CDU/칠러 Main SW의 Modbus RTU 포트에 충돌 없이 동시 접근**할 수 있도록 요청을 큐잉하고 중재하는 소프트웨어 허브입니다.
 
-```mermaid
-graph TB
-    subgraph Masters ["복수 프로토콜 마스터 계층 (동적 N개 마스터 확장 가능)"]
-        M1["마스터 1: Modbus/TCP 게이트웨이<br>(/dev/ttyMASTER1)"]
-        M2["마스터 2: BACnet/IP 게이트웨이<br>(/dev/ttyMASTER2)"]
-        M3["마스터 3: SNMP 게이트웨이<br>(/dev/ttyMASTER3)"]
-        M4["마스터 4+: 추가 확장 게이트웨이 / 진단 CLI<br>(/dev/ttyMASTER4 ...)"]
-    end
+<p align="center">
+  <img src="verification/docs/assets/bacnet_ip_gateway_readme_vport.svg" alt="vport Modbus RTU 중재 구조" />
+</p>
 
-    subgraph Hub ["vport 가상 시리얼 허브 코어 (ModbusHub Core)"]
-        LL["마스터 수신자 (listener_loop)<br>select() 멀티플렉싱으로 동시 요청 비동기 수신"]
-        RQ["공유 요청 큐 (request_queue)<br>Mutex & Condition Variable 보호 스레드 안전 큐"]
-        DL["슬레이브 분배자 (dispatcher_loop)<br>순차 전송 및 원본 요청 마스터로 응답 회신"]
-        
-        LL -->|완전한 패킷 프레임 조립 & 큐잉| RQ
-        RQ -->|순차 Pop| DL
-    end
-
-    subgraph Slave ["하위 장치 메인 소프트웨어 (Slave)"]
-        S_PORT["가상 슬레이브 포트 (/dev/ttySLAVE)"]
-        MAIN_SW["CDU / 칠러 Main SW<br>(Modbus RTU Slave 제어 프로그램)"]
-        
-        S_PORT <--> MAIN_SW
-    end
-
-    M1 <-->|요청 전송 / 응답 수신| LL
-    M2 <-->|요청 전송 / 응답 수신| LL
-    M3 <-->|요청 전송 / 응답 수신| LL
-    M4 -.->|"동적 N개 채널 확장"| LL
-    DL <-->|Modbus RTU 트랜잭션 왕복| S_PORT
-```
+> 범례: 굵은 실선 = 자체 코딩부(Modbus RTU 중재 추가 구현), 회색 채움 = PTY 기본 연결 기능(OS PTY 기반, socat 상당), 점선 = 외부 요소(범위 밖).
 
 #### Step 1. 가상 시리얼 포트 허브 (`vport`) 실행
 가상 PTY 포트 쌍(`/dev/ttyMASTER1~N` $\leftrightarrow$ `/dev/ttySLAVE`)을 생성합니다.

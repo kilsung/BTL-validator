@@ -1,7 +1,7 @@
 {
   "default_mode": "managed",
   "common": {
-    "suite": "all",
+    "suite": "quick",
     "device_id": 1200,
     "tpi_path": "model/cdu/[BTL]cdu.tpi",
     "pics_docx_path": "model/cdu/[BTL]FUNC_CHECKLIST_CDU.docx",

@@ -14,6 +14,23 @@ CONFIG_FILE="$SCRIPT_DIR/test_config.json"
 DOCKER_IMAGE="bacnet-gateway-test:latest"
 DOCKERFILE="$SCRIPT_DIR/docker/Dockerfile"
 
+# root 권한 컨테이너(네트워크 장애 TC 실행 등) 실행 후 호스트 파일 소유권 복원
+cleanup_ownership() {
+    local exit_code=$?
+    trap - EXIT INT TERM  # 재귀 호출 방지
+    if [ "${NET_FAULT_RUN:-0}" = "1" ]; then
+        # Docker를 통해 root로 생성되었을 수 있는 모든 테스트 산출물의 소유권을 호스트 사용자로 복원
+        docker run --rm \
+            --entrypoint /bin/bash \
+            --user 0:0 \
+            -v "$GATEWAY_ROOT":/workspace/gateway \
+            "$DOCKER_IMAGE" \
+            -c "chown -R $(id -u):$(id -g) /workspace/gateway/verification/results /workspace/gateway/verification/log /workspace/gateway/verification/scripts/log /workspace/gateway/verification/scripts/__pycache__ /workspace/gateway/verification/unit/run_tests /workspace/gateway/bacnet_ip_gateway /workspace/gateway/current_device.tpi 2>/dev/null || true; chmod -R 777 /workspace/gateway/verification/log 2>/dev/null || true" >/dev/null 2>&1 || true
+    fi
+    exit $exit_code
+}
+trap cleanup_ownership EXIT INT TERM
+
 # Normalize absolute paths under ES_ROOT to relative paths based on GATEWAY_ROOT
 normalize_path() {
     local target="$1"
@@ -204,7 +221,7 @@ detect_applicable_ssh_tcs() {
 # - TC-BAC-007~015, TC-BAC-019, TC-BAC-020, TC-MAP-007
 detect_applicable_mutation_tcs() {
     MATCHED_MUTATION_TCS=()
-    local ALL_MUTATING=("TC-BAC-007" "TC-BAC-008" "TC-BAC-009" "TC-BAC-010" "TC-BAC-011" "TC-BAC-012" "TC-BAC-013" "TC-BAC-014" "TC-BAC-015" "TC-BAC-019" "TC-BAC-020" "TC-MAP-007")
+    local ALL_MUTATING=("TC-BAC-007" "TC-BAC-008" "TC-BAC-009" "TC-BAC-010" "TC-BAC-011" "TC-BAC-012" "TC-BAC-013" "TC-BAC-014" "TC-BAC-015" "TC-BAC-019" "TC-BAC-020" "TC-BAC-021" "TC-MAP-007")
 
     if [ "$SUITE_CHOICE" = "1" ] || [ "$SUITE_CHOICE" = "2" ] || [ "$SUITE_CHOICE" = "3" ]; then
         MATCHED_MUTATION_TCS=("${ALL_MUTATING[@]}")
@@ -252,91 +269,118 @@ check_need_bbmd() {
     fi
 }
 
-# Ensure Docker image exists or build it
+# Ensure Docker image exists (and is up to date with the Dockerfile) or build it
 ensure_docker_image() {
-    if ! docker image inspect "$DOCKER_IMAGE" >/dev/null 2>&1; then
+    local dockerfile_sha inspect_out image_sha
+    dockerfile_sha="$(sha256sum "$DOCKERFILE" | cut -d' ' -f1)"
+    if ! inspect_out="$(docker image inspect --format '{{ index .Config.Labels "dockerfile.sha256" }}' "$DOCKER_IMAGE" 2>&1)"; then
+        if echo "$inspect_out" | grep -qi 'permission denied'; then
+            echo "[ERROR] Docker 데몬에 접근할 권한이 없습니다: $inspect_out" >&2
+            echo "        현재 셸에 docker 그룹이 적용되지 않았을 수 있습니다." >&2
+            echo "        'newgrp docker' 실행 또는 재로그인(WSL 은 'wsl --shutdown' 후 재접속) 하거나," >&2
+            echo "        'sudo usermod -aG docker \$USER' 로 그룹에 추가하십시오." >&2
+            exit 1
+        fi
+        image_sha=""
+    else
+        image_sha="$inspect_out"
+    fi
+    if [ "$image_sha" != "$dockerfile_sha" ]; then
         echo "======================================================="
-        echo " [Docker] $DOCKER_IMAGE 이미지가 없어 새로 빌드합니다..."
+        echo " [Docker] $DOCKER_IMAGE 이미지가 없거나 Dockerfile 이 변경되어 새로 빌드합니다..."
         echo "======================================================="
-        docker build -t "$DOCKER_IMAGE" -f "$DOCKERFILE" "$GATEWAY_ROOT"
+        docker build --label "dockerfile.sha256=$dockerfile_sha" -t "$DOCKER_IMAGE" -f "$DOCKERFILE" "$GATEWAY_ROOT"
     fi
 }
 
-# Build target directory using host toolchain or fallback to Docker
+# 컨테이너(테스트 실행 환경) 안에서 명령 실행: $1=작업 디렉터리(호스트 절대경로), $2=bash -c 명령
+run_in_container() {
+    local dir="$1"
+    local cmd="$2"
+    local rel_path
+    rel_path="$(python3 -c "import os; print(os.path.relpath('$dir', '$GATEWAY_ROOT/..'))" 2>/dev/null || true)"
+    [ -z "$rel_path" ] && rel_path="$PROJECT_DIR_NAME"
+    docker run --rm \
+        --entrypoint /bin/bash \
+        --user "$(id -u):$(id -g)" \
+        -v "$GATEWAY_ROOT/..":/workspace \
+        -w "/workspace/$rel_path" \
+        "$DOCKER_IMAGE" \
+        -c "$cmd"
+}
+
+# 바이너리가 테스트 컨테이너에서 실행 가능한지(ldd 에 'not found' 없음) 확인한다.
+# 호스트 glibc/libstdc++ 가 컨테이너보다 높은 환경에서 빌드된 바이너리는
+# "version `GLIBC_x.y' not found" 로 실패하므로 이를 감지한다.
+# 인자: 호스트 절대경로. 반환: 0=실행 가능, 1=없음/실행 불가
+binary_runs_in_container() {
+    local bin="$1"
+    [ -f "$bin" ] || return 1
+    local dir
+    dir="$(dirname "$bin")"
+    run_in_container "$dir" "! ldd './$(basename "$bin")' 2>&1 | grep -q 'not found'" >/dev/null 2>&1
+}
+
+# 컨테이너에서 빌드한다. $4=1 이면 make clean 후 빌드(기존 산출물 제거).
 build_dir() {
     local target_dir="$1"
     local make_target="$2"
     local desc="$3"
+    local do_clean="${4:-0}"
 
     if [ ! -d "$target_dir" ] || [ ! -f "$target_dir/Makefile" ]; then
         return 1
     fi
 
     echo "======================================================="
-    echo " [Auto-Build] $desc 자동 빌드를 시작합니다..."
+    echo " [Auto-Build] $desc 자동 빌드를 시작합니다 (Docker 컨테이너)..."
     echo "  - 디렉터리: $target_dir"
     [ -n "$make_target" ] && echo "  - 타깃    : $make_target"
+    [ "$do_clean" = "1" ] && echo "  - make clean 후 재빌드"
     echo "======================================================="
 
-    if command -v make >/dev/null 2>&1 && command -v g++ >/dev/null 2>&1; then
-        echo "[Build] 호스트 툴체인(g++/make)을 사용하여 빌드합니다."
-        if [ -n "$make_target" ]; then
-            make -C "$target_dir" "$make_target"
-        else
-            make -C "$target_dir"
-        fi
+    ensure_docker_image
+    if [ "$do_clean" = "1" ]; then
+        run_in_container "$target_dir" "make clean && make $make_target" || { echo "[Auto-Build] $desc 빌드 실패" >&2; return 1; }
     else
-        echo "[Build] 호스트에 C++ 컴파일러가 없어 Docker 컨테이너 환경에서 빌드를 수행합니다..."
-        ensure_docker_image
-        local rel_path
-        rel_path="$(python3 -c "import os; print(os.path.relpath('$target_dir', '$GATEWAY_ROOT/..'))" 2>/dev/null || true)"
-        if [ -z "$rel_path" ]; then
-            rel_path="$PROJECT_DIR_NAME"
-        fi
-        docker run --rm \
-            --entrypoint /bin/bash \
-            --user "$(id -u):$(id -g)" \
-            -v "$GATEWAY_ROOT/..":/workspace \
-            -w "/workspace/$rel_path" \
-            "$DOCKER_IMAGE" \
-            -c "make $make_target"
+        run_in_container "$target_dir" "make $make_target" || { echo "[Auto-Build] $desc 빌드 실패" >&2; return 1; }
     fi
     echo "[Auto-Build] $desc 빌드 완료."
     echo ""
 }
 
-# Check and auto-build required binaries if source Makefile exists
+# managed 모드용: 필요한 바이너리가 없거나, 소스가 변경됐거나, 컨테이너에서 실행 불가하면
+# (호스트에서 빌드된 경우 등) 컨테이너에서 make clean && make 로 재빌드한다.
 ensure_binaries() {
+    ensure_docker_image
+
     # 1. Gateway binary
-    local need_gw_build=0
-    if [ ! -f "$GATEWAY_ROOT/$GATEWAY_BIN" ]; then
-        need_gw_build=1
-    elif [ -d "$GATEWAY_ROOT/src" ] && [ -n "$(find "$GATEWAY_ROOT/src" -type f -newer "$GATEWAY_ROOT/$GATEWAY_BIN" 2>/dev/null)" ]; then
-        need_gw_build=1
-    fi
-    if [ "$need_gw_build" = "1" ]; then
-        if [ -f "$GATEWAY_ROOT/Makefile" ]; then
-            echo "[Notice] '$GATEWAY_BIN' 바이너리가 없거나 소스 코드가 변경되었습니다. 빌드를 진행합니다."
-            build_dir "$GATEWAY_ROOT" "" "bacnet_ip_gateway" || true
+    local gw="$GATEWAY_ROOT/$GATEWAY_BIN"
+    if [ -f "$GATEWAY_ROOT/Makefile" ]; then
+        if ! binary_runs_in_container "$gw"; then
+            echo "[Notice] '$GATEWAY_BIN' 바이너리가 없거나 컨테이너에서 실행할 수 없습니다(호스트 빌드 등). 재빌드합니다."
+            build_dir "$GATEWAY_ROOT" "" "bacnet_ip_gateway" 1 || true
+        elif [ -d "$GATEWAY_ROOT/src" ] && [ -n "$(find "$GATEWAY_ROOT/src" -type f -newer "$gw" 2>/dev/null)" ]; then
+            echo "[Notice] 소스 코드가 변경되었습니다. 빌드를 진행합니다."
+            build_dir "$GATEWAY_ROOT" "" "bacnet_ip_gateway" 0 || true
         fi
     fi
 
     # 2. vport / vport_test binary (vport_release)
     local vport_dir
     vport_dir="$(cd "$GATEWAY_ROOT/$(dirname "$VPORT_BIN")" 2>/dev/null && pwd || true)"
-    if [ ! -f "$GATEWAY_ROOT/$VPORT_BIN" ] || [ ! -f "$GATEWAY_ROOT/$VPORT_TEST_BIN" ]; then
-        if [ -n "$vport_dir" ] && [ -f "$vport_dir/Makefile" ]; then
-            echo "[Notice] vport / vport_test 바이너리가 없습니다. $vport_dir 소스에서 빌드를 진행합니다."
-            build_dir "$vport_dir" "all" "vport & vport_test" || true
+    if [ -n "$vport_dir" ] && [ -f "$vport_dir/Makefile" ]; then
+        if ! binary_runs_in_container "$GATEWAY_ROOT/$VPORT_BIN" || ! binary_runs_in_container "$GATEWAY_ROOT/$VPORT_TEST_BIN"; then
+            echo "[Notice] vport / vport_test 바이너리가 없거나 컨테이너에서 실행할 수 없습니다. 재빌드합니다."
+            build_dir "$vport_dir" "all" "vport & vport_test" 1 || true
         fi
     fi
 
-    # 3. Unit test binary
-    if [ ! -f "$GATEWAY_ROOT/$UNIT_TEST_BIN" ]; then
-        if [ -f "$GATEWAY_ROOT/Makefile" ]; then
-            echo "[Notice] '$UNIT_TEST_BIN' 바이너리가 없습니다. 소스에서 빌드를 진행합니다."
-            build_dir "$GATEWAY_ROOT" "$UNIT_TEST_BIN" "unit tests" || true
-        fi
+    # 3. Unit test binary (게이트웨이 clean 시 함께 삭제되므로 이후에 확인)
+    if [ -f "$GATEWAY_ROOT/Makefile" ] && ! binary_runs_in_container "$GATEWAY_ROOT/$UNIT_TEST_BIN"; then
+        echo "[Notice] '$UNIT_TEST_BIN' 바이너리가 없거나 컨테이너에서 실행할 수 없습니다. 재빌드합니다."
+        rm -f "$GATEWAY_ROOT/$UNIT_TEST_BIN"
+        build_dir "$GATEWAY_ROOT" "$UNIT_TEST_BIN" "unit tests" 0 || true
     fi
 }
 
@@ -345,8 +389,8 @@ ensure_binaries() {
 # - 네트워크 장애 TC(TC-NET-*)는 컨테이너 안에서 netns/veth 를 만들고 링크 DOWN/UP,
 #   IPv4 변경을 주입하므로 root 권한과 호스트와 분리된 네트워크(--net=host 미사용)가 필요하다.
 #   이 경우 호스트 네트워크에는 영향이 없고, 결과 파일 소유권은 run_gateway_tcs.py 가
-#   종료 시 HOST_UID/HOST_GID 로 되돌린다.
-# - 그 외(live 포함)는 기존과 같이 일반 사용자 + --net=host 로 실행한다.
+#   종료 시 HOST_UID/HOST_GID 로 되돌리며, 비정상 종료 시에도 trap 핸들러가 호스트 사용자로 복원한다.
+# - 그 외(quick 스위트, live 포함)는 비특권 일반 사용자(--user UID:GID) + --net=host 로 실행한다.
 # 인자: $1=mode(managed|live) $2=suite $3=case 패턴(쉼표/공백 구분, 비어 있을 수 있음)
 # 결과: DOCKER_RUNTIME_OPTS, NET_FAULT_RUN(0|1)
 # ---------------------------------------------------------------------------
@@ -369,7 +413,7 @@ select_docker_runtime() {
         DOCKER_RUNTIME_OPTS="--privileged --user 0:0 -e HOME=/root -e HOST_UID=$(id -u) -e HOST_GID=$(id -g)"
         echo "    [Docker] 네트워크 장애 TC(TC-NET-*) 포함: root 권한 + 독립 네트워크(netns)로 컨테이너를 실행합니다 (호스트 네트워크 영향 없음)."
     else
-        DOCKER_RUNTIME_OPTS="--net=host --privileged --user $(id -u):$(id -g)"
+        DOCKER_RUNTIME_OPTS="--net=host --user $(id -u):$(id -g)"
     fi
 }
 
@@ -401,7 +445,7 @@ if [ $# -gt 0 ]; then
     done
     select_docker_runtime "$CLI_MODE" "$CLI_SUITE" "$CLI_CASES"
     # shellcheck disable=SC2086
-    exec docker run --rm -it $DOCKER_RUNTIME_OPTS \
+    docker run --rm -it $DOCKER_RUNTIME_OPTS \
         -e PYTHONDONTWRITEBYTECODE=1 \
         -e SSH_PASS="${SSH_PASS:-}" \
         -v "$GATEWAY_ROOT/..":/workspace \
@@ -409,6 +453,7 @@ if [ $# -gt 0 ]; then
         $SSH_CLI_VOL \
         $USER_MAP_OPT \
         "$DOCKER_IMAGE" "$@"
+    exit $?
 fi
 
 # Interactive Menu
@@ -436,9 +481,9 @@ fi
 # 2. Suite selection
 echo ""
 echo "[2] 테스트 스위트를 선택하십시오:"
-echo "    1) quick (기본 기능 54개 빠른 검증) [기본값]"
-echo "    2) full (기능/성능 90개 정밀 검증)"
-echo "    3) all (감사/빌드 포함 94개 전체 검증)"
+echo "    1) quick (기본 기능 빠른 검증) [기본값]"
+echo "    2) full (기능/성능 정밀 검증)"
+echo "    3) all (감사/빌드 포함 95개 전체 검증)"
 echo "    4) case 지정 (예: TC-BAC-004, TC-BTL-*, TC-AVL-004)"
 read -p "선택 (1/2/3/4, 기본: 1): " SUITE_CHOICE
 SUITE_CHOICE=${SUITE_CHOICE:-1}

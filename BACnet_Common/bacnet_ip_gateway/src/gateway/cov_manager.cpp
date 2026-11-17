@@ -217,6 +217,74 @@ static void BACstac_callback onConfCovComplete(
     (void)pError;
 }
 
+// ---------------------------------------------------------------------------
+// COV listOfValues 조립
+// ---------------------------------------------------------------------------
+// 135 Table 13-1: AI/AO/AV/BI/BO/BV 의 COV 알림은 Present_Value 와 Status_Flags 를
+// 함께 보고해야 한다.
+
+namespace {
+
+/// COV listOfValues 저장소. values[] 가 내부 멤버를 가리키므로 생성 후 복사/이동하지 않는다.
+struct CovValueList {
+    BACSTAC_PROPERTY_VALUE values[2];
+    BACSTAC_REAL           analog_val;
+    BACSTAC_ENUM           binary_val;
+    BACSTAC_BIT_STRING     status_flags;
+};
+
+constexpr BACSTAC_PROPERTY_COUNT kCovValueCount = 2U;
+
+void buildCovValueList(ObjectMapping* mapping, double raw_val, CovValueList& out)
+{
+    const bool is_binary = (mapping->bacnet_type == OBJ_BINARY_INPUT ||
+#ifdef BINARY_OUTPUT_SUPPORT
+                            mapping->bacnet_type == OBJ_BINARY_OUTPUT ||
+#endif
+                            mapping->bacnet_type == OBJ_BINARY_VALUE);
+
+    // [0] Present_Value
+    BACSTAC_PROPERTY_VALUE& pv = out.values[0];
+    pv.propID   = PROP_PRESENT_VALUE;
+    pv.index    = BACSTAC_VOID_INDEX;
+    pv.priority = BACSTAC_VOID_PRI;
+
+    if (is_binary) {
+        // Polarity 적용
+        BACSTAC_POLARITY polarity = POLARITY_NORMAL;
+        BACSTAC_ENUM pol_val = 0;
+        BACSTAC_PROPERTY_CONTENTS pcPol;
+        BACstacInitContentsToVar(&pcPol, DATA_TYPE_ENUM, &pol_val, sizeof(pol_val));
+        if (BACstacRetrievePropertyInstance2(mapping->hObject, PROP_POLARITY,
+                                             BACSTAC_VOID_INDEX, &pcPol, nullptr) == BACSTAC_STATUS_OK) {
+            polarity = static_cast<BACSTAC_POLARITY>(pol_val);
+        }
+        bool is_active = (raw_val != 0.0);
+        if (polarity == POLARITY_REVERSE) { is_active = !is_active; }
+        out.binary_val = is_active ? BACSTAC_BINARY_ACTIVE : BACSTAC_BINARY_INACTIVE;
+        BACstacInitContentsToVar(&pv.value, DATA_TYPE_ENUM, &out.binary_val, sizeof(out.binary_val));
+    } else {
+        out.analog_val = static_cast<BACSTAC_REAL>(raw_val);
+        BACstacInitContentsToVar(&pv.value, DATA_TYPE_REAL, &out.analog_val, sizeof(out.analog_val));
+    }
+
+    // [1] Status_Flags: 스택 DB 값(Out_Of_Service 등 반영)을 사용, 실패 시 {F,F,F,F}
+    BACSTAC_PROPERTY_VALUE& sf = out.values[1];
+    sf.propID   = PROP_STATUS_FLAGS;
+    sf.index    = BACSTAC_VOID_INDEX;
+    sf.priority = BACSTAC_VOID_PRI;
+
+    BACSTAC_PROPERTY_CONTENTS pcSf;
+    BACstacInitContentsToVar(&pcSf, DATA_TYPE_BIT_STRING, &out.status_flags, sizeof(out.status_flags));
+    if (BACstacRetrievePropertyInstance2(mapping->hObject, PROP_STATUS_FLAGS,
+                                         BACSTAC_VOID_INDEX, &pcSf, nullptr) != BACSTAC_STATUS_OK) {
+        (void)BACstacInitBitString(&out.status_flags, 4U);
+    }
+    BACstacInitContentsToVar(&sf.value, DATA_TYPE_BIT_STRING, &out.status_flags, sizeof(out.status_flags));
+}
+
+} // namespace
+
 void CovManager::sendNotification(ObjectMapping* mapping, double new_val)
 {
     if (hLocalDev_ == nullptr || mapping->hObject == nullptr) { return; }
@@ -233,38 +301,8 @@ void CovManager::sendNotification(ObjectMapping* mapping, double new_val)
         return;
     }
 
-    const bool is_binary = (mapping->bacnet_type == OBJ_BINARY_INPUT ||
-#ifdef BINARY_OUTPUT_SUPPORT
-                            mapping->bacnet_type == OBJ_BINARY_OUTPUT ||
-#endif
-                            mapping->bacnet_type == OBJ_BINARY_VALUE);
-
-    // listOfValues 조립: PRESENT_VALUE(85) 하나만 포함
-    BACSTAC_PROPERTY_VALUE pv;
-    BACSTAC_REAL  analog_val = static_cast<BACSTAC_REAL>(new_val);
-    BACSTAC_ENUM  binary_val = (new_val != 0.0) ? BACSTAC_BINARY_ACTIVE : BACSTAC_BINARY_INACTIVE;
-
-    pv.propID   = PROP_PRESENT_VALUE;
-    pv.index    = BACSTAC_VOID_INDEX;
-    pv.priority = BACSTAC_VOID_PRI;
-
-    if (is_binary) {
-        // Polarity 적용
-        BACSTAC_POLARITY polarity = POLARITY_NORMAL;
-        BACSTAC_ENUM pol_val = 0;
-        BACSTAC_PROPERTY_CONTENTS pcPol;
-        BACstacInitContentsToVar(&pcPol, DATA_TYPE_ENUM, &pol_val, sizeof(pol_val));
-        if (BACstacRetrievePropertyInstance2(mapping->hObject, PROP_POLARITY,
-                                             BACSTAC_VOID_INDEX, &pcPol, nullptr) == BACSTAC_STATUS_OK) {
-            polarity = static_cast<BACSTAC_POLARITY>(pol_val);
-        }
-        bool is_active = (new_val != 0.0);
-        if (polarity == POLARITY_REVERSE) { is_active = !is_active; }
-        binary_val = is_active ? BACSTAC_BINARY_ACTIVE : BACSTAC_BINARY_INACTIVE;
-        BACstacInitContentsToVar(&pv.value, DATA_TYPE_ENUM, &binary_val, sizeof(binary_val));
-    } else {
-        BACstacInitContentsToVar(&pv.value, DATA_TYPE_REAL, &analog_val, sizeof(analog_val));
-    }
+    CovValueList vl{};
+    buildCovValueList(mapping, new_val, vl);
 
     std::vector<CovSubscriber> targets;
     auto now = std::chrono::steady_clock::now();
@@ -293,8 +331,8 @@ void CovManager::sendNotification(ObjectMapping* mapping, double new_val)
             covInfo.initDeviceID.instNumber = devInst;
             (void)BACstacGetObjectID(mapping->hObject, &covInfo.monitoredObjectID);
             covInfo.timeRemaining = time_remaining;
-            covInfo.listOfValues = &pv;
-            covInfo.nValueCount = 1;
+            covInfo.listOfValues = vl.values;
+            covInfo.nValueCount = kCovValueCount;
 
             const BACSTAC_STATUS st = BACstacConfCOVNotificationEx(
                 nullptr, &sub.destAddress, &covInfo, onConfCovComplete, nullptr, nullptr, nullptr);
@@ -312,8 +350,8 @@ void CovManager::sendNotification(ObjectMapping* mapping, double new_val)
             covInfo.initDeviceID.instNumber = devInst;
             (void)BACstacGetObjectID(mapping->hObject, &covInfo.monitoredObjectID);
             covInfo.timeRemaining = time_remaining;
-            covInfo.listOfValues = &pv;
-            covInfo.nValueCount = 1;
+            covInfo.listOfValues = vl.values;
+            covInfo.nValueCount = kCovValueCount;
 
             const BACSTAC_STATUS st = BACstacUnconfCOVNotificationEx(
                 nullptr, &sub.destAddress, &covInfo, nullptr);
@@ -336,36 +374,8 @@ void CovManager::sendInitialNotification(ObjectMapping* mapping, const CovSubscr
         return;
     }
 
-    const bool is_binary = (mapping->bacnet_type == OBJ_BINARY_INPUT ||
-#ifdef BINARY_OUTPUT_SUPPORT
-                            mapping->bacnet_type == OBJ_BINARY_OUTPUT ||
-#endif
-                            mapping->bacnet_type == OBJ_BINARY_VALUE);
-
-    BACSTAC_PROPERTY_VALUE pv;
-    BACSTAC_REAL  analog_val = static_cast<BACSTAC_REAL>(init_val);
-    BACSTAC_ENUM  binary_val = (init_val != 0.0) ? BACSTAC_BINARY_ACTIVE : BACSTAC_BINARY_INACTIVE;
-
-    pv.propID   = sub.propID;
-    pv.index    = sub.arrayIndex;
-    pv.priority = BACSTAC_VOID_PRI;
-
-    if (is_binary) {
-        BACSTAC_POLARITY polarity = POLARITY_NORMAL;
-        BACSTAC_ENUM pol_val = 0;
-        BACSTAC_PROPERTY_CONTENTS pcPol;
-        BACstacInitContentsToVar(&pcPol, DATA_TYPE_ENUM, &pol_val, sizeof(pol_val));
-        if (BACstacRetrievePropertyInstance2(mapping->hObject, PROP_POLARITY,
-                                             BACSTAC_VOID_INDEX, &pcPol, nullptr) == BACSTAC_STATUS_OK) {
-            polarity = static_cast<BACSTAC_POLARITY>(pol_val);
-        }
-        bool is_active = (init_val != 0.0);
-        if (polarity == POLARITY_REVERSE) { is_active = !is_active; }
-        binary_val = is_active ? BACSTAC_BINARY_ACTIVE : BACSTAC_BINARY_INACTIVE;
-        BACstacInitContentsToVar(&pv.value, DATA_TYPE_ENUM, &binary_val, sizeof(binary_val));
-    } else {
-        BACstacInitContentsToVar(&pv.value, DATA_TYPE_REAL, &analog_val, sizeof(analog_val));
-    }
+    CovValueList vl{};
+    buildCovValueList(mapping, init_val, vl);
 
     BACSTAC_COV_NOTIF_INFO covInfo;
     covInfo.processID = sub.processID;
@@ -375,8 +385,8 @@ void CovManager::sendInitialNotification(ObjectMapping* mapping, const CovSubscr
     covInfo.initDeviceID.instNumber = devInst;
     (void)BACstacGetObjectID(mapping->hObject, &covInfo.monitoredObjectID);
     covInfo.timeRemaining = sub.lifetimeSec;
-    covInfo.listOfValues = &pv;
-    covInfo.nValueCount = 1;
+    covInfo.listOfValues = vl.values;
+    covInfo.nValueCount = kCovValueCount;
 
     if (sub.confirmed) {
         const BACSTAC_STATUS st = BACstacConfCOVNotificationEx(
@@ -562,7 +572,7 @@ void CovManager::pollingThread()
                 if (!running_) { break; }
 
                 // 완료 전까지 Handle을 보유하여 LOW Job 중복 제출을 방지합니다.
-                pending_poll_ = modbus_.submitRead(*mapping, ModbusJobPriority::LOW);
+                pending_poll_ = modbus_.enqueueRead(*mapping, ModbusJobPriority::LOW);
                 if (!pending_poll_) {
                     continue;
                 }

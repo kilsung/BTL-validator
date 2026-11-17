@@ -167,6 +167,50 @@ static const NetworkPortProperty kNetworkPortProperties[] = {
 static constexpr uint32_t kNetworkPortCommandProperty = PROP_COMMAND; // 417
 static constexpr uint32_t kNetworkPortChangesPendingProperty = PROP_CHANGES_PENDING; // 416
 
+// readPropHook 이 스택을 거치지 않고 직접 응답하는 배열이 아닌(스칼라/리스트) 속성 여부.
+// 이 속성들은 스택의 배열 인덱스 검사를 받지 않으므로, 배열 인덱스가 지정된 요청은 hook 에서
+// PROPERTY_IS_NOT_AN_ARRAY 로 거절해야 한다. (배열 속성 Property_List, IP_DNS_Server 는 제외)
+static bool isHookedNonArrayProperty(BACSTAC_OBJECT_TYPE objType, uint32_t prop_id)
+{
+    if (objType == OBJ_DEVICE) {
+        switch (prop_id) {
+            case PROP_VENDOR_NAME:
+            case PROP_VENDOR_IDENTIFIER:
+            case PROP_MODEL_NAME:
+            case PROP_OBJECT_NAME:
+            case PROP_OBJECT_IDENTIFIER:
+            case PROP_OBJECT_TYPE:
+            case PROP_APDU_TIMEOUT:
+            case PROP_NUMBER_OF_APDU_RETRIES:
+            case PROP_MAX_APDU_LENGTH_ACCEPTED:
+            case PROP_SEGMENTATION_SUPPORTED:
+            case PROP_MAX_SEGMENTS_ACCEPTED:
+            case PROP_DATABASE_REVISION:
+            case PROP_ACTIVE_COV_SUBSCRIPTIONS:
+            case PROP_LOCAL_TIME:
+            case PROP_LOCAL_DATE:
+                return true;
+            default:
+                return false;
+        }
+    }
+    if (objType == OBJ_NETWORK_PORT) {
+        switch (prop_id) {
+            case PROP_OBJECT_NAME:
+            case PROP_MAC_ADDRESS:
+            case PROP_FD_BBMD_ADDRESS:
+            case PROP_FD_SUBSCRIPTION_LIFETIME:
+            case PROP_CHANGES_PENDING:
+                return true;
+            default:
+                return false;
+        }
+    }
+    // 매핑 객체(AI/AO/BI/BO/BV)
+    return prop_id == PROP_PRESENT_VALUE || prop_id == PROP_CURRENT_COMMAND_PRIORITY ||
+           prop_id == PROP_POLARITY || prop_id == PROP_COV_INCREMENT || prop_id == PROP_OUT_OF_SERVICE;
+}
+
 struct HookDefinition {
     BACSTAC_HOOK_TYPE      hookType;
     BACSTAC_SERVICES_BITS  serviceBit;
@@ -217,6 +261,7 @@ static const HookDefinition kHookDefinitions[] = {
     { HOOK_READ_PROP_MULTIPLE,  SVC_READ_PROP_MULTIPLE,    reinterpret_cast<BACSTAC_HOOK_PROC>(BacnetGateway::readPropMultipleHook),     "ReadPropertyMultiple" },
     { HOOK_WRITE_PROP_MULTIPLE, SVC_WRITE_PROP_MULTIPLE,   reinterpret_cast<BACSTAC_HOOK_PROC>(BacnetGateway::writePropMultipleHook),    "WritePropertyMultiple" },
     { HOOK_SUBSCRIBE_COV,       SVC_SUBSCRIBE_COV,         reinterpret_cast<BACSTAC_HOOK_PROC>(BacnetGateway::subscribeCOVHook),         "SubscribeCOV" },
+    { HOOK_WHO_HAS,             SVC_WHO_HAS,               reinterpret_cast<BACSTAC_HOOK_PROC>(BacnetGateway::whoHasHook),               "WhoHas" },
     { HOOK_DCC,                 SVC_DEVICE_COMM_CONTROL,   reinterpret_cast<BACSTAC_HOOK_PROC>(BacnetGateway::dccHook),                  "DeviceCommunicationControl" }
 };
 
@@ -793,7 +838,7 @@ void BacnetGateway::detectNetworkInfo()
     }
 
     if (!target_ifname.empty()) {
-        int sock = socket(AF_INET, SOCK_DGRAM, 0);
+        int sock = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
         if (sock >= 0) {
             struct ifreq ifr;
             std::memset(&ifr, 0, sizeof(ifr));
@@ -1532,6 +1577,12 @@ BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::readPropHook(
         static_cast<BACSTAC_OBJECT_TYPE>(pServiceInfo->objectID.type);
     const uint32_t inst    = pServiceInfo->objectID.instNumber;
     const uint32_t prop_id = pServiceInfo->ePropertyID;
+    const bool has_array_index = (pServiceInfo->nIndex != BACSTAC_VOID_INDEX);
+
+    if ((objType == OBJ_DEVICE || objType == OBJ_NETWORK_PORT) && has_array_index &&
+        isHookedNonArrayProperty(objType, prop_id)) {
+        return sendServiceError(hTransaction, ERR_CLASS_PROPERTY, ERR_CODE_PROPERTY_IS_NOT_AN_ARRAY);
+    }
 
     if (objType == OBJ_DEVICE) {
         if (prop_id == PROP_VENDOR_NAME) {
@@ -1668,6 +1719,10 @@ BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::readPropHook(
     ObjectMapping* mapping = instance_->findMapping(objType, inst);
     if (mapping == nullptr) {
         return HOOK_STATUS_DEFAULT;
+    }
+
+    if (has_array_index && isHookedNonArrayProperty(objType, prop_id)) {
+        return sendServiceError(hTransaction, ERR_CLASS_PROPERTY, ERR_CODE_PROPERTY_IS_NOT_AN_ARRAY);
     }
 
     if (prop_id == PROP_CURRENT_COMMAND_PRIORITY) {
@@ -2015,6 +2070,11 @@ BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::writePropHook(
     ObjectMapping* mapping = instance_->findMapping(objType, inst);
     if (mapping == nullptr) {
         return HOOK_STATUS_DEFAULT;
+    }
+
+    // [BTL 9.22.2.1] 비-배열 속성에 배열 인덱스 지정 쓰기 거절
+    if (pServiceInfo->nIndex != BACSTAC_VOID_INDEX && isHookedNonArrayProperty(objType, prop_id)) {
+        return sendServiceError(hTransaction, ERR_CLASS_PROPERTY, ERR_CODE_PROPERTY_IS_NOT_AN_ARRAY);
     }
 
     if (prop_id == PROP_POLARITY) {
@@ -2877,6 +2937,11 @@ BACSTAC_HOOK_STATUS BacnetGateway::handleWritePresentValue(
         return HOOK_STATUS_DEFAULT;
     }
 
+    // [BTL 9.22.2.1] Present_Value는 스칼라(비-배열) 속성이므로 배열 인덱스 지정 시 거절
+    if (pInfo->nIndex != BACSTAC_VOID_INDEX) {
+        return sendServiceError(hTsm, ERR_CLASS_PROPERTY, ERR_CODE_PROPERTY_IS_NOT_AN_ARRAY);
+    }
+
     const BACSTAC_BOOLEAN out_of_service = readOutOfService(mapping);
     const bool is_commandable = isCommandableObject(objType);
     const bool is_input_obj = (objType == OBJ_ANALOG_INPUT ||
@@ -3027,6 +3092,78 @@ BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::writePropMultipleHook(
 }
 
 // ---------------------------------------------------------------------------
+// whoHasHook()
+// ---------------------------------------------------------------------------
+// BACstac NL 계층은 Network Port 객체의 Object_Name 을 "BACstac-NPO-<inst>" 로 고정
+// 생성하며(nl/nlnpo.c EncodeNPObjName) DB 저장으로 변경할 수 없다. ReadProperty 는
+// readPropHook 에서 설정값(network_port_name)으로 응답하므로, Who-Has/I-Have 도 같은
+// 이름을 쓰도록 Network Port 대상 요청만 직접 처리하고 나머지는 스택 기본 처리에 위임한다.
+
+BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::whoHasHook(
+    BACSTAC_HTSM                     /*hTransaction*/,
+    BACSTAC_ADDRESS*                 sourceAddress,
+    BACSTAC_ADDRESS*                 /*destinationAddress*/,
+    const BACSTAC_WHO_HAS_HOOK_INFO* pServiceInfo)
+{
+    if (instance_ == nullptr || pServiceInfo == nullptr || sourceAddress == nullptr) {
+        return HOOK_STATUS_DEFAULT;
+    }
+
+    const BACnetConfig& cfg = instance_->bacnet_cfg_;
+    const BACSTAC_INST_NUMBER npoInst = static_cast<BACSTAC_INST_NUMBER>(cfg.network_port_instance);
+    bool is_npo = false;
+
+    if (pServiceInfo->object.tag == WHO_HAS_ID) {
+        const BACSTAC_OBJECT_ID& oid = pServiceInfo->object.choice.objectID;
+        is_npo = (oid.type == OBJ_NETWORK_PORT && oid.instNumber == npoInst);
+    } else if (pServiceInfo->object.tag == WHO_HAS_NAME) {
+        const BACSTAC_CHAR* name = BACstacGetCharStringUTF8(&pServiceInfo->object.choice.objectName);
+        if (name == nullptr) {
+            return HOOK_STATUS_DEFAULT;
+        }
+        const std::string req_name(name);
+        if (req_name == cfg.network_port_name) {
+            is_npo = true;
+        } else if (req_name == "BACstac-NPO-" + std::to_string(npoInst)) {
+            // 외부에 노출하지 않는 스택 내부 이름: 해당 이름의 객체는 없는 것으로 처리(무응답)
+            return HOOK_STATUS_OK;
+        }
+    }
+
+    if (!is_npo) {
+        return HOOK_STATUS_DEFAULT;
+    }
+
+    // DCC DISABLE 상태에서는 응답하지 않는다.
+    BACSTAC_DCC_VALUE dcc_val = DCC_ENABLE;
+    if (BACstacGetDCCValue(instance_->hLocalDev_, &dcc_val) && dcc_val == DCC_DISABLE) {
+        return HOOK_STATUS_OK;
+    }
+
+    // Device 인스턴스 범위 필터
+    const BACSTAC_INST_NUMBER devInst = static_cast<BACSTAC_INST_NUMBER>(cfg.device_id);
+    if (pServiceInfo->filterMin != BACSTAC_NO_FILTER &&
+        (devInst < pServiceInfo->filterMin || devInst > pServiceInfo->filterMax)) {
+        return HOOK_STATUS_OK;
+    }
+
+    BACSTAC_OBJECT_ID npoId;
+    BACstacInitObjectID(&npoId, OBJ_NETWORK_PORT, npoInst);
+    BACSTAC_I_HAVE_INFO ihave;
+    if (!BACstacInitIHaveInfo(&ihave, devInst, &npoId, cfg.network_port_name.c_str())) {
+        return HOOK_STATUS_DEFAULT;
+    }
+
+    // 스택 기본 처리와 동일하게 요청자에게 I-Have 를 전송한다.
+    const BACSTAC_STATUS st = BACstacIHaveEx(nullptr, sourceAddress, &ihave, nullptr);
+    if (instance_->enable_log_) {
+        std::cout << "[" << getMsTimestamp() << "][BACnet TX] I-Have (network-port," << npoInst
+                  << ") '" << cfg.network_port_name << "' status=" << st << std::endl;
+    }
+    return HOOK_STATUS_OK;
+}
+
+// ---------------------------------------------------------------------------
 // subscribeCOVHook()
 // ---------------------------------------------------------------------------
 
@@ -3050,12 +3187,17 @@ BACSTAC_HOOK_STATUS BACstac_hook BacnetGateway::subscribeCOVHook(
 
     ObjectMapping* mapping = instance_->findMapping(objType, inst);
     if (mapping == nullptr) {
+        // 존재하지만 COV 를 지원하지 않는 객체(Device, Network Port 등)는
+        // 135.1 9.10.2.1 에 따라 OBJECT / OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED 로 응답한다.
+        const bool exists = (BACstacFindObjectByID(instance_->hLocalDev_, pServiceInfo->monitoredObjectID) !=
+                             BACSTAC_INVALID_HANDLE);
         if (instance_->enable_log_) {
-            std::cout << "[" << getMsTimestamp()
-                      << "][COV] SubscribeCOV rejected: Unknown Object ObjType=" << objType
-                      << " Inst=" << inst << std::endl;
+            std::cout << "[" << getMsTimestamp() << "][COV] SubscribeCOV rejected: "
+                      << (exists ? "COV not supported" : "Unknown Object")
+                      << " ObjType=" << objType << " Inst=" << inst << std::endl;
         }
-        return sendServiceError(hTransaction, ERR_CLASS_OBJECT, ERR_CODE_UNKNOWN_OBJECT);
+        return sendServiceError(hTransaction, ERR_CLASS_OBJECT,
+                                exists ? ERR_CODE_OPTIONAL_FUNC_NOT_SUPP : ERR_CODE_UNKNOWN_OBJECT);
     }
 
     bool is_new_subscription = false;

@@ -301,7 +301,7 @@ List of Objects in Test Device:
       cov-increment,
       min-pres-value,
       max-pres-value}
-    present-value: ? W <minimum: 3.000000; maximum: 90.000000>
+    present-value: ? W <minimum: 3.000000; maximum: 294.000000>
     status-flags: {false,false,false,false}
     event-state: normal
     out-of-service: FALSE
@@ -309,9 +309,9 @@ List of Objects in Test Device:
     priority-array: ?
     relinquish-default: ?
     current-command-priority: Null
-    cov-increment: 0.010000 W
+    cov-increment: 0.100000 W
     min-pres-value: 3.000000
-    max-pres-value: 90.000000
+    max-pres-value: 294.000000
   },
   {
     object-identifier: (binary-input, 10553)

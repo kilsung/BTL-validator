@@ -27,6 +27,8 @@ from collections import deque
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import tc_compat
+
 IS_WINDOWS = sys.platform == 'win32'
 _NO_WINDOW = getattr(subprocess, 'CREATE_NO_WINDOW', 0)
 
@@ -76,6 +78,13 @@ def host_python() -> List[str]:
         if shutil.which(name):
             return [name]
     raise RuntimeError('Python 3 를 찾을 수 없습니다 (PATH 확인)')
+
+
+def host_script_cmd(script) -> List[str]:
+    """호스트 Python 으로 verification 스크립트 실행 (Windows 는 tc_compat shim 경유)"""
+    if IS_WINDOWS:
+        return tc_compat.bootstrap_cmd(host_python(), script)
+    return host_python() + ['-X', 'utf8', '-u', str(script)]
 
 
 def to_wsl_path(path) -> str:
@@ -224,9 +233,9 @@ def check_environment(root: Path, opts: Dict) -> Dict:
     return {'items': items, 'runner': 'host'}
 
 
-_SSH_CHECK_SCRIPT = r'''
+_SSH_CHECK_SCRIPT = tc_compat.SHIM + r'''
 import os, sys, types
-sys.path.insert(0, sys.argv[1])
+_btl_compat(sys.argv[1])
 import tc_cases
 opts = types.SimpleNamespace(ssh_enable=True, target_ip=sys.argv[2], ssh_user=sys.argv[3],
                              ssh_port=int(sys.argv[4]), ssh_pass=os.environ.get("SSH_PASS") or None)
@@ -267,8 +276,7 @@ def check_ssh(root: Path, opts: Dict):
 
 def list_cases(root: Path, suite: str = 'all') -> List[Dict]:
     """run_gateway_tcs.py --list → [{tc_id, srs_id, title}]"""
-    cmd = host_python() + ['-X', 'utf8', str(root / 'scripts' / 'run_gateway_tcs.py'),
-                           '--suite', suite, '--list']
+    cmd = host_script_cmd(root / 'scripts' / 'run_gateway_tcs.py') + ['--suite', suite, '--list']
     env = dict(os.environ, PYTHONIOENCODING='utf-8', PYTHONDONTWRITEBYTECODE='1')
     res = subprocess.run(cmd, cwd=str(root.parent), capture_output=True, timeout=60,
                          env=env, creationflags=_NO_WINDOW)
@@ -495,11 +503,18 @@ class TcRunner:
                    to_wsl_path(script)] + args
             return cmd, env, 'wsl'
         args = self.build_args(opts, str)
-        cmd = host_python() + ['-X', 'utf8', '-u', str(script)] + args
         python_bin = sys.executable if not getattr(sys, 'frozen', False) else shutil.which('python')
         if python_bin:
-            cmd += ['--python-bin', python_bin]
-        return cmd, env, 'host'
+            args += ['--python-bin', python_bin]
+        return host_script_cmd(script) + args, env, 'host'
+
+    @staticmethod
+    def display_command(cmd: List[str]) -> str:
+        """로그/UI 표시용: tc_compat 부트스트랩 소스는 생략"""
+        if '-c' in cmd:
+            i = cmd.index('-c')
+            cmd = cmd[:i] + ['<tc_compat>'] + cmd[i + 2:]
+        return subprocess.list2cmdline(cmd)
 
     @staticmethod
     def _resolve_vport(root: Path, opts: Dict):
@@ -525,7 +540,7 @@ class TcRunner:
             self._reset()
             self.running = True
             self.started_at = time.strftime('%Y-%m-%d %H:%M:%S')
-            self.command = subprocess.list2cmdline(cmd)
+            self.command = self.display_command(cmd)
         threading.Thread(target=self._run, args=(root, opts, prepare),
                          daemon=True, name='tc-runner').start()
         return {'command': self.command, 'runner': runner}
@@ -534,32 +549,74 @@ class TcRunner:
         self.log.append(line)
         self.log_seq += 1
 
+    @staticmethod
+    def _bin_state(gateway_root: Path, binaries: List[str], src_dir: str = '') -> str:
+        """'ok' | 'stale'(소스가 더 최신) | 'rebuild'(없음/실행 불가: ldd 'not found')
+        run_test.sh binary_runs_in_container / ensure_binaries 와 동일 기준"""
+        conv = to_wsl_path if IS_WINDOWS else str
+        checks = ' && '.join(f'[ -f "{conv(b)}" ] && ! ldd "{conv(b)}" 2>&1 | grep -q "not found"'
+                             for b in binaries)
+        script = f'if {checks}; then '
+        if src_dir:
+            script += (f'[ -n "$(find "{conv(src_dir)}" -type f -newer "{conv(binaries[0])}" '
+                       f'2>/dev/null | head -n1)" ] && echo stale || echo ok; ')
+        else:
+            script += 'echo ok; '
+        script += 'else echo rebuild; fi'
+        try:
+            if IS_WINDOWS:
+                res = _wsl_sh(script, gateway_root, timeout=60)
+            else:
+                res = subprocess.run(['sh', '-c', script], cwd=str(gateway_root), timeout=60,
+                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            out = _decode(res.stdout).split()
+            return out[-1] if out and out[-1] in ('ok', 'stale', 'rebuild') else 'rebuild'
+        except Exception:
+            return 'rebuild'
+
     def _build_if_needed(self, root: Path, opts: Dict):
-        """managed: 바이너리 누락 시 make 자동 빌드 (run_test.sh ensure_binaries 대응)"""
+        """managed: run_test.sh ensure_binaries 대응
+        - 바이너리 없음/실행 불가(ldd not found, 다른 glibc 환경 빌드 등) → make clean && make
+        - 소스가 바이너리보다 최신 → make
+        - unit test 바이너리는 gateway clean 시 함께 삭제되므로 마지막에 확인"""
         gateway_root = root.parent
         es_root = gateway_root.parent
-        targets = []
+        targets = []   # (cwd, make target, [binaries], src_dir, desc)
         if opts.get('gateway_bin'):
-            targets.append((gateway_root, '', opts['gateway_bin'], 'bacnet_ip_gateway'))
+            targets.append((gateway_root, '', [opts['gateway_bin']], './src', 'bacnet_ip_gateway'))
         if opts.get('vport_bin'):
             vdir = (gateway_root / opts['vport_bin']).parent
             if not (vdir / 'Makefile').is_file() and (es_root / 'vport' / 'Makefile').is_file():
                 vdir = es_root / 'vport'
-            targets.append((vdir, 'all', opts['vport_bin'], 'vport & vport_test'))
+            vbins = [b for b in (opts.get('vport_bin'), opts.get('vport_test_bin')) if b]
+            targets.append((vdir, 'all', vbins, '', 'vport & vport_test'))
         if opts.get('unit_test_bin'):
-            targets.append((gateway_root, opts['unit_test_bin'], opts['unit_test_bin'], 'unit tests'))
-        for cwd, target, binary, desc in targets:
+            targets.append((gateway_root, opts['unit_test_bin'], [opts['unit_test_bin']], '', 'unit tests'))
+        for cwd, target, binaries, src_dir, desc in targets:
             if self.stop_requested:
                 return
-            if not (cwd / 'Makefile').is_file() or (gateway_root / binary).is_file():
+            if not (cwd / 'Makefile').is_file():
                 continue
+            self.phase = f'빌드 확인: {desc}'
+            state = self._bin_state(gateway_root, binaries, src_dir if (gateway_root / src_dir).is_dir() else '')
+            if state == 'ok':
+                continue
+            # unit test 는 gateway Makefile 의 개별 타깃이므로 clean 하지 않고 대상 파일만 재생성
+            clean = state == 'rebuild' and target != binaries[0]
+            if target == binaries[0]:
+                (gateway_root / target).unlink(missing_ok=True)
+            make_target = (to_wsl_path(target) if IS_WINDOWS else target) if target else ''
+            sh = ('make clean && ' if clean else '') + ('make ' + make_target).strip()
             if IS_WINDOWS:
-                cmd = ['wsl.exe', '--cd', str(cwd), '-e', 'make'] + ([to_wsl_path(target)] if target else [])
+                cmd = ['wsl.exe', '--cd', str(cwd), '-e', 'sh', '-c', sh]
             else:
-                cmd = ['make', '-C', str(cwd)] + ([target] if target else [])
+                cmd = ['sh', '-c', sh]
+            reason = '없음/실행 불가 → clean 재빌드' if clean else ('소스 변경' if state == 'stale' else '재빌드')
             self.phase = f'빌드: {desc}'
-            self._append(f'[Auto-Build] {desc}: {subprocess.list2cmdline(cmd)}')
-            self._stream(cmd, dict(os.environ), str(cwd), parse=False)
+            self._append(f'[Auto-Build] {desc} ({reason}): {sh}')
+            code = self._stream(cmd, dict(os.environ), str(cwd), parse=False)
+            if code != 0:
+                self._append(f'[Auto-Build] {desc} 빌드 실패 (exit={code})')
 
     def _stream(self, cmd, env, cwd, parse=True) -> int:
         self.proc = subprocess.Popen(

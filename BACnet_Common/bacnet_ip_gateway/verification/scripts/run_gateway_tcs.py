@@ -352,17 +352,33 @@ def _restore_result_ownership(output_dir):
 
     run_test.sh 가 HOST_UID/HOST_GID 를 넘겨준 경우에만 동작한다.
     """
-    if os.name != "posix":
-        return
     uid, gid = os.environ.get("HOST_UID"), os.environ.get("HOST_GID")
     if os.geteuid() != 0 or not uid or not gid or not uid.isdigit() or not gid.isdigit():
         return
     targets = [output_dir, output_dir.parent]
     for root, dirs, files in os.walk(output_dir):
         targets.extend(Path(root) / name for name in dirs + files)
+
+    # 테스트 실행 중 생성된 log, pycache, 단위테스트 산출물 등도 복원 대상에 포함
+    extra_paths = [
+        VERIFICATION_ROOT / "log",
+        VERIFICATION_ROOT / "scripts" / "log",
+        VERIFICATION_ROOT / "scripts" / "__pycache__",
+        VERIFICATION_ROOT / "unit" / "run_tests",
+        GATEWAY_ROOT / "current_device.tpi",
+    ]
+    for ep in extra_paths:
+        if ep.exists():
+            targets.append(ep)
+            if ep.is_dir():
+                for root, dirs, files in os.walk(ep):
+                    targets.extend(Path(root) / name for name in dirs + files)
+
     for path in targets:
         try:
             os.chown(path, int(uid), int(gid), follow_symlinks=False)
+            if path.name == "log" or "verification/log" in str(path):
+                os.chmod(path, 0o777)
         except OSError:
             pass
 

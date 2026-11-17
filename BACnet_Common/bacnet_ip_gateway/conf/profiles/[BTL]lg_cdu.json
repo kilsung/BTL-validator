@@ -48,10 +48,10 @@
     {
       "name": "Flow rate setpoint",
       "full_address": 40072,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "min_value": 3.0,
-      "max_value": 90.0,
+      "max_value": 294.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40072
     },    

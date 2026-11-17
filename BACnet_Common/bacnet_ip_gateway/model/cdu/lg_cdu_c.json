@@ -673,6 +673,7 @@
       "name": "Cooling capacity",
       "full_address": 30096,
       "scale": 1.0,
+      "units": "kilowatts",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30096
     },
@@ -708,7 +709,7 @@
     {
       "name": "CDU group total flow rate",
       "full_address": 30142,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30142
@@ -744,14 +745,15 @@
     {
       "name": "CDU group average outlet temperature",
       "full_address": 30147,
-      "scale": 1.0,
+      "scale": 0.01,
+      "units": "degrees-Celsius",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30147
     },
     {
       "name": "CDU group average flow rate",
       "full_address": 30148,
-      "scale": 1.0,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30148
@@ -759,7 +761,8 @@
     {
       "name": "CDU group average temperature difference",
       "full_address": 30149,
-      "scale": 1.0,
+      "scale": 0.01,
+      "units": "degrees-Celsius",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30149
     },
@@ -767,13 +770,15 @@
       "name": "CDU group average pump speed",
       "full_address": 30150,
       "scale": 1.0,
+      "units": "percent",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30150
     },
     {
       "name": "CDU group average valve opening",
       "full_address": 30151,
-      "scale": 1.0,
+      "scale": 0.1,
+      "units": "percent",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30151
     },
@@ -781,6 +786,7 @@
       "name": "CDU group maximum pump speed",
       "full_address": 30152,
       "scale": 1.0,
+      "units": "percent",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30152
     },
@@ -836,7 +842,7 @@
     {
       "name": "Primary-side flow rate F1",
       "full_address": 30208,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30208
@@ -844,7 +850,7 @@
     {
       "name": "Secondary-side flow rate F2",
       "full_address": 30209,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30209
@@ -1107,6 +1113,7 @@
       "name": "Pump 1 frequency",
       "full_address": 30316,
       "scale": 0.1,
+      "units": "hertz",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30316
     },
@@ -1130,6 +1137,7 @@
       "name": "Pump 1 power",
       "full_address": 30319,
       "scale": 1.0,
+      "units": "kilowatts",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30319
     },
@@ -1188,6 +1196,7 @@
       "name": "Pump 2 frequency",
       "full_address": 30327,
       "scale": 0.1,
+      "units": "hertz",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30327
     },
@@ -1211,6 +1220,7 @@
       "name": "Pump 2 power",
       "full_address": 30330,
       "scale": 1.0,
+      "units": "kilowatts",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30330
     },
@@ -1269,6 +1279,7 @@
       "name": "Pump 3 frequency",
       "full_address": 30338,
       "scale": 0.1,
+      "units": "hertz",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30338
     },
@@ -1292,6 +1303,7 @@
       "name": "Pump 3 power",
       "full_address": 30341,
       "scale": 1.0,
+      "units": "kilowatts",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30341
     },
@@ -1346,8 +1358,8 @@
       "name": "Operating status (CDU1)",
       "full_address": 30423,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30423
     },
@@ -1361,7 +1373,7 @@
     {
       "name": "Secondary-side flow rate (CDU1)",
       "full_address": 30425,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30425
@@ -1428,8 +1440,8 @@
       "name": "Operating mode (CDU2)",
       "full_address": 30438,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30438
     },
@@ -1443,7 +1455,7 @@
     {
       "name": "Secondary-side flow rate (CDU2)",
       "full_address": 30440,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30440
@@ -1510,8 +1522,8 @@
       "name": "Operating mode (CDU3)",
       "full_address": 30453,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30453
     },
@@ -1525,7 +1537,7 @@
     {
       "name": "Secondary-side flow rate (CDU3)",
       "full_address": 30455,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30455
@@ -1592,8 +1604,8 @@
       "name": "Operating mode (CDU4)",
       "full_address": 30468,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30468
     },
@@ -1607,7 +1619,7 @@
     {
       "name": "Secondary-side flow rate (CDU4)",
       "full_address": 30470,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30470
@@ -1674,8 +1686,8 @@
       "name": "Operating mode (CDU5)",
       "full_address": 30483,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30483
     },
@@ -1689,7 +1701,7 @@
     {
       "name": "Secondary-side flow rate (CDU5)",
       "full_address": 30485,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30485
@@ -1756,8 +1768,8 @@
       "name": "Operating mode (CDU6)",
       "full_address": 30498,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30498
     },
@@ -1771,7 +1783,7 @@
     {
       "name": "Secondary-side flow rate (CDU6)",
       "full_address": 30500,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30500
@@ -1838,8 +1850,8 @@
       "name": "Operating mode (CDU7)",
       "full_address": 30513,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30513
     },
@@ -1853,7 +1865,7 @@
     {
       "name": "Secondary-side flow rate (CDU7)",
       "full_address": 30515,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30515
@@ -1920,8 +1932,8 @@
       "name": "Operating mode (CDU8)",
       "full_address": 30528,
       "scale": 1.0,
-      "min_value": 0.0,
-      "max_value": 9.0,
+      "min_value": 1.0,
+      "max_value": 8.0,
       "modbus_block": "INPUT_REGISTER",
       "instance": 30528
     },
@@ -1935,7 +1947,7 @@
     {
       "name": "Secondary-side flow rate (CDU8)",
       "full_address": 30530,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "modbus_block": "INPUT_REGISTER",
       "instance": 30530
@@ -1993,9 +2005,9 @@
       "name": "Clear all alarms",
       "full_address": 40002,
       "modbus_block": "HOLDING_REGISTER",
-      "bacnet_type": "BINARY_VALUE",
+	  "bacnet_type" : "BINARY_VALUE",
       "instance": 40002
-    },
+    },	
     {
       "name": "Fill pressure",
       "full_address": 40051,
@@ -2029,7 +2041,7 @@
       "full_address": 40054,
       "scale": 1.0,
       "units": "seconds",
-      "min_value": 1.0,
+      "min_value": 2.0,
       "max_value": 6.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40054
@@ -2046,10 +2058,10 @@
     {
       "name": "Flow rate setpoint",
       "full_address": 40072,
-      "scale": 0.01,
+      "scale": 0.1,
       "units": "cubic-meters-per-hour",
       "min_value": 3.0,
-      "max_value": 90.0,
+      "max_value": 294.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40072
     },
@@ -2058,7 +2070,7 @@
       "full_address": 40073,
       "scale": 0.01,
       "min_value": 0.1,
-      "max_value": 6.0,
+      "max_value": 10.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40073
     },
@@ -2126,7 +2138,7 @@
       "name": "All-pump control",
       "full_address": 40091,
       "modbus_block": "HOLDING_REGISTER",
-	  "bacnet_type": "BINARY_VALUE",
+	  "bacnet_type" : "BINARY_VALUE",
       "instance": 40091
     },
     {
@@ -2135,7 +2147,7 @@
       "scale": 1.0,
       "units": "percent",
       "min_value": 25.0,
-      "max_value": 90.0,
+      "max_value": 100.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40092
     },
@@ -2145,7 +2157,7 @@
       "scale": 1.0,
       "units": "percent",
       "min_value": 25.0,
-      "max_value": 90.0,
+      "max_value": 100.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40093
     },
@@ -2155,7 +2167,7 @@
       "scale": 1.0,
       "units": "percent",
       "min_value": 25.0,
-      "max_value": 90.0,
+      "max_value": 100.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40094
     },
@@ -2174,7 +2186,7 @@
       "scale": 1.0,
       "units": "seconds",
       "min_value": 0.0,
-      "max_value": 200.0,
+      "max_value": 7.0,
       "modbus_block": "HOLDING_REGISTER",
       "instance": 40096
     },
@@ -2347,7 +2359,7 @@
     {
       "name": "Command/actual error",
       "full_address": 40131,
-      "scale": 0.1,
+      "scale": 1.0,
       "units": "percent",
       "min_value": 0.0,
       "max_value": 50.0,
@@ -2560,6 +2572,7 @@
       "name": "Pump operation changeover cycle",
       "full_address": 40221,
       "scale": 1.0,
+      "units": "days",
       "min_value": 0.0,
       "max_value": 30.0,
       "modbus_block": "HOLDING_REGISTER",
@@ -2614,6 +2627,7 @@
       "name": "Changeover cycle",
       "full_address": 40254,
       "scale": 1.0,
+      "units": "days",
       "min_value": 0.0,
       "max_value": 6.0,
       "modbus_block": "HOLDING_REGISTER",

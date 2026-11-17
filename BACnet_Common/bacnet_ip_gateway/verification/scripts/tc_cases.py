@@ -50,7 +50,7 @@ QUICK = {
     *(f"TC-MAP-{n:03d}" for n in range(1, 10)),
     *(f"TC-MOD-{n:03d}" for n in range(1, 4)),
     *(f"TC-BAC-{n:03d}" for n in range(1, 15)),
-    *(f"TC-BAC-{n:03d}" for n in range(16, 19)),
+    *(f"TC-BAC-{n:03d}" for n in range(16, 22)),
     *(f"TC-IFCFG-{n:03d}" for n in range(1, 4)),
     "TC-BIP-001", "TC-BIP-003", "TC-BTL-001", "TC-BTL-002", "TC-ENV-002",
 }
@@ -73,7 +73,7 @@ def _catalog():
         columns = [item.strip() for item in line.strip().split("|")[1:-1]]
         if len(columns) >= 3:
             result.append((columns[0], columns[1], columns[2]))
-    require(len(result) == 94, f"test specification must define 94 cases, found {len(result)}")
+    require(len(result) == 95, f"test specification must define 95 cases, found {len(result)}")
     return result
 
 
@@ -561,11 +561,11 @@ def _read_property_attempt(ctx, object_type, instance, property_id, invoke_id,
 
 def _write_property(ctx, object_type, instance, value, is_binary, property_id=85,
                     priority=16, invoke_id=None, tag_type=None,
-                    expected_status="SUCCESS", record_step=True):
+                    array_index=None, expected_status="SUCCESS", record_step=True):
     invoke_id = ((instance + property_id + (priority or 0)) & 0xFF) if invoke_id is None else invoke_id & 0xFF
     if tag_type is None and property_id == 85:
         apdu = build_write_property_apdu(object_type, instance, invoke_id, value,
-                                         is_binary, priority=priority)
+                                         is_binary, priority=priority, array_index=array_index)
     else:
         apdu = build_write_property_generic_apdu(
             object_type, instance, invoke_id, property_id, value,
@@ -1131,39 +1131,9 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
     ssh_port = getattr(ctx.options, "ssh_port", 22) or 22
     ssh_pass = getattr(ctx.options, "ssh_pass", None) or os.environ.get("SSH_PASS")
 
-    if sys.platform == "win32" and ssh_pass:
-        client = None
-        try:
-            import paramiko
-
-            client = paramiko.SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            client.connect(
-                hostname=ip, port=int(ssh_port), username=ssh_user,
-                password=ssh_pass, look_for_keys=False, allow_agent=False,
-                timeout=timeout, auth_timeout=timeout, banner_timeout=timeout,
-            )
-            stdin, stdout, stderr = client.exec_command(script, timeout=timeout)
-            stdin.close()
-            output = stdout.read().decode("utf-8", errors="replace")
-            error = stderr.read().decode("utf-8", errors="replace")
-            returncode = stdout.channel.recv_exit_status()
-            if returncode != 0:
-                ctx._ssh_last_error = error.strip() or f"exit code {returncode}"
-            return returncode, output, error
-        except ImportError:
-            ctx._ssh_last_error = "Windows SSH 암호 인증에 paramiko>=3.4,<4가 필요합니다."
-            return None
-        except Exception as error:
-            ctx._ssh_last_error = str(error)
-            return None
-        finally:
-            if client is not None:
-                client.close()
-
     base_cmd = [
         "ssh",
-        "-F", os.devnull,
+        "-F", "/dev/null",
         "-o", "BatchMode=yes" if not ssh_pass else "BatchMode=no",
         # 암호 지정 시 공개키 인증을 배제하여 run_test.sh 접속 테스트와 동일한 방식으로 인증
         *(["-o", "PubkeyAuthentication=no",
@@ -1171,7 +1141,7 @@ def _run_remote_ssh_command(ctx, script: str, timeout: float = 8.0) -> Optional[
            "-o", "NumberOfPasswordPrompts=1"] if ssh_pass else []),
         "-o", "ConnectTimeout=5",
         "-o", "StrictHostKeyChecking=no",
-        "-o", f"UserKnownHostsFile={os.devnull}",
+        "-o", "UserKnownHostsFile=/dev/null",
         "-o", "LogLevel=ERROR",
         "-o", "HostKeyAlgorithms=+ssh-rsa",
         "-o", "PubkeyAcceptedKeyTypes=+ssh-rsa",
@@ -1763,7 +1733,7 @@ LEGACY_STEP3 = EPICS_VERIFIER_CASES
 NATIVE_STEP1 = {
     "TC-BAC-001", "TC-BAC-003", "TC-BAC-004", "TC-BAC-007", "TC-BAC-008",
     "TC-BAC-009", "TC-BAC-010", "TC-BAC-012", "TC-BAC-013", "TC-BAC-015",
-    "TC-BAC-019", "TC-BAC-020", "TC-BTL-001", "TC-MAP-007",
+    "TC-BAC-019", "TC-BAC-020", "TC-BAC-021", "TC-BTL-001", "TC-MAP-007",
 }
 NATIVE_OBSERVE = NATIVE_STEP1 | {
     "TC-BAC-002", "TC-BAC-011", "TC-BAC-014", "TC-BIP-001",
@@ -1771,7 +1741,7 @@ NATIVE_OBSERVE = NATIVE_STEP1 | {
 NATIVE_MUTATING = {
     "TC-BAC-007", "TC-BAC-008", "TC-BAC-009", "TC-BAC-010", "TC-BAC-012",
     "TC-BAC-011", "TC-BAC-013", "TC-BAC-014", "TC-BAC-015", "TC-BAC-019",
-    "TC-BAC-020", "TC-MAP-007",
+    "TC-BAC-020", "TC-BAC-021", "TC-MAP-007",
 }
 NATIVE_MAIN_CONTROL = {"TC-BAC-010", "TC-BAC-011", "TC-BAC-014"}
 
@@ -1940,6 +1910,41 @@ def _priority_case(ctx, tc_id):
         check_step(ctx, "모든 priority 해제 Current_Command_Priority", None,
                    final_ccp, final_ccp is None,
                    f"current command priority was not cleared: {final_ccp}")
+
+
+def _non_array_index_write_case(ctx):
+    """
+    [BTL 9.22.2.1 / Negative WriteProperty]
+    Writing Non-Array Properties with an Array Index
+    Present_Value(스칼라)에 propertyArrayIndex를 지정하여 쓰기 시
+    Error Class=PROPERTY, Error Code=PROPERTY_IS_NOT_AN_ARRAY 거부 검증
+    """
+    _require_bacnet_mutation(ctx, "non-array index write rejection test writes BACnet Present_Value")
+    _ensure_runtime(ctx)
+    candidates = _active_objects(ctx, types=(1,), writable=True)
+    obj = candidates[0]
+    is_binary = obj["type"] == 4
+
+    # 1. 초기 Present_Value 읽기
+    orig_pv = _read_property(ctx, obj["type"], obj["instance"], 85, invoke_id=180)
+
+    # 2. Present_Value에 배열 인덱스(1)를 지정하여 WriteProperty 요청 (기대 결과: BACNET_ERROR_PDU)
+    status, resp_val = _write_property(
+        ctx, obj["type"], obj["instance"], None, is_binary,
+        property_id=85, priority=16, array_index=1, invoke_id=181,
+        expected_status="BACNET_ERROR_PDU", record_step=True
+    )
+    is_not_an_array_err = "PROPERTY_IS_NOT_AN_ARRAY" in str(resp_val)
+    check_step(ctx, "[BTL 9.22.2.1] Present_Value에 배열 인덱스 쓰기 시 PROPERTY_IS_NOT_AN_ARRAY 반환",
+               "PROPERTY_IS_NOT_AN_ARRAY", resp_val,
+               is_not_an_array_err, f"expected PROPERTY_IS_NOT_AN_ARRAY error, got {resp_val}")
+
+    # 3. 쓰기 거부 후 원래의 Present_Value가 보존되었는지 검증
+    post_pv = _read_property(ctx, obj["type"], obj["instance"], 85, invoke_id=182)
+    check_step(ctx, "잘못된 쓰기 후 Present_Value 보존", orig_pv, post_pv,
+               (bool(post_pv) == bool(orig_pv)) if is_binary else
+               abs(float(post_pv) - float(orig_pv)) < 0.01,
+               f"present value altered after rejected write: {post_pv} != {orig_pv}")
 
 
 def _read_active_cov(ctx, sock, invoke_id):
@@ -2420,6 +2425,8 @@ def _native_step1_case(ctx, tc_id):
         _cov_capacity_case(ctx)
     elif tc_id == "TC-BAC-020":
         _bac_network_port_runtime_case(ctx)
+    elif tc_id == "TC-BAC-021":
+        _non_array_index_write_case(ctx)
     elif tc_id == "TC-BTL-001":
         _native_who_is_who_has_case(ctx)
         _native_read_values_case(ctx)
@@ -4457,6 +4464,22 @@ def _standards_case(ctx, tc_id):
         if not ctx.options.allow_build:
             blocked("host build requires explicit --allow-build; makeIMX is never used")
         code, output = ctx.run_command("host_unit_build", ["make", "test"], timeout=300.0)
+        # 단위 테스트 산출물(log/run_tests.log 등)의 권한/소유권을 호스트 사용자로 복원
+        log_dir = VERIFICATION_ROOT / "log"
+        if log_dir.exists():
+            uid, gid = os.environ.get("HOST_UID"), os.environ.get("HOST_GID")
+            try:
+                for root, dirs, files in os.walk(log_dir):
+                    for name in dirs + files:
+                        p = Path(root) / name
+                        if uid and gid and uid.isdigit() and gid.isdigit():
+                            os.chown(p, int(uid), int(gid), follow_symlinks=False)
+                        os.chmod(p, 0o777)
+                if uid and gid and uid.isdigit() and gid.isdigit():
+                    os.chown(log_dir, int(uid), int(gid), follow_symlinks=False)
+                os.chmod(log_dir, 0o777)
+            except OSError:
+                pass
         require(code == 0, "host unit build/test failed")
         warnings = [line for line in output.splitlines() if re.search(r"\bwarning:", line, re.I)]
         require(not warnings, f"compiler warnings found: {warnings[:5]}")

@@ -32,8 +32,8 @@ void SerialPort::close() {
 bool SerialPort::openSerial(const std::string& device, int baudrate, const std::string& parity, int stop_bits, int data_bits) {
     closePort();
 
-    // Open read/write, no controlling tty, non-blocking initial open
-    fd_ = ::open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+    // Open read/write, no controlling tty, non-blocking initial open, close-on-exec to prevent FD leaks
+    fd_ = ::open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_CLOEXEC);
     if (fd_ < 0) {
         if (errno != ENOENT && errno != ENODEV) {
             std::cerr << "[SerialPort] Failed to open device: " << device 
@@ -59,7 +59,7 @@ bool SerialPort::openSerial(const std::string& device, int baudrate, const std::
 bool SerialPort::openPTY(std::string& slavePath) {
     closePort();
 
-    fd_ = posix_openpt(O_RDWR | O_NOCTTY);
+    fd_ = posix_openpt(O_RDWR | O_NOCTTY | O_CLOEXEC);
     if (fd_ < 0) {
         std::cerr << "[SerialPort] posix_openpt failed (Error: " << strerror(errno) << ")" << std::endl;
         return false;

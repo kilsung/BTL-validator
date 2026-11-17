@@ -156,7 +156,7 @@ public:
      *
      * @return 큐 등록 성공 시 Handle, 실행 중이 아니거나 큐가 가득 차면 nullptr
      */
-    std::shared_ptr<ModbusReadHandle> submitRead(const ObjectMapping& mapping,
+    std::shared_ptr<ModbusReadHandle> enqueueRead(const ObjectMapping& mapping,
                                                  ModbusJobPriority priority,
                                                  bool              apply_limits = true);
 

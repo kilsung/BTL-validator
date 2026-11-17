@@ -242,10 +242,10 @@ bool ModbusClient::enqueueWrite(const ObjectMapping&      mapping,
 }
 
 // ---------------------------------------------------------------------------
-// submitRead() — 우선순위가 지정된 Modbus 읽기 요청 큐 등록
+// enqueueRead() — 우선순위가 지정된 Modbus 읽기 요청 큐 등록
 // ---------------------------------------------------------------------------
 
-std::shared_ptr<ModbusReadHandle> ModbusClient::submitRead(
+std::shared_ptr<ModbusReadHandle> ModbusClient::enqueueRead(
     const ObjectMapping& mapping,
     ModbusJobPriority    priority,
     bool                 apply_limits)
@@ -327,7 +327,7 @@ bool ModbusClient::readValueInternal(const ObjectMapping& mapping,
         }
     }
 
-    auto read_handle = submitRead(mapping, ModbusJobPriority::HIGH, apply_limits);
+    auto read_handle = enqueueRead(mapping, ModbusJobPriority::HIGH, apply_limits);
     if (!read_handle || !read_handle->waitFor(job_timeout_ms_)) {
         return false;
     }

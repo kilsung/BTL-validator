@@ -138,7 +138,7 @@ def build_read_property_apdu(object_type, instance, invoke_id, property_id=85, a
 
     return bytes(apdu)
 
-def build_write_property_apdu(object_type, instance, invoke_id, value, is_binary, priority=16):
+def build_write_property_apdu(object_type, instance, invoke_id, value, is_binary, priority=16, array_index=None):
     """
     Builds ConfirmedRequest APDU for WriteProperty (Present_Value).
     If value is None, encodes as Null (0x00) for Relinquish operation.
@@ -152,9 +152,18 @@ def build_write_property_apdu(object_type, instance, invoke_id, value, is_binary
         0x0c, # Context tag 0, length 4 (Object Identifier)
         (packed >> 24) & 0xff, (packed >> 16) & 0xff, (packed >> 8) & 0xff, packed & 0xff,
         0x19, # Context tag 1, length 1 (Property Identifier)
-        85,   # Property ID 85: Present_Value
-        0x3e  # Context tag 3 (Opening tag)
+        85    # Property ID 85: Present_Value
     ])
+
+    if array_index is not None:
+        if array_index <= 255:
+            apdu.extend([0x29, array_index & 0xff])
+        elif array_index <= 65535:
+            apdu.extend([0x2A, (array_index >> 8) & 0xff, array_index & 0xff])
+        else:
+            apdu.extend([0x2C, (array_index >> 24) & 0xff, (array_index >> 16) & 0xff, (array_index >> 8) & 0xff, array_index & 0xff])
+
+    apdu.append(0x3e)  # Context tag 3 (Opening tag)
 
     if value is None:
         apdu.append(0x00) # Null (Relinquish)

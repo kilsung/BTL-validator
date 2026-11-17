@@ -147,6 +147,13 @@ public:
         BACSTAC_ADDRESS*                  destinationAddress,
         const BACSTAC_SUBSCRIBE_COV_INFO* pServiceInfo);
 
+    /// Who-Has 훅 (Network Port 객체 I-Have 를 설정된 Object_Name 으로 응답)
+    static BACSTAC_HOOK_STATUS BACstac_hook whoHasHook(
+        BACSTAC_HTSM                     hTransaction,
+        BACSTAC_ADDRESS*                 sourceAddress,
+        BACSTAC_ADDRESS*                 destinationAddress,
+        const BACSTAC_WHO_HAS_HOOK_INFO* pServiceInfo);
+
     /// DeviceCommunicationControl 훅 (DM-DCC-B)
     static BACSTAC_HOOK_STATUS BACstac_hook dccHook(
         BACSTAC_HTSM             hTransaction,

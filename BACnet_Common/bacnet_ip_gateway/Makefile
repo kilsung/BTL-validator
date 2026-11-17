@@ -46,7 +46,7 @@ BACSTAC_LIBS  = $(BACSTAC_LIB_DIR)/libbacsrv.a \
                 $(BACSTAC_LIB_DIR)/exutils.a
 
 LIBS          = -Wl,--start-group $(BACSTAC_LIBS) -Wl,--end-group \
-                -L$(JSONCPP_LIB_DIR) -ljsoncpp -lpthread -lrt -lz
+                -L$(JSONCPP_LIB_DIR) -ljsoncpp -lpthread -lrt
 
 # ── Source groups ────────────────────────────────────────────────────────────
 
@@ -173,6 +173,7 @@ test: $(TEST_TARGET)
 	@echo "\n[Test] Running all unit tests..."
 	@mkdir -p verification/log
 	./$(TEST_TARGET) | tee verification/log/run_tests.log
+	@chmod -R 777 verification/log 2>/dev/null || true
 
 $(TEST_TARGET): $(TEST_SRCS)
 	@echo "[Test] Compiling unit tests (host g++)..."
@@ -181,6 +182,7 @@ $(TEST_TARGET): $(TEST_SRCS)
 run_tests: $(TEST_TARGET)
 	@mkdir -p verification/log
 	./$(TEST_TARGET) | tee verification/log/run_tests.log
+	@chmod -R 777 verification/log 2>/dev/null || true
 
 # ── Clean ─────────────────────────────────────────────────────────────────────
 # 일반 clean: 빌드 산출물(.o, 바이너리)만 정리하고, 사전 생성된 dummy_device.c는 보존합니다.

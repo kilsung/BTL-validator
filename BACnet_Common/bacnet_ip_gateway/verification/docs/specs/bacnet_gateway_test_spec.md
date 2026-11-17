@@ -227,6 +227,7 @@ Runner의 실제 TC lifecycle은 다음 순서다.
 | TC-BAC-018 | SRS-FUN-BAC-006 | 미지원 서비스 3종 | `bacnet_profile_tester.py` BACnet 프로파일 검증 스크립트 | 선언된 표준 오류 |
 | TC-BAC-019 | SRS-FUN-BAC-004 | COV 최대 동시 구독 용량(20개) 및 한계 초과 거부 | native SubscribeCOV capacity | 20개 성공, 21번째 오류 거부, 취소 후 슬롯 복원 |
 | TC-BAC-020 | SRS-FUN-BAC-006 | Network Port FD 설정 런타임 변경 및 에러 응답 | 런타임 WriteProperty(408, 418, 419) 및 외부 Command(417) 쓰기 | 유효값 자동 재시작 및 FDT 반영, 잘못된 값(BBMD모드, TTL=0, IP 0.0.0.0) VALUE_OUT_OF_RANGE, Command UNKNOWN_PROPERTY 거부 |
+| TC-BAC-021 | SRS-FUN-BAC-003 | 비-배열 속성(Present_Value)에 배열 인덱스 쓰기 에러 거부 (BTL 9.22.2.1) | native WriteProperty PV with array_index | Error Class=PROPERTY, Error Code=PROPERTY_IS_NOT_AN_ARRAY 반환 및 PV 보존 |
 
 ## 7. 실행 및 BACnet 인터페이스 TC 요약
 
@@ -1704,6 +1705,26 @@ Modbus RTU transaction은 simulator transaction log와 packet evidence에서 확
 - 직접 검증하지 않는 항목/검증 공백: BACstac 라이브러리 내부의 원자적 파일 I/O 실패(OS 디스크 풀 등) 시 롤백은 모의하지 않는다.
 - 정리/증적: 각 WriteProperty 요청/응답 APDU, `bip.cfg` 심볼릭 링크 타겟, BBMD1/BBMD2 FDT 덤프 및 Gateway 프로세스 로그.
 - BLOCKED 조건: managed 의존성 부족 또는 BBMD 준비 실패.
+
+#### TC-BAC-021 — 비-배열 속성(Present_Value)에 배열 인덱스 쓰기 에러 거부 (BTL 9.22.2.1)
+
+- 실행 명령: 기본 명령.
+- 입력/사전조건: 활성 쓰기 가능한 Commandable 객체(AO), Gateway 실행 바이너리.
+- 수행단계:
+  1. 대상 객체의 원래 `Present_Value`(85) 값을 ReadProperty로 읽어 보존한다.
+  2. `Present_Value`(85)에 `propertyArrayIndex=1`을 지정하여 WriteProperty 요청을 전송한다.
+  3. BACnet 응답 PDU를 확인하여 `Error Class=PROPERTY(2)`, `Error Code=PROPERTY_IS_NOT_AN_ARRAY(50)` 에러가 반환되는지 검증한다.
+  4. 요청 거절 후 대상 객체의 `Present_Value`가 변조되지 않고 원래 값을 유지하는지 확인한다.
+- 자동 판정:
+
+| 항목 | 채널/근거 | 기대 | 현재 자동 판정 |
+|---|---|---|---|
+| 에러 응답 PDU | WriteProperty APDU 응답 | `PROPERTY_IS_NOT_AN_ARRAY` (Class 2, Code 50) | Error Class 2, Code 50 assertion |
+| 값 보존 | ReadProperty 85 | 원래의 Present_Value와 일치 | 전후 값 비교 assertion |
+
+- 현재 자동 검증 범위: 스칼라(비-배열) 속성에 배열 인덱스가 포함된 부정형 WriteProperty에 대한 BACnet 표준 및 BTL 9.22.2.1 에러 거절 동작을 검증한다.
+- 정리/증적: WriteProperty 요청/응답 APDU 및 ReadProperty 응답값.
+- BLOCKED 조건: 없음.
 
 #### TC-IFCFG-001 — 기본/명시 config directory 계약
 

@@ -8,37 +8,11 @@
 
 상위 프로토콜 변환 게이트웨이 및 진단 도구들과 하위 필드 장치 제어 프로그램 사이에서 1:N 시리얼 통신 프레임의 멀티플렉싱(Multiplexing)과 동기화(Synchronization)를 수행합니다.
 
-```mermaid
-graph TB
-    subgraph Masters ["1. 복수 프로토콜 마스터 계층 (Masters, 동적 N개 확장 가능)"]
-        M1["마스터 1: Modbus/TCP 게이트웨이<br>(/dev/ttyMASTER1)"]
-        M2["마스터 2: BACnet/IP 게이트웨이<br>(/dev/ttyMASTER2)"]
-        M3["마스터 3: SNMP 게이트웨이<br>(/dev/ttyMASTER3)"]
-        M4["마스터 4+: 추가 확장 게이트웨이 / 진단 CLI<br>(/dev/ttyMASTER4 ...)"]
-    end
+<p align="center">
+  <img src="doc/vport_readme.svg" alt="vport 시스템 아키텍처" />
+</p>
 
-    subgraph Hub ["2. vport 가상 시리얼 허브 계층 (ModbusHub Core)"]
-        LL["마스터 수신자 (listener_loop)<br>select() 다중화로 복수 마스터의 동시 요청 비동기 수신"]
-        RQ["공유 요청 큐 (request_queue)<br>Mutex & Condition Variable 보호 스레드 안전 대기열"]
-        DL["슬레이브 분배자 (dispatcher_loop)<br>순차 전송 및 원본 요청 마스터로 응답 회신"]
-        
-        LL -->|완전한 패킷 프레임 조립 & 큐잉| RQ
-        RQ -->|순차 Pop| DL
-    end
-
-    subgraph Slave ["3. 하위 필드 장치 메인 소프트웨어 계층 (Slave)"]
-        S_PORT["가상 슬레이브 포트 (/dev/ttySLAVE)"]
-        MAIN_SW["CDU / 칠러 Main SW<br>(Modbus RTU Slave 제어 프로그램)"]
-        
-        S_PORT <--> MAIN_SW
-    end
-
-    M1 <-->|요청 전송 / 응답 수신| LL
-    M2 <-->|요청 전송 / 응답 수신| LL
-    M3 <-->|요청 전송 / 응답 수신| LL
-    M4 -.->|"동적 N개 채널 확장"| LL
-    DL <-->|Modbus RTU 트랜잭션 왕복| S_PORT
-```
+> 범례: 굵은 실선 = 자체 코딩부(Modbus RTU 중재 추가 구현), 회색 채움 = PTY 기본 연결 기능(OS PTY 기반, socat 상당), 점선 = 외부 요소(범위 밖).
 
 ---
 
